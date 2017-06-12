@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#14b9b9"
-    tools:context="com.example.leon.kotlinapplication.fragments.GenreMovieList">
+    tools:context="com.example.leon.kotlinapplication.fragments.CinemaFragment">
 
 
 

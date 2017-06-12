@@ -17,6 +17,7 @@ import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Picasso
 import io.realm.Realm
+import io.realm.RealmChangeListener
 import io.realm.RealmQuery
 import io.realm.RealmResults
 import io.realm.exceptions.RealmPrimaryKeyConstraintException
@@ -41,27 +42,25 @@ class DetailActivity : AppCompatActivity() {
         var textViewTitle = findViewById(R.id.textViewMovieTitle) as TextView
         var textViewOverview = findViewById(R.id.textViewMovieOverview) as TextView
         var imageView = findViewById(R.id.imageView) as ImageView
-
-
-
+        var textViewDate = findViewById(R.id.textViewDate) as TextView
 
 
         val extras: Bundle = intent.extras
         var movieid: Int = extras.getInt("movieid")
-        if (movieid != null){
+
 
             // Initialize realm
             Realm.init(this)
             realm = Realm.getDefaultInstance()
 
             val queue = Volley.newRequestQueue(this)
-            val url = getString(R.string.base_url)+"movie/popular?api_key="+getString(R.string.key)+"&language=en-US&page=1"
+            val url = getString(R.string.base_url) + "movie/popular?api_key=" + getString(R.string.key) + "&language=en-US&page=1"
 
             // Request a string response from the provided URL.
-            val stringRequest = StringRequest(Request.Method.GET, url,object : Response.Listener<String> {
+            val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
                 override fun onResponse(response: String) {
                     // Display the first 500 characters of the response string.
-                    Log.d("Resonse",response)
+                    Log.d("Resonse", response)
                     fetchRequest(response)
                 }
             }, object : Response.ErrorListener {
@@ -73,27 +72,42 @@ class DetailActivity : AppCompatActivity() {
             queue.add(stringRequest);
 
             var movie: Movie = findMovie(movieid)
+
+            movie.addChangeListener(RealmChangeListener {
+                Log.d("DetailActivity","MovieChangeListener Trigger")
+                textViewTitle.text = movie.title
+                textViewOverview.text = movie.overview
+                textViewDate.text = movie.release_date
+            })
+
             textViewTitle.text = movie.title
             textViewOverview.text = movie.overview
+            textViewDate.text = movie.release_date
 
             var uri: Uri = Uri.parse(getString(R.string.image_base_url)
-                    +"/w1280"
-                    +movie.backdrop_path)
+                    + "/w1280"
+                    + movie.backdrop_path)
             Picasso.with(this).load(uri).into(imageView)
 
-        }
+
+
+
+
+
+
+
     }
 
-    private fun findMovie(movieid:Int):Movie {
+
+    private fun findMovie(movieid: Int): Movie {
         var query: RealmQuery<Movie> = realm.where(Movie::class.java)
-        var results: RealmResults<Movie> = query.equalTo("id",movieid).findAll()
+        var results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
         Log.d("eventListener", " " + results.size)
 
-       return results.first()
+        return results.first()
     }
 
-
-    private fun fetchRequest(reponse: String) {
+    fun fetchRequest(reponse: String) {
         realm.executeTransactionAsync(Realm.Transaction() {
             @Override
             fun execute(bgRealm: Realm) {
@@ -112,11 +126,13 @@ class DetailActivity : AppCompatActivity() {
             @Override
             fun onSuccess() {
                 // Transaction was a success.
+                Log.d("DetailActivity", "Update of RealmObject was successfull.")
             }
         }, Realm.Transaction.OnError() {
             @Override
             fun onError(error: Throwable) {
                 // Transaction failed and was automatically canceled.
+                error.printStackTrace()
             }
         });
 
