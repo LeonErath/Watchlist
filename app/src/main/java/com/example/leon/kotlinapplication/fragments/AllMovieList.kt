@@ -1,6 +1,7 @@
 package com.example.leon.kotlinapplication.fragments
 
 
+import android.content.res.AssetManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -18,6 +19,21 @@ import io.realm.Realm
 import io.realm.RealmQuery
 import io.realm.RealmResults
 import kotlin.properties.Delegates
+import android.databinding.adapters.TextViewBindingAdapter.setText
+import android.support.v7.widget.GridLayoutManager
+import com.android.volley.Request
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import io.realm.exceptions.RealmPrimaryKeyConstraintException
+import io.realm.internal.IOException
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.InputStream
 
 
 /**
@@ -47,26 +63,81 @@ class AllMovieList(var a: MainActivity) : Fragment() {
         // Set up recycler view
         var adapter: MovieAdapter = MovieAdapter()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = GridLayoutManager(activity, 2)
 
         // fill recycler view with data from database
-        var query: RealmQuery<Movie> = realm.where(Movie::class.java)
-        var results: RealmResults<Movie> = query.findAll()
-        adapter.addData(results)
+        updateRealm(adapter)
+
 
         // updates recycler view if user creates a new movie
         a.setOnEventListener(object : EventListener {
             override fun updateRecyclerView() {
                 Log.d("eventListener", "triggered")
-                var query: RealmQuery<Movie> = realm.where(Movie::class.java)
-                var results: RealmResults<Movie> = query.findAll()
-                Log.d("eventListener", " " + results.size)
-                adapter.addData(results)
-
+                updateRealm(adapter)
             }
 
         })
+
+        val queue = Volley.newRequestQueue(activity)
+        val url = getString(R.string.base_url) + "movie/popular?api_key=" + getString(R.string.key) + "&language=en-US&page=1"
+
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
+            override fun onResponse(response: String) {
+                // Display the first 500 characters of the response string.
+                Log.d("Resonse", response)
+                var obj: JSONObject = JSONObject(response)
+                var array: JSONArray = obj.getJSONArray("results")
+
+                fetchRequest(array)
+            }
+        }, object : Response.ErrorListener {
+            override fun onErrorResponse(error: VolleyError) {
+                error.printStackTrace()
+            }
+        })
+
+        queue.add(stringRequest);
+
+
         return rootView
+    }
+
+    private fun updateRealm(adapter: MovieAdapter) {
+        var query: RealmQuery<Movie> = realm.where(Movie::class.java)
+        var results: RealmResults<Movie> = query.findAll()
+        Log.d("eventListener", " " + results.size)
+
+        adapter.addData(results)
+    }
+
+    private fun fetchRequest(jsonArray: JSONArray) {
+        realm.executeTransactionAsync(Realm.Transaction() {
+            @Override
+            fun execute(bgRealm: Realm) {
+                try {
+                    //val input: InputStream = assets.open("response.json")
+                    bgRealm.createOrUpdateAllFromJson(Movie::class.java, jsonArray)
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                } catch (e: IOException) {
+                    throw RuntimeException(e)
+                } catch (e: RealmPrimaryKeyConstraintException) {
+                    e.printStackTrace()
+                }
+            }
+        }, Realm.Transaction.OnSuccess() {
+            @Override
+            fun onSuccess() {
+                // Transaction was a success.
+            }
+        }, Realm.Transaction.OnError() {
+            @Override
+            fun onError(error: Throwable) {
+                // Transaction failed and was automatically canceled.
+            }
+        });
+
     }
 
 

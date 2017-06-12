@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val btn = findViewById(R.id.button) as Button;
-        val edMovieName = findViewById(R.id.editMovieName) as EditText
-        val edYearName = findViewById(R.id.editMovieYear) as EditText
         val viewPager = findViewById(R.id.viewPager) as ViewPager
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager,this)
         viewPager.adapter = viewPagerAdapter
@@ -34,29 +32,14 @@ class MainActivity : AppCompatActivity() {
 
 
         btn.setOnClickListener({ view ->
-            if (edMovieName.text.toString().trim() != "" && edYearName.text.toString().trim() != ""){
-                saveMovie(edMovieName.text.toString(),edYearName.text.toString().toInt())
-
-                edMovieName.setText("")
-                edYearName.setText("")
-
                 if (eventListener != null){
                     eventListener!!.updateRecyclerView()
                 }
-
-            }else{
-                Log.d("MainActivity","Please type in a movie name and the year it was created.")
-            }
         })
     }
 
     fun saveMovie(movieName:String,movieYear:Int){
-        realm.executeTransaction{
-            var movie = realm.createObject(Movie::class.java)
-            movie.name = movieName
-            movie.year = movieYear
 
-        }
     }
 
     fun nextActivity(){

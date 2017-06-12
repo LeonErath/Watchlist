@@ -8,19 +8,7 @@
     tools:context="com.example.leon.kotlinapplication.activities.MainActivity">
 
 
-    <EditText
-        android:id="@+id/editMovieName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:hint="Movie Name"/>
-    <EditText
-        android:id="@+id/editMovieYear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:inputType="number"
-        android:hint="Year"/>
+
     <Button
         android:textColor="@android:color/white"
         android:layout_margin="8dp"
@@ -29,7 +17,7 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="Update Movies"
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="231dp" />
 

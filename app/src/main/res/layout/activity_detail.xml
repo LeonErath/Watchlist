@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.leon.kotlinapplication.activities.DetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="0dp"
+            android:background="#636363" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            app:cardCornerRadius="2dp"
+            app:cardBackgroundColor="#f5f5f5"
+            app:cardElevation="4dp">
+
+            <TextView
+                android:id="@+id/textViewMovieTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Movie Title"
+                android:textColor="#000"
+                android:textSize="30dp" />
+        </android.support.v7.widget.CardView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="0dp"
+                app:cardCornerRadius="2dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25-06-1998"
+                android:padding="4dp"
+                android:background="@color/colorPrimary"
+                android:textColor="#FFF"/>
+            </android.support.v7.widget.CardView>
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/textViewMovieOverview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Movie Overview\nMovie Overview\nMovieOverview"
+            android:textColor="#3e3e3e"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.LinearLayoutCompat>
