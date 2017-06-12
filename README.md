@@ -2,17 +2,16 @@
 
 ### A little App to learn the Basics of the new Programming Language Kotlin
 
+I've programmed an App, where I can see all upcomming Movies. I can store Movies that I like in a seperate Watchlist. Reason for programming this App is to learn the new language Kotlin. Im hoping to get a better understanding of its functions and why everybody loves kotlin. I wil publish now and then new updates.
+
 
 Popular Movies Overview             |  Movie Detail Overview
 :-------------------------:|:-------------------------:
 <img src="https://github.com/LeonErath/KotlinApplication/blob/master/screenshots/PopularMovies.png" data-canonical-src="https://raw.githubusercontent.com/LeonErath/KotlinApplication/master/screenshots/PopularMovies.png" width="200" height="400" />                            |  <img src="https://github.com/LeonErath/KotlinApplication/blob/master/screenshots/MovieDetail.png" data-canonical-src="https://raw.githubusercontent.com/LeonErath/KotlinApplication/master/screenshots/MovieDetail.png" width="200" height="400" />
 
-
-
-
-
-- [x] PopularMovie Fragment with current Movies
-- [x] Detail Overview of Movies
+# TODO
+- [x] PopularMovie Fragment with current Movies [12.06.2017]
+- [x] Detail Overview of Movies [12.06.2017]
 - [ ] Functionallity to add Movies to a Watchlist
 - [ ] Functionallity to show Movies which are currently displayed in Cinemas
 - [ ] Genre Overview
