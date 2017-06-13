@@ -129,7 +129,6 @@ class PopularFragment(val a: MainActivity) : Fragment() {
     private fun fetchRequest(response: String) {
         try {
             realm.executeTransaction {
-                //val input: InputStream = assets.open("response.json")
                 Log.d("PopularFragment:", "Response: " + response)
                 val modedResponse: String = jsonParser(response)
                         .insertValueInt("id", 0)

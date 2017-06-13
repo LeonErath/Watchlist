@@ -132,7 +132,6 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
     private fun fetchRequest(response: String) {
         try {
             realm.executeTransaction {
-                //val input: InputStream = assets.open("response.json")
                 Log.d("CinemaFragment:", "Response: " + response)
                 var modedResponse: String = jsonParser(response)
                         .insertValueInt("id", 1)

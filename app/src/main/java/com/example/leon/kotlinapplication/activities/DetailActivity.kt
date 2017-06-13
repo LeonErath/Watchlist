@@ -99,7 +99,6 @@ class DetailActivity : AppCompatActivity() {
             @Override
             fun execute(bgRealm: Realm) {
                 try {
-                    //val input: InputStream = assets.open("response.json")
                     bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()

@@ -18,3 +18,7 @@ Popular Movies Overview             |  Movie Detail Overview
 - [ ] Search Function
 - [ ] Trailers for Movies
 - [ ] Series Overview
+
+## Update 13.06.2017
+
+Cleaned my Code. I'm still making many mistakes when it comes to Kotlins syntax. Hope I will get used to not using semicolons or not using getter/setter methods. Additionally added some logic to my database. Added the relationship between movies and lists. I could delete some of the boilerplate code because of this.
