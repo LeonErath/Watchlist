@@ -8,7 +8,7 @@ import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 
 @RealmClass
-open class Movie:RealmObject(){
+open class PopularMovie :RealmObject(){
 
     @PrimaryKey
     var id: Int = 0

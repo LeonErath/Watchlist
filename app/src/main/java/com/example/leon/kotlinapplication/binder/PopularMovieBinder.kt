@@ -2,32 +2,28 @@ package com.example.leon.kotlinapplication.binder
 
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
-import android.support.v4.content.ContextCompat.startActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.ahamed.multiviewadapter.BaseViewHolder
-import com.ahamed.multiviewadapter.ItemBinder
 import com.example.leon.kotlinapplication.R
-import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.model.PopularMovie
 import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.squareup.picasso.Picasso
-import java.net.URI
 
 
 /**
  * Created by Leon on 07.06.17.
  */
 
-open class MovieBinder: SelectableBinder<Movie, MovieBinder.ViewHolder>() {
+open class PopularMovieBinder : SelectableBinder<PopularMovie, PopularMovieBinder.ViewHolder>() {
 
-    override fun bind(holder: ViewHolder?, movie: Movie?,b: Boolean) {
+    override fun bind(holder: ViewHolder?, movie: PopularMovie?, b: Boolean) {
         holder?.tvMovie!!.text = movie?.title
 
         val uri:Uri = Uri
@@ -41,7 +37,7 @@ open class MovieBinder: SelectableBinder<Movie, MovieBinder.ViewHolder>() {
 
 
     override fun canBindData(item: Any?): Boolean {
-        return item is Movie;
+        return item is PopularMovie;
     }
 
     override fun create(inflater: LayoutInflater?, parent: ViewGroup?): ViewHolder {
@@ -52,7 +48,7 @@ open class MovieBinder: SelectableBinder<Movie, MovieBinder.ViewHolder>() {
         return 2
     }
 
-    class ViewHolder(itemView: View) : SelectableViewHolder<Movie>(itemView) {
+    class ViewHolder(itemView: View) : SelectableViewHolder<PopularMovie>(itemView) {
 
         val context:Context = itemView.context
 
@@ -63,8 +59,8 @@ open class MovieBinder: SelectableBinder<Movie, MovieBinder.ViewHolder>() {
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             imageV = itemView.findViewById(R.id.imageView) as ImageView
 
-            setItemClickListener(object : BaseViewHolder.OnItemClickListener<Movie> {
-                override fun onItemClick(view: View, item: Movie) {
+            setItemClickListener(object : BaseViewHolder.OnItemClickListener<PopularMovie> {
+                override fun onItemClick(view: View, item: PopularMovie) {
                     val intent = Intent(context, DetailActivity::class.java)
                     intent.putExtra("movieid",item.id)
                     context.startActivity(intent)

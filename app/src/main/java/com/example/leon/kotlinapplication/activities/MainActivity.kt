@@ -1,24 +1,13 @@
 package com.example.leon.kotlinapplication.activities
 
 import android.graphics.Color
-import com.example.leon.kotlinapplication.model.Movie
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TabHost
-import com.example.leon.kotlinapplication.EventListener
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
-import io.realm.Realm
-import kotlin.properties.Delegates
-import com.example.leon.kotlinapplication.R.id.viewPager
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.WHITE)
+
+
 
         tabLayout.addTab(tabLayout.newTab().setText("Popular"));
         tabLayout.addTab(tabLayout.newTab().setText("Cinema"));
@@ -66,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = viewPagerAdapter
 
     }
+
 
 
 

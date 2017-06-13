@@ -3,10 +3,33 @@ package com.example.leon.kotlinapplication.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.adapter.CinemaMovieAdapter
+import com.example.leon.kotlinapplication.adapter.PopularMovieAdapter
+import com.example.leon.kotlinapplication.model.CinemaMovie
+import com.example.leon.kotlinapplication.model.PopularMovie
+import io.realm.Realm
+import io.realm.RealmQuery
+import io.realm.RealmResults
+import io.realm.Sort
+import io.realm.exceptions.RealmPrimaryKeyConstraintException
+import io.realm.internal.IOException
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.FileNotFoundException
+import kotlin.properties.Delegates
 
 
 /**
@@ -16,6 +39,7 @@ import com.example.leon.kotlinapplication.R
  */
 class CinemaFragment : Fragment() {
 
+    var realm: Realm by Delegates.notNull()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +50,92 @@ class CinemaFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_cinema, container, false)
+        var rootView = inflater!!.inflate(R.layout.fragment_cinema, container, false)
+        var recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
+        var refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
+
+
+        // Initialize realm
+        Realm.init(context)
+        realm = Realm.getDefaultInstance()
+        realm.refresh()
+
+        // Set up recycler view
+        var adapter: CinemaMovieAdapter = CinemaMovieAdapter()
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = GridLayoutManager(activity, 2)
+
+        refreshLayout.setOnRefreshListener {
+            httpRequest(adapter, refreshLayout)
+
+        }
+
+        httpRequest(adapter, refreshLayout)
+        return rootView
     }
 
+    private fun httpRequest(adapter: CinemaMovieAdapter, refreshLayout: SwipeRefreshLayout) {
+        val queue = Volley.newRequestQueue(activity)
+        val url = getString(R.string.base_url) + "movie/now_playing?api_key=" + getString(R.string.key) + "&language=en-US&page=1"
+
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
+            override fun onResponse(response: String) {
+                // Display the first 500 characters of the response string.
+                Log.d("Resonse", response)
+
+                var obj: JSONObject = JSONObject(response)
+                var array: JSONArray = obj.getJSONArray("results")
+
+                deleteRealm()
+
+                fetchRequest(array, adapter, refreshLayout)
+            }
+        }, object : Response.ErrorListener {
+            override fun onErrorResponse(error: VolleyError) {
+                error.printStackTrace()
+                updateRealm(adapter, refreshLayout)
+            }
+        })
+
+        queue.add(stringRequest)
+        queue.start()
+    }
+
+    private fun updateRealm(adapter: CinemaMovieAdapter, refreshLayout: SwipeRefreshLayout) {
+        var query: RealmQuery<CinemaMovie> = realm.where(CinemaMovie::class.java)
+        var results: RealmResults<CinemaMovie> = query.findAll()
+        Log.d("eventListener", " " + results.size)
+
+        adapter.addData(results)
+        refreshLayout.isRefreshing = false
+    }
+
+    fun deleteRealm(){
+        Realm.init(activity)
+        var realm:Realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            realm.deleteAll()
+        }
+
+    }
+
+    private fun fetchRequest(jsonArray: JSONArray, adapter: CinemaMovieAdapter, refreshLayout: SwipeRefreshLayout) {
+        try {
+            realm.executeTransaction {
+                //val input: InputStream = assets.open("response.json")
+                Log.d("fetchRequest", " " + jsonArray + " ")
+                realm.createOrUpdateAllFromJson(CinemaMovie::class.java, jsonArray)
+                updateRealm(adapter, refreshLayout)
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        } catch (e: RealmPrimaryKeyConstraintException) {
+            e.printStackTrace()
+        }
+
+    }
 
 }

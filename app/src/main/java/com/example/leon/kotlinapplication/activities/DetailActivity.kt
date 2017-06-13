@@ -3,7 +3,6 @@ package com.example.leon.kotlinapplication.activities
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,8 +12,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
-import com.example.leon.kotlinapplication.adapter.MovieAdapter
-import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.model.PopularMovie
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmChangeListener
@@ -22,11 +20,7 @@ import io.realm.RealmQuery
 import io.realm.RealmResults
 import io.realm.exceptions.RealmPrimaryKeyConstraintException
 import io.realm.internal.IOException
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.FileNotFoundException
-import java.io.InputStream
-import kotlin.coroutines.experimental.EmptyCoroutineContext.plus
 import kotlin.properties.Delegates
 
 class DetailActivity : AppCompatActivity() {
@@ -71,7 +65,7 @@ class DetailActivity : AppCompatActivity() {
 
             queue.add(stringRequest);
 
-            var movie: Movie = findMovie(movieid)
+            var movie: PopularMovie = findMovie(movieid)
 
             movie.addChangeListener(RealmChangeListener {
                 Log.d("DetailActivity","MovieChangeListener Trigger")
@@ -99,9 +93,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
 
-    private fun findMovie(movieid: Int): Movie {
-        var query: RealmQuery<Movie> = realm.where(Movie::class.java)
-        var results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
+    private fun findMovie(movieid: Int): PopularMovie {
+        var query: RealmQuery<PopularMovie> = realm.where(PopularMovie::class.java)
+        var results: RealmResults<PopularMovie> = query.equalTo("id", movieid).findAll()
         Log.d("eventListener", " " + results.size)
 
         return results.first()
@@ -113,7 +107,7 @@ class DetailActivity : AppCompatActivity() {
             fun execute(bgRealm: Realm) {
                 try {
                     //val input: InputStream = assets.open("response.json")
-                    bgRealm.createOrUpdateObjectFromJson(Movie::class.java, reponse)
+                    bgRealm.createOrUpdateObjectFromJson(PopularMovie::class.java, reponse)
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()
                 } catch (e: IOException) {
