@@ -13,7 +13,7 @@ Popular Movies Overview             |  Movie Detail Overview
 - [x] PopularMovie Fragment with current Movies [12.06.2017]
 - [x] Detail Overview of Movies [12.06.2017]
 - [ ] Functionality to add movies to a watchlist
-- [x] Functionality to show movies which are currently displayed in cinemas
+- [x] Functionality to show movies which are currently displayed in cinemas [13.06.2017]
 - [ ] Genre Overview
 - [ ] Search Function
 - [ ] Trailers for Movies
