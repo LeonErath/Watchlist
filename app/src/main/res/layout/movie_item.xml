@@ -10,6 +10,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:contentDescription="movie poster"
             android:layout_gravity="center"
             android:id="@+id/imageView"
             android:layout_width="match_parent"

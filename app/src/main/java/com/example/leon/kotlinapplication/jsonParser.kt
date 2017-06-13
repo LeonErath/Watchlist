@@ -13,25 +13,25 @@ class jsonParser(jsonString: String) {
 
 
     fun makeArray(): jsonParser {
-        json = "[" + json + "]"
+        json = "[$json]"
         return this
     }
 
     fun insertValueString(key: String, value: String): jsonParser {
-        val postition: Int = json.indexOf("{") + 1
-        val substringBefore: String = json.substring(0, postition)
-        val substringEnd: String = json.substring(postition)
+        val position: Int = json.indexOf("{") + 1
+        val substringBefore: String = json.substring(0, position)
+        val substringEnd: String = json.substring(position)
 
-        json = substringBefore + "\"" + key + "\":" + "\"" + value + "\"," + substringEnd
+        json = "$substringBefore\"$key\":\"$value\",$substringEnd"
         return this
     }
 
     fun insertValueInt(key: String, value: Int): jsonParser {
-        val postition: Int = json.indexOf("{") + 1
-        val substringBefore: String = json.substring(0, postition)
-        val substringEnd: String = json.substring(postition)
+        val position: Int = json.indexOf("{") + 1
+        val substringBefore: String = json.substring(0, position)
+        val substringEnd: String = json.substring(position)
 
-        json = substringBefore + "\"" + key + "\":" + value + "," + substringEnd
+        json = "$substringBefore\"$key\":$value,$substringEnd"
         return this
     }
 }

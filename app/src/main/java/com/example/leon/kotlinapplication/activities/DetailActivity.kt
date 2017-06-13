@@ -1,14 +1,13 @@
 package com.example.leon.kotlinapplication.activities
 
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
@@ -77,19 +76,13 @@ class DetailActivity : AppCompatActivity() {
                 "&language=en-US&page=1"
 
         // Request a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
-            override fun onResponse(response: String) {
-                // Display the first 500 characters of the response string.
-                Log.d("Resonse", response)
-                fetchRequest(response)
-            }
-        }, object : Response.ErrorListener {
-            override fun onErrorResponse(error: VolleyError) {
-                error.printStackTrace()
-            }
-        })
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.d("Resonse", response)
+            fetchRequest(response)
+        }, Response.ErrorListener { error -> error.printStackTrace() })
 
-        queue.add(stringRequest);
+        queue.add(stringRequest)
     }
 
 
@@ -101,13 +94,13 @@ class DetailActivity : AppCompatActivity() {
         return results.first()
     }
 
-    fun fetchRequest(reponse: String) {
-        realm.executeTransactionAsync(Realm.Transaction() {
+    fun fetchRequest(response: String) {
+        realm.executeTransactionAsync({
             @Override
             fun execute(bgRealm: Realm) {
                 try {
                     //val input: InputStream = assets.open("response.json")
-                    bgRealm.createOrUpdateObjectFromJson(Movie::class.java, reponse)
+                    bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()
                 } catch (e: IOException) {
@@ -116,19 +109,19 @@ class DetailActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
-        }, Realm.Transaction.OnSuccess() {
+        }, {
             @Override
             fun onSuccess() {
                 // Transaction was a success.
-                Log.d("DetailActivity", "Update of RealmObject was successfull.")
+                Log.d("DetailActivity", "Update of RealmObject was successful.")
             }
-        }, Realm.Transaction.OnError() {
+        }, {
             @Override
             fun onError(error: Throwable) {
                 // Transaction failed and was automatically canceled.
                 error.printStackTrace()
             }
-        });
+        })
 
     }
 

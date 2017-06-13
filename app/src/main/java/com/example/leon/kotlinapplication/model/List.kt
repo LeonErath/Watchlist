@@ -14,7 +14,7 @@ open class List : RealmObject() {
     var id: Int = 0
     var name: String = ""
 
-    var results: RealmList<Movie> = RealmList<Movie>()
+    var results: RealmList<Movie> = RealmList()
     var total_results: Int = 0
     var total_pages: Int = 0
 

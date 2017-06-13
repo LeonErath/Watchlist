@@ -7,11 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.ahamed.multiviewadapter.BaseViewHolder
-import com.example.leon.kotlinapplication.R
 import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
+import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Picasso
@@ -59,13 +58,11 @@ open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             imageV = itemView.findViewById(R.id.imageView) as ImageView
 
-            setItemClickListener(object : BaseViewHolder.OnItemClickListener<Movie> {
-                override fun onItemClick(view: View, item: Movie) {
-                    val intent = Intent(context, DetailActivity::class.java)
-                    intent.putExtra("movieid",item.id)
-                    context.startActivity(intent)
-                }
-            })
+            setItemClickListener { view, item ->
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("movieid", item.id)
+                context.startActivity(intent)
+            }
 
         }
 

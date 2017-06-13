@@ -14,9 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            android:title="Movies"
             android:elevation="6dp"
-            android:titleTextColor="#FFF"
              />
 
 
@@ -30,24 +28,11 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-
-        </RelativeLayout>
-
-
-    </FrameLayout>
 
 </LinearLayout>

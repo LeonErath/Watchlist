@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
@@ -35,7 +34,7 @@ import kotlin.properties.Delegates
  * Use the [CinemaFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CinemaFragment(var a: MainActivity) : Fragment() {
+class CinemaFragment(val a: MainActivity) : Fragment() {
 
     var realm: Realm by Delegates.notNull()
     var adapter = MovieAdapter()
@@ -88,17 +87,13 @@ class CinemaFragment(var a: MainActivity) : Fragment() {
 
 
         // Request a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
-            override fun onResponse(response: String) {
-                // Display the first 500 characters of the response string.
-                Log.d("Resonse", response)
-                fetchRequest(response)
-            }
-        }, object : Response.ErrorListener {
-            override fun onErrorResponse(error: VolleyError) {
-                error.printStackTrace()
-                updateUIfromRealm()
-            }
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.d("Resonse", response)
+            fetchRequest(response)
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+            updateUIfromRealm()
         })
 
         queue.add(stringRequest)
@@ -112,7 +107,7 @@ class CinemaFragment(var a: MainActivity) : Fragment() {
         Log.d("CinemaFragment", " updateRealm(): Size of Popular Movie Lists:" + results.size)
 
         if (adapter != null) {
-            adapter.addData(results.get(0).results.sort("popularity", Sort.DESCENDING))
+            adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
         } else {
             Log.d("CinemaFragment", "adapter is null")
         }

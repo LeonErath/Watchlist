@@ -1,10 +1,10 @@
 package com.example.leon.kotlinapplication.activities
 
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
@@ -28,11 +28,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        tabLayout.addTab(tabLayout.newTab().setText("Popular"));
-        tabLayout.addTab(tabLayout.newTab().setText("Cinema"));
-        tabLayout.addTab(tabLayout.newTab().setText("My List"));
+        tabLayout.addTab(tabLayout.newTab().setText("Popular"))
+        tabLayout.addTab(tabLayout.newTab().setText("Cinema"))
+        tabLayout.addTab(tabLayout.newTab().setText("My List"))
 
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.tabGravity = TabLayout.GRAVITY_FILL
 
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

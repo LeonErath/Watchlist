@@ -4,31 +4,29 @@ package com.example.leon.kotlinapplication.fragments
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
-import kotlin.properties.Delegates
-import android.support.v7.widget.GridLayoutManager
-import com.android.volley.Request
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.android.volley.Response
 import com.example.leon.kotlinapplication.jsonParser
 import com.example.leon.kotlinapplication.model.List
-import io.realm.*
+import io.realm.Realm
+import io.realm.RealmResults
+import io.realm.Sort
 import io.realm.exceptions.RealmPrimaryKeyConstraintException
 import io.realm.internal.IOException
 import java.io.FileNotFoundException
-import com.example.leon.kotlinapplication.R.id.recyclerView
-import android.support.v7.widget.DefaultItemAnimator
-
-
+import kotlin.properties.Delegates
 
 
 /**
@@ -36,7 +34,7 @@ import android.support.v7.widget.DefaultItemAnimator
  * Use the [PopularFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PopularFragment(var a: MainActivity) : Fragment() {
+class PopularFragment(val a: MainActivity) : Fragment() {
 
 
     var realm: Realm by Delegates.notNull()
@@ -51,8 +49,8 @@ class PopularFragment(var a: MainActivity) : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        var rootView = inflater!!.inflate(R.layout.fragment_popular, container, false)
-        var recyclerView = rootView.findViewById(R.id.recyclerView2) as RecyclerView
+        val rootView = inflater!!.inflate(R.layout.fragment_popular, container, false)
+        val recyclerView = rootView.findViewById(R.id.recyclerView2) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
 
 
@@ -90,17 +88,13 @@ class PopularFragment(var a: MainActivity) : Fragment() {
                 "&language=en-US&page=1"
 
         // Request a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
-            override fun onResponse(response: String) {
-                // Display the first 500 characters of the response string.
-                Log.d("Resonse", response)
-                fetchRequest(response)
-            }
-        }, object : Response.ErrorListener {
-            override fun onErrorResponse(error: VolleyError) {
-                error.printStackTrace()
-                updateUIfromRealm()
-            }
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.d("Resonse", response)
+            fetchRequest(response)
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+            updateUIfromRealm()
         })
 
         queue.add(stringRequest)
@@ -110,22 +104,20 @@ class PopularFragment(var a: MainActivity) : Fragment() {
 
     // updates the recycler view with the data from the realm
     private fun updateUIfromRealm() {
-        var results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 0).findAll()
+        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 0).findAll()
         Log.d("PopularFragment", " updateRealm(): Size of Popular Movie Lists:" + results.size)
 
-        if (adapter != null) {
-            adapter.addData(results.get(0).results.sort("popularity", Sort.DESCENDING))
-        } else {
-            Log.d("PopularFragment", "adapter is null")
-        }
-        if (refreshLayout != null) {
+
+        adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
+
+
             refreshLayout.isRefreshing = false
-        }
+
     }
 
     fun deleteRealm() {
         Realm.init(activity)
-        var realm: Realm = Realm.getDefaultInstance()
+        val realm: Realm = Realm.getDefaultInstance()
         realm.executeTransaction {
             realm.deleteAll()
         }
@@ -139,7 +131,7 @@ class PopularFragment(var a: MainActivity) : Fragment() {
             realm.executeTransaction {
                 //val input: InputStream = assets.open("response.json")
                 Log.d("PopularFragment:", "Response: " + response)
-                var modedResponse: String = jsonParser(response)
+                val modedResponse: String = jsonParser(response)
                         .insertValueInt("id", 0)
                         .insertValueString("name", "popularMovies")
                         .makeArray().json
