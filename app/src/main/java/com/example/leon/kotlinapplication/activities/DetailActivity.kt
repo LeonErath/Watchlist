@@ -12,7 +12,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
-import com.example.leon.kotlinapplication.model.PopularMovie
+import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmChangeListener
@@ -47,25 +47,9 @@ class DetailActivity : AppCompatActivity() {
             Realm.init(this)
             realm = Realm.getDefaultInstance()
 
-            val queue = Volley.newRequestQueue(this)
-            val url = getString(R.string.base_url) + "movie/popular?api_key=" + getString(R.string.key) + "&language=en-US&page=1"
+        httpRequest()
 
-            // Request a string response from the provided URL.
-            val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
-                override fun onResponse(response: String) {
-                    // Display the first 500 characters of the response string.
-                    Log.d("Resonse", response)
-                    fetchRequest(response)
-                }
-            }, object : Response.ErrorListener {
-                override fun onErrorResponse(error: VolleyError) {
-                    error.printStackTrace()
-                }
-            })
-
-            queue.add(stringRequest);
-
-            var movie: PopularMovie = findMovie(movieid)
+        var movie: Movie = findMovie(movieid)
 
             movie.addChangeListener(RealmChangeListener {
                 Log.d("DetailActivity","MovieChangeListener Trigger")
@@ -83,19 +67,35 @@ class DetailActivity : AppCompatActivity() {
                     + movie.backdrop_path)
             Picasso.with(this).load(uri).into(imageView)
 
+    }
 
+    private fun httpRequest() {
+        val queue = Volley.newRequestQueue(this)
+        val url = getString(R.string.base_url) +
+                "movie/popular?api_key=" +
+                getString(R.string.key) +
+                "&language=en-US&page=1"
 
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
+            override fun onResponse(response: String) {
+                // Display the first 500 characters of the response string.
+                Log.d("Resonse", response)
+                fetchRequest(response)
+            }
+        }, object : Response.ErrorListener {
+            override fun onErrorResponse(error: VolleyError) {
+                error.printStackTrace()
+            }
+        })
 
-
-
-
-
+        queue.add(stringRequest);
     }
 
 
-    private fun findMovie(movieid: Int): PopularMovie {
-        var query: RealmQuery<PopularMovie> = realm.where(PopularMovie::class.java)
-        var results: RealmResults<PopularMovie> = query.equalTo("id", movieid).findAll()
+    private fun findMovie(movieid: Int): Movie {
+        var query: RealmQuery<Movie> = realm.where(Movie::class.java)
+        var results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
         Log.d("eventListener", " " + results.size)
 
         return results.first()
@@ -107,7 +107,7 @@ class DetailActivity : AppCompatActivity() {
             fun execute(bgRealm: Realm) {
                 try {
                     //val input: InputStream = assets.open("response.json")
-                    bgRealm.createOrUpdateObjectFromJson(PopularMovie::class.java, reponse)
+                    bgRealm.createOrUpdateObjectFromJson(Movie::class.java, reponse)
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()
                 } catch (e: IOException) {

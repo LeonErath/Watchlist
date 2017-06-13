@@ -11,11 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.MainActivity
-import com.example.leon.kotlinapplication.adapter.PopularMovieAdapter
-import com.example.leon.kotlinapplication.model.PopularMovie
-import io.realm.Realm
-import io.realm.RealmQuery
-import io.realm.RealmResults
+import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import kotlin.properties.Delegates
 import android.support.v7.widget.GridLayoutManager
 import com.android.volley.Request
@@ -23,12 +19,16 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.android.volley.Response
-import io.realm.Sort
+import com.example.leon.kotlinapplication.jsonParser
+import com.example.leon.kotlinapplication.model.List
+import io.realm.*
 import io.realm.exceptions.RealmPrimaryKeyConstraintException
 import io.realm.internal.IOException
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.FileNotFoundException
+import com.example.leon.kotlinapplication.R.id.recyclerView
+import android.support.v7.widget.DefaultItemAnimator
+
+
 
 
 /**
@@ -40,6 +40,9 @@ class PopularFragment(var a: MainActivity) : Fragment() {
 
 
     var realm: Realm by Delegates.notNull()
+    var adapter = MovieAdapter()
+    var refreshLayout = SwipeRefreshLayout(a)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +53,7 @@ class PopularFragment(var a: MainActivity) : Fragment() {
         // Inflate the layout for this fragment
         var rootView = inflater!!.inflate(R.layout.fragment_popular, container, false)
         var recyclerView = rootView.findViewById(R.id.recyclerView2) as RecyclerView
-        var refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
+        refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
 
 
         // Initialize realm
@@ -58,43 +61,45 @@ class PopularFragment(var a: MainActivity) : Fragment() {
         realm = Realm.getDefaultInstance()
         realm.refresh()
 
-        deleteRealm()
 
 
         // Set up recycler view
-        var adapter: PopularMovieAdapter = PopularMovieAdapter()
+        adapter = MovieAdapter()
         recyclerView.adapter = adapter
+        val itemAnimator = DefaultItemAnimator()
+        itemAnimator.addDuration = 300
+        itemAnimator.removeDuration = 300
+        recyclerView.itemAnimator = itemAnimator
         recyclerView.layoutManager = GridLayoutManager(activity, 2)
 
-        refreshLayout.setOnRefreshListener {
-            httpRequest(adapter, refreshLayout)
+        // Set up refresh listener
+        refreshLayout.setOnRefreshListener { httpRequest() }
 
-        }
-
-        httpRequest(adapter, refreshLayout)
+        // load data from https://api.themoviedb.org/3
+        httpRequest()
         return rootView
     }
 
-    private fun httpRequest(adapter: PopularMovieAdapter, refreshLayout: SwipeRefreshLayout) {
+    // httpRequest() makes a GET Request to https://api.themoviedb.org/3
+    // The response is a json String
+    private fun httpRequest() {
         val queue = Volley.newRequestQueue(activity)
-        val url = getString(R.string.base_url) + "movie/popular?api_key=" + getString(R.string.key) + "&language=en-US&page=1"
+        val url = getString(R.string.base_url) +
+                "movie/popular?api_key=" +
+                getString(R.string.key) +
+                "&language=en-US&page=1"
 
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, object : Response.Listener<String> {
             override fun onResponse(response: String) {
                 // Display the first 500 characters of the response string.
                 Log.d("Resonse", response)
-
-                var obj: JSONObject = JSONObject(response)
-                var array: JSONArray = obj.getJSONArray("results")
-
-
-                fetchRequest(array, adapter, refreshLayout)
+                fetchRequest(response)
             }
         }, object : Response.ErrorListener {
             override fun onErrorResponse(error: VolleyError) {
                 error.printStackTrace()
-                updateRealm(adapter, refreshLayout)
+                updateUIfromRealm()
             }
         })
 
@@ -102,31 +107,46 @@ class PopularFragment(var a: MainActivity) : Fragment() {
         queue.start()
     }
 
-    private fun updateRealm(adapter: PopularMovieAdapter, refreshLayout: SwipeRefreshLayout) {
-        var query: RealmQuery<PopularMovie> = realm.where(PopularMovie::class.java)
-        var results: RealmResults<PopularMovie> = query.findAllSorted("popularity",Sort.DESCENDING)
-        Log.d("eventListener", " " + results.size)
 
-        adapter.addData(results)
-        refreshLayout.isRefreshing = false
+    // updates the recycler view with the data from the realm
+    private fun updateUIfromRealm() {
+        var results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 0).findAll()
+        Log.d("PopularFragment", " updateRealm(): Size of Popular Movie Lists:" + results.size)
+
+        if (adapter != null) {
+            adapter.addData(results.get(0).results.sort("popularity", Sort.DESCENDING))
+        } else {
+            Log.d("PopularFragment", "adapter is null")
+        }
+        if (refreshLayout != null) {
+            refreshLayout.isRefreshing = false
+        }
     }
 
-    fun deleteRealm(){
+    fun deleteRealm() {
         Realm.init(activity)
-        var realm:Realm = Realm.getDefaultInstance()
+        var realm: Realm = Realm.getDefaultInstance()
         realm.executeTransaction {
             realm.deleteAll()
         }
 
     }
 
-    private fun fetchRequest(jsonArray: JSONArray, adapter: PopularMovieAdapter, refreshLayout: SwipeRefreshLayout) {
+    // fetches the json string response to the realm database
+    // calls updateUIfromRealm afterwards to notify the user about the new data
+    private fun fetchRequest(response: String) {
         try {
             realm.executeTransaction {
                 //val input: InputStream = assets.open("response.json")
-                Log.d("fetchRequest", " " + jsonArray + " ")
-                realm.createOrUpdateAllFromJson(PopularMovie::class.java, jsonArray)
-                updateRealm(adapter, refreshLayout)
+                Log.d("PopularFragment:", "Response: " + response)
+                var modedResponse: String = jsonParser(response)
+                        .insertValueInt("id", 0)
+                        .insertValueString("name", "popularMovies")
+                        .makeArray().json
+
+                Log.d("PopularFragment:", "moded Response: " + modedResponse)
+                realm.createOrUpdateAllFromJson(List::class.java, modedResponse)
+                updateUIfromRealm()
             }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -139,3 +159,7 @@ class PopularFragment(var a: MainActivity) : Fragment() {
     }
 
 }
+
+
+
+

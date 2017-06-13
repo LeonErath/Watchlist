@@ -17,7 +17,7 @@ class ViewPagerAdapter(fm: FragmentManager?, var a: MainActivity) : FragmentPage
     override fun getItem(position: Int): Fragment {
         when(position){
             0 -> return PopularFragment(a)
-            1 -> return CinemaFragment()
+            1 -> return CinemaFragment(a)
             2 -> return MyList()
             else -> return PopularFragment(a)
         }
