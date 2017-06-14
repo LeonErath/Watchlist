@@ -17,6 +17,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.MainActivity
+import com.example.leon.kotlinapplication.adapter.EndlessRecylcerViewScrollListener
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.jsonParser
 import com.example.leon.kotlinapplication.model.List
@@ -40,7 +41,7 @@ class PopularFragment(val a: MainActivity) : Fragment() {
     var realm: Realm by Delegates.notNull()
     var adapter = MovieAdapter()
     var refreshLayout = SwipeRefreshLayout(a)
-
+    var pageCounter: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +61,6 @@ class PopularFragment(val a: MainActivity) : Fragment() {
         realm.refresh()
 
 
-
         // Set up recycler view
         adapter = MovieAdapter()
         recyclerView.adapter = adapter
@@ -68,24 +68,31 @@ class PopularFragment(val a: MainActivity) : Fragment() {
         itemAnimator.addDuration = 300
         itemAnimator.removeDuration = 300
         recyclerView.itemAnimator = itemAnimator
-        recyclerView.layoutManager = GridLayoutManager(activity, 2)
+        var layout = GridLayoutManager(activity, 2)
+        recyclerView.layoutManager = layout
+        recyclerView.setOnScrollListener(object : EndlessRecylcerViewScrollListener(layout) {
+            override fun onLoadMore(current_page: Int) {
+                pageCounter++
+                httpRequest(pageCounter)
+            }
+        })
 
         // Set up refresh listener
-        refreshLayout.setOnRefreshListener { httpRequest() }
+        refreshLayout.setOnRefreshListener { httpRequest(1) }
 
         // load data from https://api.themoviedb.org/3
-        httpRequest()
+        httpRequest(1)
         return rootView
     }
 
     // httpRequest() makes a GET Request to https://api.themoviedb.org/3
     // The response is a json String
-    private fun httpRequest() {
+    private fun httpRequest(page: Int) {
         val queue = Volley.newRequestQueue(activity)
         val url = getString(R.string.base_url) +
                 "movie/popular?api_key=" +
                 getString(R.string.key) +
-                "&language=en-US&page=1"
+                "&language=en-US&page=$page"
 
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
@@ -107,11 +114,10 @@ class PopularFragment(val a: MainActivity) : Fragment() {
         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 0).findAll()
         Log.d("PopularFragment", " updateRealm(): Size of Popular Movie Lists:" + results.size)
 
+        if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
 
-        adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
 
-
-            refreshLayout.isRefreshing = false
+        refreshLayout.isRefreshing = false
 
     }
 

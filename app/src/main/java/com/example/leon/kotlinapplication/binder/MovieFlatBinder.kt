@@ -20,22 +20,24 @@ import io.realm.Realm
 import io.realm.RealmResults
 
 
-/**
- * Created by Leon on 07.06.17.
- */
+open class MovieFlatBinder : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>() {
 
-open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
+    override fun bind(holder: ViewHolder?, movie: Movie?, p2: Boolean) {
+        if (holder != null && movie != null) {
+            holder.tvMovie.text = movie.title
+            holder.tvOverview.text = movie.overview
+            holder.tvRevenue.text = movie.revenue.toString()
+            holder.tvScore.text = movie.popularity.toString()
+            holder.tvDate.text = movie.release_date
 
-    override fun bind(holder: ViewHolder?, movie: Movie?, b: Boolean) {
-        holder?.tvMovie!!.text = movie?.title
-
-        val uri:Uri = Uri
-                .parse(holder.context.getString(R.string.image_base_url)
-                        + "/w342"
-                        +movie?.poster_path)
-        Picasso.with(holder.context)
-                .load(uri)
-                .into(holder.imageV)
+            val uri: Uri = Uri
+                    .parse(holder.context.getString(R.string.image_base_url)
+                            + "/w342"
+                            + movie?.poster_path)
+            Picasso.with(holder.context)
+                    .load(uri)
+                    .into(holder.imageMovie)
+        }
     }
 
 
@@ -44,23 +46,36 @@ open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
     }
 
     override fun create(inflater: LayoutInflater?, parent: ViewGroup?): ViewHolder {
-        return ViewHolder(inflater?.inflate(R.layout.movie_item, parent, false)!!)
+        return ViewHolder(inflater?.inflate(R.layout.movie_item_flat, parent, false)!!)
     }
 
     override fun getSpanSize(maxSpanCount: Int): Int {
-        return 2
+        return 1
     }
 
     class ViewHolder(itemView: View) : SelectableViewHolder<Movie>(itemView) {
 
-        val context:Context = itemView.context
+        val context: Context = itemView.context
 
-         var tvMovie: TextView
-         var imageV: ImageView
+        var tvMovie: TextView
+        var tvOverview: TextView
+        var tvRevenue: TextView
+        var tvScore: TextView
+        var tvDate: TextView
+
+
+        var imageMovie: ImageView
+
 
         init {
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
-            imageV = itemView.findViewById(R.id.imageView) as ImageView
+            tvOverview = itemView.findViewById(R.id.textViewOverview) as TextView
+            tvRevenue = itemView.findViewById(R.id.textViewRevenue) as TextView
+            tvScore = itemView.findViewById(R.id.textViewScore) as TextView
+            tvDate = itemView.findViewById(R.id.textViewDate) as TextView
+
+            imageMovie = itemView.findViewById(R.id.imageMovie) as ImageView
+
 
             setItemClickListener { view, item ->
                 val intent = Intent(context, DetailActivity::class.java)
@@ -70,41 +85,23 @@ open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
 
             setItemLongClickListener(object : OnItemLongClickListener<Movie> {
                 override fun onItemLongClick(view: View?, movie: Movie?): Boolean {
-                    Log.d("MovieBinder", "OnItemLongClick trigger")
+                    Log.d("MovieFlatBinder", "OnItemLongClick trigger")
 
                     Realm.init(context)
                     val realm: Realm = Realm.getDefaultInstance()
                     realm.executeTransaction {
                         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
                         if (results.size > 0) {
-                            Log.d("MovieBinder", "MyList is not empty -> updates List")
+                            Log.d("MovieFlatBinder", "MyList is not empty -> updates List")
                             val List = results[0]
-                            var check = false
-                            for (movie2 in List.results) {
-                                if (movie!!.id == movie2.id) check = true
-                            }
-
-                            if (!check) {
-                                List.results.add(movie)
-                                List.total_results++
-                            }
-
-                        } else {
-                            Log.d("MovieBinder", "MyList is empty -> creates new List")
-                            val List = List()
-                            List.id = 2
-                            List.name = "MyList"
-                            List.results.add(movie)
-                            List.total_results++
-                            realm.copyToRealmOrUpdate(List)
+                            List.results.remove(movie)
+                            List.total_results--
                         }
-
                     }
 
                     return false
                 }
             })
-
         }
 
 

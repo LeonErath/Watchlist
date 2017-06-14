@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:background="#000"
+            android:id="@+id/imageMovie"
+            android:layout_weight="0.3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_margin="16dp"
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewMovie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Movie Name"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewOverview"
+                android:minLines="3"
+                android:maxLines="3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Overview\nddddddddsmmakjfkwjenfjenfkwjenfkwejnfwkjefnwkejnfkwjefnwkejfnkwejfnkwejnfwkejnfkwOverview" />
+
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.3"
+                    android:layout_height="24dp">
+
+                    <TextView
+                        android:gravity="center"
+                        android:id="@+id/textViewRevenue"
+                        android:textSize="11dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="500000" />
+
+                    <ImageView
+                        android:id="@+id/imageRevenue"
+                        android:layout_margin="2dp"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_attach_money_black_24dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.4"
+                    android:layout_height="24dp">
+
+                    <TextView
+                        android:gravity="center"
+                        android:id="@+id/textViewScore"
+                        android:textSize="11dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12393.31" />
+
+                    <ImageView
+                        android:id="@+id/imageScore"
+                        android:layout_margin="2dp"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_favorite_black_24dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.3"
+                    android:layout_height="24dp">
+
+                    <TextView
+                        android:gravity="center"
+                        android:id="@+id/textViewDate"
+                        android:textSize="11dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="500000" />
+
+                    <ImageView
+                        android:layout_margin="2dp"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_access_time_black_24dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</LinearLayout>
