@@ -16,6 +16,7 @@ import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
 import com.example.leon.kotlinapplication.model.List
 import io.realm.Realm
+import io.realm.RealmChangeListener
 import io.realm.RealmResults
 import io.realm.Sort
 import kotlin.properties.Delegates
@@ -27,7 +28,7 @@ import kotlin.properties.Delegates
 class MyListFragment(var a: MainActivity) : Fragment() {
 
     var realm: Realm by Delegates.notNull()
-    var adapter = MovieFlatAdapter()
+    var adapter = MovieFlatAdapter(a)
     var refreshLayout = SwipeRefreshLayout(a)
 
     override fun onResume() {
@@ -49,7 +50,7 @@ class MyListFragment(var a: MainActivity) : Fragment() {
         realm.refresh()
 
         // Set up recycler view
-        adapter = MovieFlatAdapter()
+        adapter = MovieFlatAdapter(a)
         recyclerView.adapter = adapter
         val itemAnimator = DefaultItemAnimator()
         itemAnimator.addDuration = 300
@@ -70,6 +71,12 @@ class MyListFragment(var a: MainActivity) : Fragment() {
         // TODO fix bug ->
         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
         Log.d("CinemaFragment", " updateRealm(): Size of Popular Movie Lists:" + results.size)
+
+        results.addChangeListener(RealmChangeListener {
+            Log.d("CinemaFragment", "Change in List")
+
+        })
+
 
         if (adapter != null) {
             if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))

@@ -3,6 +3,7 @@ package com.example.leon.kotlinapplication.binder
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
+import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Picasso
@@ -24,15 +26,21 @@ import io.realm.RealmResults
  * Created by Leon on 07.06.17.
  */
 
-open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
+open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
+
+    val mainActivity: MainActivity
+
+    init {
+        this.mainActivity = activity
+    }
 
     override fun bind(holder: ViewHolder?, movie: Movie?, b: Boolean) {
         holder?.tvMovie!!.text = movie?.title
 
-        val uri:Uri = Uri
+        val uri: Uri = Uri
                 .parse(holder.context.getString(R.string.image_base_url)
                         + "/w342"
-                        +movie?.poster_path)
+                        + movie?.poster_path)
         Picasso.with(holder.context)
                 .load(uri)
                 .into(holder.imageV)
@@ -44,32 +52,37 @@ open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
     }
 
     override fun create(inflater: LayoutInflater?, parent: ViewGroup?): ViewHolder {
-        return ViewHolder(inflater?.inflate(R.layout.movie_item, parent, false)!!)
+        return ViewHolder(inflater?.inflate(R.layout.movie_item, parent, false)!!, mainActivity)
     }
 
     override fun getSpanSize(maxSpanCount: Int): Int {
         return 2
     }
 
-    class ViewHolder(itemView: View) : SelectableViewHolder<Movie>(itemView) {
+    class ViewHolder(itemView: View, activity: MainActivity) : SelectableViewHolder<Movie>(itemView) {
 
-        val context:Context = itemView.context
+        val mainActivity: MainActivity
+        val context: Context = itemView.context
 
-         var tvMovie: TextView
-         var imageV: ImageView
+        var tvMovie: TextView
+        var imageV: ImageView
+        var cardView: CardView
 
         init {
+            this.mainActivity = activity
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             imageV = itemView.findViewById(R.id.imageView) as ImageView
+            cardView = itemView.findViewById(R.id.cardView) as CardView
 
-            setItemClickListener { view, item ->
+            cardView.setOnClickListener({
+                Log.d("MovieBinder", "CardView ClickListener trigger")
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("movieid", item.id)
                 context.startActivity(intent)
-            }
 
-            setItemLongClickListener(object : OnItemLongClickListener<Movie> {
-                override fun onItemLongClick(view: View?, movie: Movie?): Boolean {
+            })
+            cardView.setOnLongClickListener(object : View.OnLongClickListener {
+                override fun onLongClick(v: View?): Boolean {
                     Log.d("MovieBinder", "OnItemLongClick trigger")
 
                     Realm.init(context)
@@ -81,11 +94,11 @@ open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
                             val List = results[0]
                             var check = false
                             for (movie2 in List.results) {
-                                if (movie!!.id == movie2.id) check = true
+                                if (item!!.id == movie2.id) check = true
                             }
 
                             if (!check) {
-                                List.results.add(movie)
+                                List.results.add(item)
                                 List.total_results++
                             }
 
@@ -94,17 +107,17 @@ open class MovieBinder : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
                             val List = List()
                             List.id = 2
                             List.name = "MyList"
-                            List.results.add(movie)
+                            List.results.add(item)
                             List.total_results++
                             realm.copyToRealmOrUpdate(List)
                         }
+                        mainActivity.addToFavorite(item)
 
                     }
 
-                    return false
+                    return true
                 }
             })
-
         }
 
 

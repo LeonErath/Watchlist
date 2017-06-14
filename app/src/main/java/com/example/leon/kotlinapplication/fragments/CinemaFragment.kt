@@ -38,7 +38,7 @@ import kotlin.properties.Delegates
 class CinemaFragment(val a: MainActivity) : Fragment() {
 
     var realm: Realm by Delegates.notNull()
-    var adapter = MovieAdapter()
+    var adapter = MovieAdapter(a)
     var refreshLayout = SwipeRefreshLayout(a)
     var pageCounter: Int = 1
 
@@ -62,7 +62,7 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
         realm.refresh()
 
         // Set up recycler view
-        adapter = MovieAdapter()
+        adapter = MovieAdapter(a)
         recyclerView.adapter = adapter
         val itemAnimator = DefaultItemAnimator()
         itemAnimator.addDuration = 300

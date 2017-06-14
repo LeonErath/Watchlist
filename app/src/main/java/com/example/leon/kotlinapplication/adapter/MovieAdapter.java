@@ -2,6 +2,7 @@ package com.example.leon.kotlinapplication.adapter;
 
 import com.ahamed.multiviewadapter.DataListManager;
 import com.ahamed.multiviewadapter.SelectableAdapter;
+import com.example.leon.kotlinapplication.activities.MainActivity;
 import com.example.leon.kotlinapplication.binder.MovieBinder;
 import com.example.leon.kotlinapplication.model.Movie;
 
@@ -14,13 +15,14 @@ import java.util.List;
 
 public class MovieAdapter extends SelectableAdapter {
 
+
     private DataListManager<Movie> dataManager;
 
-    public MovieAdapter() {
+    public MovieAdapter(MainActivity activity) {
         this.dataManager = new DataListManager<>(this);
         addDataManager(dataManager);
 
-        registerBinder(new MovieBinder());
+        registerBinder(new MovieBinder(activity));
     }
 
     public void addData(List<Movie> dataList) {

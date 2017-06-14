@@ -13,6 +13,8 @@ import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
+import com.example.leon.kotlinapplication.activities.MainActivity
+import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Picasso
@@ -20,7 +22,15 @@ import io.realm.Realm
 import io.realm.RealmResults
 
 
-open class MovieFlatBinder : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>() {
+open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>() {
+    val adapater: MovieFlatAdapter
+    val mainActivity: MainActivity
+
+    init {
+        this.adapater = adapter2
+        this.mainActivity = activity
+    }
+
 
     override fun bind(holder: ViewHolder?, movie: Movie?, p2: Boolean) {
         if (holder != null && movie != null) {
@@ -46,16 +56,18 @@ open class MovieFlatBinder : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>
     }
 
     override fun create(inflater: LayoutInflater?, parent: ViewGroup?): ViewHolder {
-        return ViewHolder(inflater?.inflate(R.layout.movie_item_flat, parent, false)!!)
+        return ViewHolder(inflater?.inflate(R.layout.movie_item_flat, parent, false)!!, adapater, mainActivity)
     }
 
     override fun getSpanSize(maxSpanCount: Int): Int {
         return 1
     }
 
-    class ViewHolder(itemView: View) : SelectableViewHolder<Movie>(itemView) {
+    class ViewHolder(itemView: View, adapter: MovieFlatAdapter, activity: MainActivity) : SelectableViewHolder<Movie>(itemView) {
 
+        val mainActivity: MainActivity
         val context: Context = itemView.context
+        val adapter: MovieFlatAdapter
 
         var tvMovie: TextView
         var tvOverview: TextView
@@ -68,6 +80,8 @@ open class MovieFlatBinder : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>
 
 
         init {
+            this.mainActivity = activity
+            this.adapter = adapter
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             tvOverview = itemView.findViewById(R.id.textViewOverview) as TextView
             tvRevenue = itemView.findViewById(R.id.textViewRevenue) as TextView
@@ -96,10 +110,13 @@ open class MovieFlatBinder : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>
                             val List = results[0]
                             List.results.remove(movie)
                             List.total_results--
+                            adapter.removeMovie(movie)
                         }
                     }
-
-                    return false
+                    if (movie != null) {
+                        mainActivity.removeFromFavorite(movie)
+                    }
+                    return true
                 }
             })
         }
