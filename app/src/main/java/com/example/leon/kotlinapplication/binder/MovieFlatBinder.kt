@@ -15,8 +15,10 @@ import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
+import com.example.leon.kotlinapplication.dateParser
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.moneyParser
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmResults
@@ -34,11 +36,17 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
     override fun bind(holder: ViewHolder?, movie: Movie?, p2: Boolean) {
         if (holder != null && movie != null) {
-            holder.tvMovie.text = movie.title
-            holder.tvOverview.text = movie.overview
-            holder.tvRevenue.text = movie.revenue.toString()
-            holder.tvScore.text = movie.popularity.toString()
-            holder.tvDate.text = movie.release_date
+            with(holder) {
+                with(movie) {
+                    tvMovie.text = title
+                    tvOverview.text = overview
+                    tvRevenue.text = moneyParser(revenue).parse()
+                    tvScore.text = popularity.toString()
+                    tvDate.text = dateParser(release_date).parse().dateString
+                }
+
+            }
+
 
             val uri: Uri = Uri
                     .parse(holder.context.getString(R.string.image_base_url)

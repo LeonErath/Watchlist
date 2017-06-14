@@ -24,6 +24,7 @@ public class MovieFlatAdapter extends SelectableAdapter {
     }
 
     public void addData(List<Movie> dataList) {
+        dataManager.clear();
         for (Movie movie : dataList) {
             if (!dataManager.contains(movie)) {
                 dataManager.add(movie);

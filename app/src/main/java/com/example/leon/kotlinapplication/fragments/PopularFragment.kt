@@ -54,9 +54,8 @@ class PopularFragment(val a: MainActivity) : Fragment() {
         val recyclerView = rootView.findViewById(R.id.recyclerView2) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
 
-
-        // Initialize realm
         Realm.init(context)
+        // Initialize realm
         realm = Realm.getDefaultInstance()
         realm.refresh()
 

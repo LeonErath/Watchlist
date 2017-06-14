@@ -39,50 +39,51 @@ class DetailActivity : AppCompatActivity() {
 
 
         val extras: Bundle = intent.extras
-        var movieid: Int = extras.getInt("movieid")
+        val movieid: Int = extras.getInt("movieid")
 
 
-            // Initialize realm
-            Realm.init(this)
-            realm = Realm.getDefaultInstance()
+        // Initialize realm
+        Realm.init(this)
+        realm = Realm.getDefaultInstance()
 
-        httpRequest()
+        httpRequest(movieid)
 
-        var movie: Movie = findMovie(movieid)
+        val movie: Movie = findMovie(movieid)
 
-            movie.addChangeListener(RealmChangeListener {
-                Log.d("DetailActivity","MovieChangeListener Trigger")
-                textViewTitle.text = movie.title
-                textViewOverview.text = movie.overview
-                textViewDate.text = movie.release_date
-            })
-
+        movie.addChangeListener(RealmChangeListener {
+            Log.d("DetailActivity", "MovieChangeListener Trigger")
             textViewTitle.text = movie.title
             textViewOverview.text = movie.overview
             textViewDate.text = movie.release_date
+        })
 
-            var uri: Uri = Uri.parse(getString(R.string.image_base_url)
-                    + "/w1280"
-                    + movie.backdrop_path)
-            Picasso.with(this).load(uri).into(imageView)
+        textViewTitle.text = movie.title
+        textViewOverview.text = movie.overview
+        textViewDate.text = movie.release_date
+
+        val uri: Uri = Uri.parse(getString(R.string.image_base_url)
+                + "/w1280"
+                + movie.backdrop_path)
+        Picasso.with(this).load(uri).into(imageView)
 
     }
 
-    private fun httpRequest() {
+    private fun httpRequest(id: Int) {
         val queue = Volley.newRequestQueue(this)
         val url = getString(R.string.base_url) +
-                "movie/popular?api_key=" +
+                "movie/$id?api_key=" +
                 getString(R.string.key) +
-                "&language=en-US&page=1"
-
+                "&language=en-US"
+        Log.d("DetailActivity", url)
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             // Display the first 500 characters of the response string.
-            Log.d("Resonse", response)
+            Log.d("DetailActivity", "Respose: " + response)
             fetchRequest(response)
         }, Response.ErrorListener { error -> error.printStackTrace() })
 
         queue.add(stringRequest)
+        queue.start()
     }
 
 

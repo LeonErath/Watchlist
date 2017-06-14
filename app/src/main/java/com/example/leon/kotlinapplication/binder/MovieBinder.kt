@@ -12,6 +12,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
@@ -20,6 +24,7 @@ import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmResults
+import kotlin.properties.Delegates
 
 
 /**
@@ -67,6 +72,7 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
         var tvMovie: TextView
         var imageV: ImageView
         var cardView: CardView
+        var realm: Realm by Delegates.notNull()
 
         init {
             this.mainActivity = activity
@@ -86,7 +92,7 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
                     Log.d("MovieBinder", "OnItemLongClick trigger")
 
                     Realm.init(context)
-                    val realm: Realm = Realm.getDefaultInstance()
+                    realm = Realm.getDefaultInstance()
                     realm.executeTransaction {
                         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
                         if (results.size > 0) {
@@ -112,7 +118,7 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
                             realm.copyToRealmOrUpdate(List)
                         }
                         mainActivity.addToFavorite(item)
-
+                        httpRequest(item.id)
                     }
 
                     return true
@@ -120,7 +126,33 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
             })
         }
 
+        private fun httpRequest(id: Int) {
+            val queue = Volley.newRequestQueue(context)
+            val url = mainActivity.getString(R.string.base_url) +
+                    "movie/$id?api_key=" +
+                    mainActivity.getString(R.string.key) +
+                    "&language=en-US"
+
+
+            // Request a string response from the provided URL.
+            val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+                // Display the first 500 characters of the response string.
+                Log.d("MovieBinder", "Movie Details update:" + response)
+                fetchRequest(response)
+            }, Response.ErrorListener { error -> error.printStackTrace() })
+
+            queue.add(stringRequest)
+            queue.start()
+        }
+
+        fun fetchRequest(response: String) {
+            realm.executeTransaction {
+                realm.createOrUpdateObjectFromJson(Movie::class.java, response)
+            }
+
+        }
 
     }
+
 
 }

@@ -9,6 +9,8 @@ import com.example.leon.kotlinapplication.model.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmConfiguration;
+
 /**
  * Created by Leon on 08.06.17.
  */
@@ -21,6 +23,7 @@ public class MovieAdapter extends SelectableAdapter {
     public MovieAdapter(MainActivity activity) {
         this.dataManager = new DataListManager<>(this);
         addDataManager(dataManager);
+
 
         registerBinder(new MovieBinder(activity));
     }
