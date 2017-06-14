@@ -12,12 +12,18 @@ PopularMoviesFragment            |  MovieDetailActivity |  MyListFragment
 # TODO
 - [x] PopularMovie Fragment with current Movies [12.06.2017]
 - [x] Detail Overview of Movies [12.06.2017]
-- [ ] Functionality to add movies to a watchlist
+- [x] Functionality to add movies to a watchlist [14.06.2017]
 - [x] Functionality to show movies which are currently displayed in cinemas [13.06.2017]
+- [x] Added parser to display release date and movie revenue [14.06.2017]
+- [x] Added snackbar for a good user experience [14.06.2017]
 - [ ] Genre Overview
 - [ ] Search Function
 - [ ] Trailers for Movies
 - [ ] Series Overview
+
+## Update 14.06.2017
+
+Today I found many bugs. More or less impactful but glad I could fix almost all of them. Added some parser for MyListFragment to display the watchlist correct. Also learned a new feature from kotlin: "with(){}". Made the ViewHolder-Code in MovieFlatBinder much cleaner. Also created a snackbar to notify the user if he adds a movie to the watchlist. Was a little bit difficult to build the reference from the MainActivity to the MovieBinder but in the End, it paid of.
 
 ## Update 13.06.2017
 
