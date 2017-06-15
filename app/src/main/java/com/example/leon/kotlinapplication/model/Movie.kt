@@ -1,5 +1,6 @@
 package com.example.leon.kotlinapplication.model
 
+import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
@@ -29,4 +30,5 @@ open class Movie : RealmObject() {
     var runtime: Int = 0
     var status: String = ""
     var tagline: String = ""
+    var cast: RealmList<Cast> = RealmList()
 }

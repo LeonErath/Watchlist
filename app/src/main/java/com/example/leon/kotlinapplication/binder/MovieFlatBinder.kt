@@ -3,6 +3,7 @@ package com.example.leon.kotlinapplication.binder
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -86,6 +87,10 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
         var imageMovie: ImageView
 
+        override fun getSwipeDirections(): Int {
+            return ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        }
+
 
         init {
             this.mainActivity = activity
@@ -97,7 +102,8 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
             tvDate = itemView.findViewById(R.id.textViewDate) as TextView
 
             imageMovie = itemView.findViewById(R.id.imageMovie) as ImageView
-
+            Realm.init(context)
+            val realm: Realm = Realm.getDefaultInstance()
 
             setItemClickListener { view, item ->
                 val intent = Intent(context, DetailActivity::class.java)
@@ -109,8 +115,6 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
                 override fun onItemLongClick(view: View?, movie: Movie?): Boolean {
                     Log.d("MovieFlatBinder", "OnItemLongClick trigger")
 
-                    Realm.init(context)
-                    val realm: Realm = Realm.getDefaultInstance()
                     realm.executeTransaction {
                         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
                         if (results.size > 0) {
