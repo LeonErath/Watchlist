@@ -1,5 +1,6 @@
 package com.example.leon.kotlinapplication.activities
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -11,15 +12,14 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.dateParser
 import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.moneyParser
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmChangeListener
 import io.realm.RealmQuery
 import io.realm.RealmResults
-import io.realm.exceptions.RealmPrimaryKeyConstraintException
-import io.realm.internal.IOException
-import java.io.FileNotFoundException
 import kotlin.properties.Delegates
 
 class DetailActivity : AppCompatActivity() {
@@ -32,10 +32,14 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        var textViewTitle = findViewById(R.id.textViewMovieTitle) as TextView
-        var textViewOverview = findViewById(R.id.textViewMovieOverview) as TextView
-        var imageView = findViewById(R.id.imageView) as ImageView
-        var textViewDate = findViewById(R.id.textViewDate) as TextView
+        val textViewTitle = findViewById(R.id.textViewMovieTitle) as TextView
+        val textViewOverview = findViewById(R.id.textViewMovieOverview) as TextView
+        val imageView = findViewById(R.id.imageView) as ImageView
+        val textViewDate = findViewById(R.id.textViewDate) as TextView
+        val textViewTagline = findViewById(R.id.textViewTagline) as TextView
+        val textViewScore = findViewById(R.id.textViewScore) as TextView
+        val textViewRevenue = findViewById(R.id.textViewRevenue) as TextView
+        val imageViewAdd = findViewById(R.id.imageViewAdd) as ImageView
 
 
         val extras: Bundle = intent.extras
@@ -52,14 +56,27 @@ class DetailActivity : AppCompatActivity() {
 
         movie.addChangeListener(RealmChangeListener {
             Log.d("DetailActivity", "MovieChangeListener Trigger")
-            textViewTitle.text = movie.title
-            textViewOverview.text = movie.overview
-            textViewDate.text = movie.release_date
+            with(movie) {
+                textViewTitle.text = title
+                textViewOverview.text = overview
+                textViewDate.text = dateParser(release_date).parse().dateString
+                textViewTagline.text = tagline
+                textViewRevenue.text = moneyParser(revenue).parse()
+                textViewScore.text = popularity.toString()
+            }
+
         })
 
-        textViewTitle.text = movie.title
-        textViewOverview.text = movie.overview
-        textViewDate.text = movie.release_date
+        imageViewAdd.setColorFilter(Color.DKGRAY)
+
+        with(movie) {
+            textViewTitle.text = title
+            textViewOverview.text = "Overview:\n" + overview
+            textViewDate.text = dateParser(release_date).parse().dateString
+            textViewTagline.text = tagline
+            textViewRevenue.text = moneyParser(revenue).parse()
+            textViewScore.text = popularity.toString()
+        }
 
         val uri: Uri = Uri.parse(getString(R.string.image_base_url)
                 + "/w1280"
@@ -96,33 +113,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
     fun fetchRequest(response: String) {
-        realm.executeTransactionAsync({
-            @Override
-            fun execute(bgRealm: Realm) {
-                try {
-                    bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
-                } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
-                } catch (e: IOException) {
-                    throw RuntimeException(e)
-                } catch (e: RealmPrimaryKeyConstraintException) {
-                    e.printStackTrace()
-                }
-            }
-        }, {
-            @Override
-            fun onSuccess() {
-                // Transaction was a success.
-                Log.d("DetailActivity", "Update of RealmObject was successful.")
-            }
-        }, {
-            @Override
-            fun onError(error: Throwable) {
-                // Transaction failed and was automatically canceled.
-                error.printStackTrace()
-            }
-        })
-
+        realm.executeTransaction {
+            realm.createOrUpdateObjectFromJson(Movie::class.java, response)
+        }
     }
 
 }

@@ -7,7 +7,7 @@
     <string name="key">df38fba2447615a58400c89be4c98032</string>
     <string name="base_url">https://api.themoviedb.org/3/</string>
     <string name="image_base_url">http://image.tmdb.org/t/p</string>
-
+    <string name="wallpaper">Wallpaper</string>
 
 
 </resources>
