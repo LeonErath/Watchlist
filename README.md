@@ -1,4 +1,4 @@
-# KotlinApplication
+# Watchlist
 
 ### A little App to Learn the Basics of the new Programming Language Kotlin
 
@@ -18,7 +18,7 @@ PopularMoviesFragment            |  MovieDetailActivity |  MyListFragment
 - [x] Added snackbar for a good user experience [14.06.2017]
 - [ ] Genre Overview
 - [ ] Search Function
-- [ ] Trailers for Movies
+- [x] Trailers for Movies [16.06.2017]
 - [ ] Series Overview
 
 ## Update 14.06.2017
