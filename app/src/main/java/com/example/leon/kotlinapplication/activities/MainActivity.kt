@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         val snackbar = Snackbar
                 .make(rootLayout, movie.title + " added to Watchlist", Snackbar.LENGTH_LONG)
                 .setAction("UNDO") {
-                    //TODO implement UNDO Functio
+                    //TODO implement UNDO Function
                     val snackbar1 = Snackbar.make(rootLayout, movie.title + " remove from Watchlist!", Snackbar.LENGTH_SHORT)
                     snackbar1.show()
                 }
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         val snackbar = Snackbar
                 .make(rootLayout, movie.title + " removed from Watchlist", Snackbar.LENGTH_LONG)
                 .setAction("UNDO") {
-                    //TODO implement UNDO Functio
+                    //TODO implement UNDO Function
                     val snackbar1 = Snackbar.make(rootLayout, movie.title + " added to Watchlist!", Snackbar.LENGTH_SHORT)
                     snackbar1.show()
                 }

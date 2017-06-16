@@ -17,10 +17,14 @@ import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.dateParser
 import com.example.leon.kotlinapplication.model.Movie
 import com.example.leon.kotlinapplication.moneyParser
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubePlayer
+import com.google.android.youtube.player.YouTubePlayerFragment
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmChangeListener
 import kotlin.properties.Delegates
+
 
 class DetailActivity : AppCompatActivity() {
 
@@ -42,6 +46,7 @@ class DetailActivity : AppCompatActivity() {
         val imageViewAdd = findViewById(R.id.imageViewAdd) as ImageView
         val recylcerViewCast = findViewById(R.id.recyclerViewCast) as RecyclerView
 
+
         // Set up recycler view
         var adapter = CastAdapter(this)
         recylcerViewCast.adapter = adapter
@@ -61,6 +66,7 @@ class DetailActivity : AppCompatActivity() {
         Realm.init(this)
         realm = Realm.getDefaultInstance()
 
+
         val queryAdapter = QueryAdapter(this)
         val movie: Movie = queryAdapter.getDetail(movieid)
         movie.addChangeListener(RealmChangeListener {
@@ -74,12 +80,50 @@ class DetailActivity : AppCompatActivity() {
                 textViewScore.text = popularity.toString()
             }
             adapter.addData(movie.cast)
+            if (movie.results.size > 0) {
+                for (trailer in movie.results) {
+                    if (trailer.name == "Official Videos") {
+                        val youtubeFragment = getFragmentManager().findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
+                        youtubeFragment.initialize(getString(R.string.youtube_key),
+                                object : YouTubePlayer.OnInitializedListener {
+                                    override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
+                                        // do any work here to cue video, play video, etc.
+                                        youTubePlayer.cueVideo("5xVh-7ywKpE")
+                                    }
+
+                                    override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
+
+                                    }
+                                })
+
+                    }
+                }
+            }
+
 
         })
         adapter.addData(movie.cast)
 
 
+        if (movie.results.size > 0) {
+            for (trailer in movie.results) {
+                if (trailer.name == "Official Trailer") {
+                    val youtubeFragment = getFragmentManager().findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
+                    youtubeFragment.initialize(getString(R.string.youtube_key),
+                            object : YouTubePlayer.OnInitializedListener {
+                                override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
+                                    // do any work here to cue video, play video, etc.
+                                    youTubePlayer.cueVideo(trailer.key)
+                                }
 
+                                override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
+
+                                }
+                            })
+
+                }
+            }
+        }
 
         imageViewAdd.setColorFilter(Color.GRAY)
 
@@ -98,8 +142,6 @@ class DetailActivity : AppCompatActivity() {
         Picasso.with(this).load(uri).into(imageView)
 
     }
-
-
 
 
 }

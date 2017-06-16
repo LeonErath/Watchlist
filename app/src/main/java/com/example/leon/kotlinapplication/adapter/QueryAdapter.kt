@@ -41,7 +41,12 @@ class QueryAdapter(c: Context) {
                 c.getString(R.string.key) +
                 "&language=en-US"
         Log.d(TAG, urlCast)
-        httpRequest(url, urlCast)
+        val urlTrailer = c.getString(R.string.base_url) +
+                "movie/$id/videos?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
+        Log.d(TAG, urlTrailer)
+        httpRequest(url, urlCast, urlTrailer)
         return findMovie(id)
     }
 
@@ -89,7 +94,7 @@ class QueryAdapter(c: Context) {
 
     }
 
-    private fun httpRequest(url: String, urlCast: String) {
+    private fun httpRequest(url: String, urlCast: String, urlTrailer: String) {
 
         val queue = Volley.newRequestQueue(c)
         // Request a string response from the provided URL.
@@ -105,8 +110,17 @@ class QueryAdapter(c: Context) {
             fetchRequest(response)
         }, Response.ErrorListener { error -> error.printStackTrace() })
 
+        val queueTrailer = Volley.newRequestQueue(c)
+        // Request a string response from the provided URL.
+        val stringRequestTrailer = StringRequest(Request.Method.GET, urlTrailer, Response.Listener<String> { response ->
+            Log.d(TAG, response)
+            fetchRequest(response)
+        }, Response.ErrorListener { error -> error.printStackTrace() })
+
+
         queue.add(stringRequest)
         queue.add(stringRequestCast)
+        queue.add(stringRequestTrailer)
 
     }
 
