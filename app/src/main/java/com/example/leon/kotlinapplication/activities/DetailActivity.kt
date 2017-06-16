@@ -82,17 +82,17 @@ class DetailActivity : AppCompatActivity() {
             adapter.addData(movie.cast)
             if (movie.results.size > 0) {
                 for (trailer in movie.results) {
-                    if (trailer.name == "Official Videos") {
+                    if (trailer.name == "Official Trailer") {
                         val youtubeFragment = getFragmentManager().findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
                         youtubeFragment.initialize(getString(R.string.youtube_key),
                                 object : YouTubePlayer.OnInitializedListener {
                                     override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
                                         // do any work here to cue video, play video, etc.
-                                        youTubePlayer.cueVideo("5xVh-7ywKpE")
+                                        youTubePlayer.cueVideo(trailer.key)
                                     }
 
                                     override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
-
+                                        Log.d("DetailActivity", "YoutubePlayer failed")
                                     }
                                 })
 
@@ -103,7 +103,6 @@ class DetailActivity : AppCompatActivity() {
 
         })
         adapter.addData(movie.cast)
-
 
         if (movie.results.size > 0) {
             for (trailer in movie.results) {
@@ -117,13 +116,14 @@ class DetailActivity : AppCompatActivity() {
                                 }
 
                                 override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
-
+                                    Log.d("DetailActivity", "YoutubePlayer failed")
                                 }
                             })
 
                 }
             }
         }
+
 
         imageViewAdd.setColorFilter(Color.GRAY)
 

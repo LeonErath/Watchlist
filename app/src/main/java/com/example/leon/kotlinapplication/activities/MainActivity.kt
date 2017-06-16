@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         mDrawerLayout!!.setDrawerListener(mDrawerToggle)
         setupDrawerToggle()
 
-
     }
 
     fun setupDrawerToggle() {
