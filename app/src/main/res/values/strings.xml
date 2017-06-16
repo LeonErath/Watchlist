@@ -8,6 +8,14 @@
     <string name="base_url">https://api.themoviedb.org/3/</string>
     <string name="image_base_url">http://image.tmdb.org/t/p</string>
     <string name="wallpaper">Wallpaper</string>
-
+    <string-array name="categories">
+        <item>Discover</item>
+        <item>Search</item>
+        <item>Upcomming</item>
+        <item>Top Rated</item>
+        <item>Credits</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
 </resources>

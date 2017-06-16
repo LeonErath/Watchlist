@@ -30,5 +30,5 @@ open class Movie : RealmObject() {
     var runtime: Int = 0
     var status: String = ""
     var tagline: String = ""
-    var cast: RealmList<Cast> = RealmList()
+    var cast: RealmList<Casting> = RealmList()
 }

@@ -17,9 +17,10 @@ import kotlin.properties.Delegates
 /**
  * Created by Leon on 15.06.17.
  */
-class queryAdapter(c: Context) {
+class QueryAdapter(c: Context) {
     var realm: Realm by Delegates.notNull()
     var c: Context
+    val TAG = QueryAdapter::class.java.simpleName
 
     init {
         Realm.init(c)
@@ -32,11 +33,15 @@ class queryAdapter(c: Context) {
                 "movie/$id?api_key=" +
                 c.getString(R.string.key) +
                 "&language=en-US"
-        Log.d("DetailActivity", url)
-        var response: String = httpRequest(url)
-        if (response != "") {
-            fetchRequest(response)
-        }
+        Log.d(TAG, url)
+
+
+        val urlCast = c.getString(R.string.base_url) +
+                "movie/$id/credits?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
+        Log.d(TAG, urlCast)
+        httpRequest(url, urlCast)
         return findMovie(id)
     }
 
@@ -44,7 +49,7 @@ class queryAdapter(c: Context) {
         realm.executeTransaction {
             val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
             if (results.size > 0) {
-                Log.d("MovieFlatBinder", "MyList is not empty -> updates List")
+                Log.d(TAG, "MyList is not empty -> updates List")
                 val List = results[0]
                 List.results.remove(movie)
                 List.total_results--
@@ -57,7 +62,7 @@ class queryAdapter(c: Context) {
         realm.executeTransaction {
             val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
             if (results.size > 0) {
-                Log.d("MovieBinder", "MyList is not empty -> updates List")
+                Log.d(TAG, "MyList is not empty -> updates List")
                 val List = results[0]
                 var check = false
                 for (movie2 in List.results) {
@@ -70,7 +75,7 @@ class queryAdapter(c: Context) {
                 }
 
             } else {
-                Log.d("MovieBinder", "MyList is empty -> creates new List")
+                Log.d(TAG, "MyList is empty -> creates new List")
                 val List = List()
                 List.id = 2
                 List.name = "MyList"
@@ -84,18 +89,25 @@ class queryAdapter(c: Context) {
 
     }
 
-    private fun httpRequest(url: String): String {
-        var response2: String = ""
+    private fun httpRequest(url: String, urlCast: String) {
+
         val queue = Volley.newRequestQueue(c)
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            response2 = response
+            Log.d(TAG, response)
+            fetchRequest(response)
+        }, Response.ErrorListener { error -> error.printStackTrace() })
+
+        val queueCast = Volley.newRequestQueue(c)
+        // Request a string response from the provided URL.
+        val stringRequestCast = StringRequest(Request.Method.GET, urlCast, Response.Listener<String> { response ->
+            Log.d(TAG, response)
+            fetchRequest(response)
         }, Response.ErrorListener { error -> error.printStackTrace() })
 
         queue.add(stringRequest)
-        queue.start()
+        queue.add(stringRequestCast)
 
-        return response2
     }
 
     private fun fetchRequest(response: String) {
@@ -108,7 +120,7 @@ class queryAdapter(c: Context) {
     private fun findMovie(movieid: Int): Movie {
         var query: RealmQuery<Movie> = realm.where(Movie::class.java)
         var results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
-        Log.d("eventListener", " " + results.size)
+        Log.d(TAG, " " + results.size)
 
         return results.first()
     }

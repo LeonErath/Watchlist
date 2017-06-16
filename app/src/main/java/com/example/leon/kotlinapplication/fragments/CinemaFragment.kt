@@ -61,7 +61,7 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
         realm = Realm.getDefaultInstance()
         realm.refresh()
 
-        Log.d("CinemaFragment", "path: " + realm.getPath());
+
         // Set up recycler view
         adapter = MovieAdapter(a)
         recyclerView.adapter = adapter

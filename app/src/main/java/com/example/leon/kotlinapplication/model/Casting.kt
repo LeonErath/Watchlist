@@ -6,7 +6,7 @@ import io.realm.annotations.PrimaryKey
 /**
  * Created by Leon on 15.06.17.
  */
-class Cast : RealmObject() {
+open class Casting : RealmObject() {
 
     var cast_id: Int = 0
     var character: String = ""

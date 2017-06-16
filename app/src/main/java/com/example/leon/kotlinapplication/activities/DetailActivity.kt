@@ -4,22 +4,22 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.adapter.CastAdapter
+import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.dateParser
 import com.example.leon.kotlinapplication.model.Movie
 import com.example.leon.kotlinapplication.moneyParser
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmChangeListener
-import io.realm.RealmQuery
-import io.realm.RealmResults
 import kotlin.properties.Delegates
 
 class DetailActivity : AppCompatActivity() {
@@ -40,6 +40,17 @@ class DetailActivity : AppCompatActivity() {
         val textViewScore = findViewById(R.id.textViewScore) as TextView
         val textViewRevenue = findViewById(R.id.textViewRevenue) as TextView
         val imageViewAdd = findViewById(R.id.imageViewAdd) as ImageView
+        val recylcerViewCast = findViewById(R.id.recyclerViewCast) as RecyclerView
+
+        // Set up recycler view
+        var adapter = CastAdapter(this)
+        recylcerViewCast.adapter = adapter
+        val itemAnimator = DefaultItemAnimator()
+        itemAnimator.addDuration = 300
+        itemAnimator.removeDuration = 300
+        recylcerViewCast.itemAnimator = itemAnimator
+        val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
+        recylcerViewCast.layoutManager = layout
 
 
         val extras: Bundle = intent.extras
@@ -50,10 +61,8 @@ class DetailActivity : AppCompatActivity() {
         Realm.init(this)
         realm = Realm.getDefaultInstance()
 
-        httpRequest(movieid)
-
-        val movie: Movie = findMovie(movieid)
-
+        val queryAdapter = QueryAdapter(this)
+        val movie: Movie = queryAdapter.getDetail(movieid)
         movie.addChangeListener(RealmChangeListener {
             Log.d("DetailActivity", "MovieChangeListener Trigger")
             with(movie) {
@@ -64,10 +73,15 @@ class DetailActivity : AppCompatActivity() {
                 textViewRevenue.text = moneyParser(revenue).parse()
                 textViewScore.text = popularity.toString()
             }
+            adapter.addData(movie.cast)
 
         })
+        adapter.addData(movie.cast)
 
-        imageViewAdd.setColorFilter(Color.DKGRAY)
+
+
+
+        imageViewAdd.setColorFilter(Color.GRAY)
 
         with(movie) {
             textViewTitle.text = title
@@ -85,37 +99,7 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
-    private fun httpRequest(id: Int) {
-        val queue = Volley.newRequestQueue(this)
-        val url = getString(R.string.base_url) +
-                "movie/$id?api_key=" +
-                getString(R.string.key) +
-                "&language=en-US"
-        Log.d("DetailActivity", url)
-        // Request a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            // Display the first 500 characters of the response string.
-            Log.d("DetailActivity", "Respose: " + response)
-            fetchRequest(response)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
-
-        queue.add(stringRequest)
-        queue.start()
-    }
 
 
-    private fun findMovie(movieid: Int): Movie {
-        var query: RealmQuery<Movie> = realm.where(Movie::class.java)
-        var results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
-        Log.d("eventListener", " " + results.size)
-
-        return results.first()
-    }
-
-    fun fetchRequest(response: String) {
-        realm.executeTransaction {
-            realm.createOrUpdateObjectFromJson(Movie::class.java, response)
-        }
-    }
 
 }
