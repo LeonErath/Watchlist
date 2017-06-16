@@ -6,194 +6,205 @@
     android:layout_height="match_parent"
     tools:context="com.example.leon.kotlinapplication.activities.DetailActivity">
 
-    <ScrollView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#cfcfcf">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="0dp"
-            android:layout_marginTop="-19dp"
-            android:layout_marginBottom="-18dp"
-            android:contentDescription="@string/wallpaper" />
+        android:id="@+id/refreshLayout">
 
-        <android.support.v7.widget.CardView
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff">
+            android:layout_height="match_parent"
+            android:background="#cfcfcf">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_weight="0.8"
-                    android:layout_width="0dp"
-                    android:layout_margin="8dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textViewMovieTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Movie Title"
-                        android:textColor="#000"
-                        android:textSize="20dp" />
-
-                    <TextView
-                        android:id="@+id/textViewTagline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Movie Tag line"
-                        android:textColor="#000"
-                        android:textSize="14dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:id="@+id/imageViewAdd"
-                        android:src="@drawable/ic_playlist_add_black_48dp"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp" />
-                </LinearLayout>
-
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e2e2e2" />
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textViewMovieOverview"
+                <ImageView
+                    android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="Movie Overview\nMovie Overview\nMovieOverview"
-                    android:textColor="#3e3e3e"
-                    android:textSize="14dp" />
+                    android:padding="0dp"
+                    android:layout_marginTop="-19dp"
+                    android:layout_marginBottom="-18dp"
+                    android:contentDescription="@string/wallpaper" />
 
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fff">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_weight="0.8"
+                            android:layout_width="0dp"
+                            android:layout_margin="8dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/textViewMovieTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Movie Title"
+                                android:textColor="#000"
+                                android:textSize="20dp" />
+
+                            <TextView
+                                android:id="@+id/textViewTagline"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Movie Tag line"
+                                android:textColor="#000"
+                                android:textSize="14dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.2"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/imageViewAdd"
+                                android:src="@drawable/ic_playlist_add_black_24dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
 
                 <LinearLayout
-                    android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center"
-                    android:gravity="center">
+                    android:layout_height="1dp"
+                    android:background="#e2e2e2" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fff">
 
                     <LinearLayout
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.3"
-                        android:layout_height="24dp">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:gravity="center"
-                            android:id="@+id/textViewRevenue"
-                            android:textSize="11dp"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/textViewMovieOverview"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="500000" />
+                            android:layout_margin="8dp"
+                            android:text="Movie Overview\nMovie Overview\nMovieOverview"
+                            android:textColor="#3e3e3e"
+                            android:textSize="14dp" />
 
-                        <ImageView
-                            android:id="@+id/imageRevenue"
-                            android:layout_margin="2dp"
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:src="@drawable/ic_attach_money_black_24dp" />
 
+                        <LinearLayout
+                            android:layout_marginTop="8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="24dp"
+                            android:orientation="horizontal"
+                            android:layout_gravity="center"
+                            android:gravity="center">
+
+                            <LinearLayout
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.3"
+                                android:layout_height="24dp">
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:id="@+id/textViewRevenue"
+                                    android:textSize="11dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="500000" />
+
+                                <ImageView
+                                    android:id="@+id/imageRevenue"
+                                    android:layout_margin="2dp"
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:src="@drawable/ic_attach_money_black_24dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.4"
+                                android:layout_height="24dp">
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:id="@+id/textViewScore"
+                                    android:textSize="11dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="12393.31" />
+
+                                <ImageView
+                                    android:id="@+id/imageScore"
+                                    android:layout_margin="2dp"
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:src="@drawable/ic_favorite_black_24dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.3"
+                                android:layout_height="24dp">
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:id="@+id/textViewDate"
+                                    android:textSize="11dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="500000" />
+
+                                <ImageView
+                                    android:layout_margin="2dp"
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:src="@drawable/ic_access_time_black_24dp" />
+
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
+                </android.support.v7.widget.CardView>
 
-                    <LinearLayout
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.4"
-                        android:layout_height="24dp">
+                <fragment
+                    android:id="@+id/youtubeFragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:name="com.google.android.youtube.player.YouTubePlayerFragment">
 
-                        <TextView
-                            android:gravity="center"
-                            android:id="@+id/textViewScore"
-                            android:textSize="11dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="12393.31" />
+                </fragment>
 
-                        <ImageView
-                            android:id="@+id/imageScore"
-                            android:layout_margin="2dp"
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:src="@drawable/ic_favorite_black_24dp" />
 
-                    </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:background="#FFF"
+                    android:id="@+id/recyclerViewCast"
+                    android:nestedScrollingEnabled="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    <LinearLayout
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.3"
-                        android:layout_height="24dp">
-
-                        <TextView
-                            android:gravity="center"
-                            android:id="@+id/textViewDate"
-                            android:textSize="11dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="500000" />
-
-                        <ImageView
-                            android:layout_margin="2dp"
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:src="@drawable/ic_access_time_black_24dp" />
-
-                    </LinearLayout>
-                </LinearLayout>
+                </android.support.v7.widget.RecyclerView>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <fragment
-            android:id="@+id/youtubeFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:name="com.google.android.youtube.player.YouTubePlayerFragment"></fragment>
-
-        <android.support.v7.widget.RecyclerView
-            android:background="#FFF"
-            android:id="@+id/recyclerViewCast"
-            android:nestedScrollingEnabled="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

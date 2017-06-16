@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Angebote">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/home"
+                    android:checked="true"
+                    android:icon="@drawable/ic_home_black_24dp"
+                    android:title="@string/home" />
+                <item
+                    android:id="@+id/top_rated"
+                    android:icon="@drawable/ic_movie_filter_black_24dp"
+                    android:title="@string/top_rated" />
+                <item
+                    android:id="@+id/recommendation"
+                    android:icon="@drawable/ic_local_movies_black_24dp"
+                    android:title="@string/recommendation" />
+            </group>
+        </menu>
+    </item>
+</menu>

@@ -16,6 +16,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="drawerArrowStyle">@style/drawerarrowstyle1</item>
+
     </style>
 
+    <style name="drawerarrowstyle1" parent="Widget.AppCompat.DrawerArrowToggle">
+
+        <item name="spinBars">true</item>
+
+
+    </style>
 </resources>

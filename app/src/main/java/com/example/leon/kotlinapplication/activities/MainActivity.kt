@@ -5,18 +5,17 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ListView
-import com.example.leon.kotlinapplication.DataModel
-import com.example.leon.kotlinapplication.DrawerItemCustomAdapter
+import android.widget.SearchView
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
 import com.example.leon.kotlinapplication.model.Movie
@@ -26,12 +25,10 @@ import kotlin.properties.Delegates
 class MainActivity : AppCompatActivity() {
 
     var rootLayout: CoordinatorLayout by Delegates.notNull()
-    private var mNavigationDrawerItemTitles: Array<String>? = null
-    private var mDrawerLayout: DrawerLayout? = null
-    private var mDrawerList: ListView? = null
-    var mDrawerToggle: android.support.v7.app.ActionBarDrawerToggle? = null
-    private val mDrawerTitle: CharSequence? = null
     var toolbar: Toolbar by Delegates.notNull()
+    lateinit var drawerLayoutgesamt: DrawerLayout
+    lateinit var drawerToggle: ActionBarDrawerToggle
+    lateinit var navigationView: NavigationView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +40,40 @@ class MainActivity : AppCompatActivity() {
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, this)
         var tabLayout = findViewById(R.id.tab_layout) as TabLayout
         toolbar = findViewById(R.id.toolbar) as Toolbar
-        mNavigationDrawerItemTitles = getResources().getStringArray(R.array.categories)
-        mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
-        mDrawerList = findViewById(R.id.left_drawer) as ListView
+        drawerLayoutgesamt = findViewById(R.id.drawer_layout) as DrawerLayout
+        drawerToggle = ActionBarDrawerToggle(this@MainActivity, drawerLayoutgesamt, R.string.auf, R.string.zu)
+        drawerLayoutgesamt.setDrawerListener(drawerToggle)
 
+        navigationView = findViewById(R.id.navView) as NavigationView
 
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.home -> {
+
+                }
+
+                R.id.top_rated -> {
+
+                }
+
+                R.id.recommendation -> {
+
+                }
+            }
+
+            drawerLayoutgesamt.closeDrawers()
+            menuItem.setChecked(true)
+
+            false
+        }
         setSupportActionBar(toolbar)
+
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar()?.setHomeButtonEnabled(true);
+        getSupportActionBar()?.setHomeAsUpIndicator(R.drawable.ic_drawer);
+        drawerToggle.syncState();
+
+
         toolbar.title = "Movies"
         toolbar.setTitleTextColor(Color.WHITE)
 
@@ -84,41 +109,12 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.adapter = viewPagerAdapter
 
-        val drawerItem = arrayOfNulls<DataModel>(3)
-
-        drawerItem[0] = DataModel(R.drawable.ic_favorite_black_24dp, "Discover")
-        drawerItem[1] = DataModel(R.drawable.ic_favorite_black_24dp, "Search")
-        drawerItem[2] = DataModel(R.drawable.ic_favorite_black_24dp, "Top Rated")
-        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        supportActionBar!!.setHomeButtonEnabled(true)
-
-        val adapter = DrawerItemCustomAdapter(this, R.layout.drawer_list_item, drawerItem)
-        mDrawerList!!.adapter = adapter
-        mDrawerList!!.setOnItemClickListener(DrawerItemClickListener())
-        mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
-        mDrawerLayout!!.setDrawerListener(mDrawerToggle)
-        setupDrawerToggle()
-
-    }
-
-    fun setupDrawerToggle() {
-        mDrawerToggle = android.support.v7.app.ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name)
-        //This is necessary to change the icon of the Drawer Toggle upon state change.
-        mDrawerToggle!!.syncState()
-    }
-
-    private inner class DrawerItemClickListener : AdapterView.OnItemClickListener {
-
-        override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-            selectItem(position)
-        }
-
-    }
-
-    private fun selectItem(position: Int) {
 
 
     }
+
+
+
 
 
     fun addToFavorite(movie: Movie) {
@@ -145,15 +141,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onPostCreate(savedInstanceState, persistentState)
-        mDrawerToggle!!.syncState();
+        drawerToggle.syncState();
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
+        drawerToggle.onConfigurationChanged(newConfig)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (mDrawerToggle!!.onOptionsItemSelected(item)) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item)
@@ -163,5 +160,28 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+
+        var search: SearchView = menu?.findItem(R.id.search_btn)?.actionView as SearchView
+
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return true
+            }
+
+        })
+        return true
+    }
+
+
+
 }
 

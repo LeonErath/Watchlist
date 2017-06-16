@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KotlinApplication</string>
+    <string name="app_name">Watchlist</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -8,6 +8,9 @@
     <string name="base_url">https://api.themoviedb.org/3/</string>
     <string name="image_base_url">http://image.tmdb.org/t/p</string>
     <string name="youtube_key">AIzaSyCHxf9hqLejtYouPf5EyFBHYlvAG_W0oH8</string>
+    <string name="auf">auf</string>
+    <string name="zu">zu</string>
+
 
     <string name="wallpaper">Wallpaper</string>
     <string-array name="categories">
@@ -22,5 +25,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="home">Home</string>
+    <string name="recommendation">Recommendation</string>
 
 </resources>

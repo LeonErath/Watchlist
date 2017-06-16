@@ -18,14 +18,14 @@
             android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.SEARCH" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".activities.DetailActivity"
             android:theme="@style/AppTheme2"></activity>
-        <activity android:name=".activities.YoutubeActivity"></activity>
     </application>
 
 </manifest>
