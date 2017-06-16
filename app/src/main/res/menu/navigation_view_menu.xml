@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Angebote">
+    <item android:title="More">
         <menu>
             <group android:checkableBehavior="single">
                 <item
@@ -16,6 +16,21 @@
                     android:id="@+id/recommendation"
                     android:icon="@drawable/ic_local_movies_black_24dp"
                     android:title="@string/recommendation" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="Others">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/series"
+                    android:icon="@drawable/ic_tv_black_24dp"
+                    android:title="@string/series" />
+                <item
+                    android:id="@+id/reviews"
+                    android:icon="@drawable/ic_insert_comment_black_24dp"
+                    android:title="@string/reviews" />
+
             </group>
         </menu>
     </item>

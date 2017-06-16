@@ -70,6 +70,7 @@
         <android.support.design.widget.NavigationView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:background="#ffffff"
             android:id="@+id/navView"
             app:menu="@menu/navigation_view_menu"
             app:itemIconTint="@color/itemtintcolor"

@@ -9,32 +9,12 @@
         android:layout_height="180dp">
 
         <ImageView
-            android:src="@drawable/drawerheader_background1"
+            android:src="@drawable/cover"
             android:scaleType="centerCrop"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/imageView" />
 
-        <TextView
-            android:textColor="#fff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Small Text"
-            android:id="@+id/textViewdate"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
 
-        <TextView
-            android:textColor="#fff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="der Android Pro"
-            android:id="@+id/textView2"
-            android:layout_above="@+id/textViewdate"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
     </RelativeLayout>
 </LinearLayout>

@@ -28,5 +28,7 @@
     <string name="top_rated">Top Rated</string>
     <string name="home">Home</string>
     <string name="recommendation">Recommendation</string>
+    <string name="series">Series</string>
+    <string name="reviews">Reviews</string>
 
 </resources>
