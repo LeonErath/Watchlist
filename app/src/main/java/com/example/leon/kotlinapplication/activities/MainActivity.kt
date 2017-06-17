@@ -1,5 +1,7 @@
 package com.example.leon.kotlinapplication.activities
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -13,6 +15,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
@@ -108,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewPager.adapter = viewPagerAdapter
-
+        viewPager.offscreenPageLimit = 3
 
 
     }
@@ -164,20 +167,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
 
-        var search: SearchView = menu?.findItem(R.id.search_btn)?.actionView as SearchView
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        var searchMenuItem = menu?.findItem(R.id.search_btn)
+        var searchView = searchMenuItem?.getActionView() as SearchView
 
-        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView.setSubmitButtonEnabled(true)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                return true
+                Log.d("MainActivity", "Search for String")
+                return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Log.d("MainActivity", "Autocomplete with Realm database")
                 return true
             }
 
+
         })
+
         return true
     }
 

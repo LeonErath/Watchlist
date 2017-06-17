@@ -21,6 +21,8 @@ import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
+import com.squareup.picasso.Callback
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmResults
@@ -32,6 +34,7 @@ import kotlin.properties.Delegates
  */
 
 open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
+
 
     val mainActivity: MainActivity
 
@@ -46,9 +49,31 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
                 .parse(holder.context.getString(R.string.image_base_url)
                         + "/w342"
                         + movie?.poster_path)
+
         Picasso.with(holder.context)
                 .load(uri)
-                .into(holder.imageV)
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(holder.imageV, object : Callback {
+                    override fun onSuccess() {
+
+                    }
+
+                    override fun onError() {
+                        //Try again online if cache failed
+                        Picasso.with(holder.context)
+                                .load(uri)
+                                .error(R.drawable.cover)
+                                .into(holder.imageV, object : Callback {
+                                    override fun onSuccess() {
+
+                                    }
+
+                                    override fun onError() {
+                                        Log.v("Picasso", "Could not fetch image")
+                                    }
+                                })
+                    }
+                })
     }
 
 
