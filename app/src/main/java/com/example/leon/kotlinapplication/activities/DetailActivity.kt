@@ -1,6 +1,5 @@
 package com.example.leon.kotlinapplication.activities
 
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -15,8 +14,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.Window
-import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -24,6 +22,7 @@ import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.CastAdapter
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
+import com.github.chuross.library.ExpandableLayout
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
@@ -57,18 +56,25 @@ class DetailActivity : AppCompatActivity() {
         textViewTitle = findViewById(R.id.textViewMovieTitle) as TextView
         textViewOverview = findViewById(R.id.textViewMovieOverview) as TextView
         imageView = findViewById(R.id.imageView) as ImageView
-        textViewDate = findViewById(R.id.textViewDate) as TextView
         textViewTagline = findViewById(R.id.textViewTagline) as TextView
-        textViewScore = findViewById(R.id.textViewScore) as TextView
-        textViewRevenue = findViewById(R.id.textViewRevenue) as TextView
+        val buttonExpand = findViewById(R.id.button) as ImageButton
+        val expandLayout = findViewById(R.id.layoutExpand) as ExpandableLayout
+
+
+        buttonExpand.setOnClickListener {
+            if (expandLayout.isCollapsed){
+                buttonExpand.setImageResource(R.drawable.ic_expand_more_black_24dp)
+                expandLayout.expand()
+            }else{
+                expandLayout.collapse()
+                buttonExpand.setImageResource(R.drawable.ic_expand_less_black_24dp)
+            }
+        }
+
 
         recylcerViewCast = findViewById(R.id.recyclerViewCast) as RecyclerView
         val refreshLayout = findViewById(R.id.refreshContainer) as SwipeRefreshLayout
-        // clear FLAG_TRANSLUCENT_STATUS flag:
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         // Set up cast recycler view
         var adapter = CastAdapter(this)
@@ -101,12 +107,6 @@ class DetailActivity : AppCompatActivity() {
 
         supportActionBar!!.subtitle = movie.tagline
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar) as CollapsingToolbarLayout
-
-        collapsingToolbarLayout.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
-
-        collapsingToolbarLayout.title = movie.title
 
         refreshLayout.setOnRefreshListener {
             movie = queryAdapter.getDetail(movieid)
@@ -147,10 +147,8 @@ class DetailActivity : AppCompatActivity() {
         with(movie) {
             textViewTitle.text = title
             textViewOverview.text = overview
-            textViewDate.text = com.example.leon.kotlinapplication.dateParser(release_date).parse().dateString
             textViewTagline.text = tagline
-            textViewRevenue.text = com.example.leon.kotlinapplication.moneyParser(revenue).parse()
-            textViewScore.text = popularity.toString()
+
         }
         adapter.addData(movie.cast)
         if (movie.results.size > 0) {
@@ -185,12 +183,7 @@ class DetailActivity : AppCompatActivity() {
         var primary: Int = resources.getColor(R.color.colorPrimary)
         //collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
         //collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
-        val window: Window = this.window
 
-        // finally change the color
-        window.setStatusBarColor(primaryDark)
-
-        updateBackground(findViewById(R.id.fab) as FloatingActionButton, palette);
         supportStartPostponedEnterTransition();
 
     }
@@ -204,8 +197,6 @@ class DetailActivity : AppCompatActivity() {
             Log.d("DetailActivity", "Palette default")
         }
 
-        fab.rippleColor = lightVibrantColor
-        fab.backgroundTintList = ColorStateList.valueOf(vibrantColor)
     }
 
 
