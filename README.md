@@ -12,6 +12,9 @@ NavigationView            |  MovieDetailActivity
 :-------------------------:|:-------------------------:
 <img src="https://github.com/LeonErath/Watchlist/blob/master/screenshots/NavigationView.png" data-canonical-src="https://raw.githubusercontent.com/LeonErath/Watchlist/master/screenshots/NavigationView.png" width="250" height="450" />         |  <img src="https://github.com/LeonErath/Watchlist/blob/master/screenshots/MovieDetail2.png" data-canonical-src="https://raw.githubusercontent.com/LeonErath/Watchlist/master/screenshots/MovieDetail2.png" width="250" height="450" />
 
+# Design Link
+https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
+
 
 # TODO
 - [x] PopularMovie Fragment with current Movies [12.06.2017]
