@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+
         viewPager.adapter = viewPagerAdapter
         viewPager.offscreenPageLimit = 3
 

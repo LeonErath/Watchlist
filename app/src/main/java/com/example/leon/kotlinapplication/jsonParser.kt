@@ -1,5 +1,8 @@
 package com.example.leon.kotlinapplication
 
+import android.util.Log
+import org.json.JSONObject
+
 /**
  * Created by Leon on 13.06.17.
  */
@@ -9,6 +12,7 @@ class jsonParser(jsonString: String) {
 
     init {
         json = jsonString
+        Log.d("jsonParser", jsonString)
     }
 
 
@@ -24,6 +28,13 @@ class jsonParser(jsonString: String) {
 
         json = "$substringBefore\"$key\":\"$value\",$substringEnd"
         return this
+    }
+
+    fun parseRecommendation(id: Int): String {
+        val jsonObject = JSONObject(json)
+        val array = jsonObject.getJSONArray("results")
+
+        return "{id=$id,recommendations=$array }"
     }
 
     fun insertValueInt(key: String, value: Int): jsonParser {

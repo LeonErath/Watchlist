@@ -7,6 +7,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.jsonParser
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
@@ -46,7 +47,12 @@ class QueryAdapter(c: Context) {
                 c.getString(R.string.key) +
                 "&language=en-US"
         Log.d(TAG, urlTrailer)
-        httpRequest(url, urlCast, urlTrailer)
+        val urlRecom = c.getString(R.string.base_url) +
+                "movie/$id/recommendations?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
+        Log.d(TAG, urlRecom)
+        httpRequest(url, urlCast, urlTrailer, urlRecom, id)
         return findMovie(id)
     }
 
@@ -94,34 +100,29 @@ class QueryAdapter(c: Context) {
 
     }
 
-    private fun httpRequest(url: String, urlCast: String, urlTrailer: String) {
+    private fun httpRequest(url: String, urlCast: String, urlTrailer: String, urlRecom: String, id: Int) {
 
         val queue = Volley.newRequestQueue(c)
-        // Request a string response from the provided URL.
+
+        val stringRequestRecom = StringRequest(Request.Method.GET, urlRecom, Response.Listener<String> { response ->
+            Log.d(TAG, response)
+            fetchRequest(jsonParser(response).parseRecommendation(id))
+        }, Response.ErrorListener { error -> error.printStackTrace() })
+
+
+        queue.add(makeRequest(url))
+        queue.add(makeRequest(urlCast))
+        queue.add(makeRequest(urlTrailer))
+        queue.add(stringRequestRecom)
+
+    }
+
+    private fun makeRequest(url: String): StringRequest {
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             Log.d(TAG, response)
             fetchRequest(response)
         }, Response.ErrorListener { error -> error.printStackTrace() })
-
-        val queueCast = Volley.newRequestQueue(c)
-        // Request a string response from the provided URL.
-        val stringRequestCast = StringRequest(Request.Method.GET, urlCast, Response.Listener<String> { response ->
-            Log.d(TAG, response)
-            fetchRequest(response)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
-
-        val queueTrailer = Volley.newRequestQueue(c)
-        // Request a string response from the provided URL.
-        val stringRequestTrailer = StringRequest(Request.Method.GET, urlTrailer, Response.Listener<String> { response ->
-            Log.d(TAG, response)
-            fetchRequest(response)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
-
-
-        queue.add(stringRequest)
-        queue.add(stringRequestCast)
-        queue.add(stringRequestTrailer)
-
+        return stringRequest
     }
 
     private fun fetchRequest(response: String) {

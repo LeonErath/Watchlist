@@ -5,6 +5,7 @@ import com.ahamed.multiviewadapter.SelectableAdapter;
 import com.example.leon.kotlinapplication.activities.DetailActivity;
 import com.example.leon.kotlinapplication.activities.MainActivity;
 import com.example.leon.kotlinapplication.binder.MovieBinder;
+import com.example.leon.kotlinapplication.binder.MovieBinder2;
 import com.example.leon.kotlinapplication.model.Movie;
 
 import java.util.ArrayList;
@@ -29,6 +30,12 @@ public class MovieAdapter extends SelectableAdapter {
         registerBinder(new MovieBinder(activity));
     }
 
+    public MovieAdapter(DetailActivity activity) {
+        this.dataManager = new DataListManager<>(this);
+        addDataManager(dataManager);
+
+        registerBinder(new MovieBinder2());
+    }
 
     public void addData(List<Movie> dataList) {
         for (Movie movie : dataList) {

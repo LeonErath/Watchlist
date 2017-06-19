@@ -20,6 +20,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.CastAdapter
+import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import com.github.chuross.library.ExpandableLayout
@@ -48,6 +49,8 @@ class DetailActivity : AppCompatActivity() {
     lateinit var recylcerViewCast: RecyclerView
     lateinit var recyclerViewYoutube: RecyclerView
     lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
+    lateinit var recyclverViewRecom: RecyclerView
+    lateinit var recomAdapter: MovieAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +86,12 @@ class DetailActivity : AppCompatActivity() {
         val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
         recylcerViewCast.layoutManager = layout
 
+        recyclverViewRecom = findViewById(R.id.recyclerViewRecommendation) as RecyclerView
+        recomAdapter = MovieAdapter(this)
+        recyclverViewRecom.adapter = recomAdapter
+        val layout2 = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
+        recyclverViewRecom.layoutManager = layout2
+
 
         val extras: Bundle = intent.extras
         val movieid: Int = extras.getInt("movieid")
@@ -96,11 +105,12 @@ class DetailActivity : AppCompatActivity() {
         val queryAdapter = QueryAdapter(this)
         var movie: Movie = queryAdapter.getDetail(movieid)
         movie.addChangeListener(RealmChangeListener {
-            updateUI(movie, adapter)
+            updateUI(movie, adapter, recomAdapter)
         })
         adapter.addData(movie.cast)
+        recomAdapter.addData(movie.recommendations)
 
-        updateUI(movie, adapter)
+        updateUI(movie, adapter, recomAdapter)
 
         //set up toolbar
         setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
@@ -110,7 +120,7 @@ class DetailActivity : AppCompatActivity() {
 
         refreshLayout.setOnRefreshListener {
             movie = queryAdapter.getDetail(movieid)
-            updateUI(movie, adapter)
+            updateUI(movie, adapter, recomAdapter)
             refreshLayout.isRefreshing = false
         }
 
@@ -142,7 +152,7 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
-    fun updateUI(movie: Movie, adapter: CastAdapter) {
+    fun updateUI(movie: Movie, adapter: CastAdapter, recomAdapter: MovieAdapter) {
         Log.d("DetailActivity", "MovieChangeListener Trigger")
         with(movie) {
             textViewTitle.text = title
@@ -151,6 +161,7 @@ class DetailActivity : AppCompatActivity() {
 
         }
         adapter.addData(movie.cast)
+        recomAdapter.addData(movie.recommendations)
         if (movie.results.size > 0) {
             for (trailer in movie.results) {
                 if (trailer.name == "Official Trailer") {
