@@ -37,7 +37,7 @@ import kotlin.properties.Delegates
  */
 class PopularFragment(val a: MainActivity) : Fragment() {
 
-
+    val TAG: String = PopularFragment::class.simpleName!!
     var realm: Realm by Delegates.notNull()
     var adapter = MovieAdapter(a)
     var refreshLayout = SwipeRefreshLayout(a)
@@ -87,6 +87,7 @@ class PopularFragment(val a: MainActivity) : Fragment() {
     // httpRequest() makes a GET Request to https://api.themoviedb.org/3
     // The response is a json String
     private fun httpRequest(page: Int) {
+        //TODO Substitute this methode by QueryAdapter
         val queue = Volley.newRequestQueue(activity)
         val url = getString(R.string.base_url) +
                 "movie/popular?api_key=" +
@@ -96,7 +97,7 @@ class PopularFragment(val a: MainActivity) : Fragment() {
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             // Display the first 500 characters of the response string.
-            Log.d("Resonse", response)
+            Log.i(TAG, "Response:" + response)
             fetchRequest(response)
         }, Response.ErrorListener { error ->
             error.printStackTrace()
@@ -111,7 +112,7 @@ class PopularFragment(val a: MainActivity) : Fragment() {
     // updates the recycler view with the data from the realm
     private fun updateUIfromRealm() {
         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 0).findAll()
-        Log.d("PopularFragment", " updateRealm(): Size of Popular Movie Lists:" + results.size)
+        Log.i(TAG, " updateRealm(): Size of Popular Movie Lists:" + results.size)
 
         if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
 
@@ -134,13 +135,12 @@ class PopularFragment(val a: MainActivity) : Fragment() {
     private fun fetchRequest(response: String) {
         try {
             realm.executeTransaction {
-                Log.d("PopularFragment:", "Response: " + response)
                 val modedResponse: String = jsonParser(response)
                         .insertValueInt("id", 0)
                         .insertValueString("name", "popularMovies")
                         .makeArray().json
 
-                Log.d("PopularFragment:", "moded Response: " + modedResponse)
+                Log.i(TAG, "moded Response: " + modedResponse)
                 realm.createOrUpdateAllFromJson(List::class.java, modedResponse)
                 updateUIfromRealm()
             }

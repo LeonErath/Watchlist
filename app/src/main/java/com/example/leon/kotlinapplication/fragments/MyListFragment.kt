@@ -27,6 +27,8 @@ import kotlin.properties.Delegates
  */
 class MyListFragment(var a: MainActivity) : Fragment() {
 
+    val TAG: String = MyListFragment::class.simpleName!!
+
     var realm: Realm by Delegates.notNull()
     var adapter = MovieFlatAdapter(a)
     var refreshLayout = SwipeRefreshLayout(a)
@@ -68,12 +70,11 @@ class MyListFragment(var a: MainActivity) : Fragment() {
 
     // updates the recycler view with the data from the realm
     private fun updateUIfromRealm() {
-        // TODO fix bug ->
         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-        Log.d("CinemaFragment", " updateRealm(): Size of Popular Movie Lists:" + results.size)
+        Log.i(TAG, " updateRealm(): Size of Popular Movie Lists:" + results.size)
 
         results.addChangeListener(RealmChangeListener {
-            Log.d("CinemaFragment", "Change in List")
+            Log.i(TAG, "Change in List")
 
         })
 
@@ -81,12 +82,12 @@ class MyListFragment(var a: MainActivity) : Fragment() {
         if (adapter != null) {
             if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
         } else {
-            Log.d("CinemaFragment", "adapter is null")
+            Log.i(TAG, "adapter is null")
         }
         if (refreshLayout != null) {
             refreshLayout.isRefreshing = false
         } else {
-            Log.d("CinemaFragment", "refreshLayout is null")
+            Log.i(TAG, "refreshLayout is null")
         }
     }
 

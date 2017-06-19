@@ -35,6 +35,7 @@ import kotlin.properties.Delegates
 
 open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
 
+    val TAG: String = MovieBinder::class.simpleName!!
 
     val mainActivity: MainActivity
 
@@ -91,6 +92,7 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
 
     class ViewHolder(itemView: View, activity: MainActivity) : SelectableViewHolder<Movie>(itemView) {
 
+        val TAG: String = ViewHolder::javaClass.name
         val mainActivity: MainActivity
         val context: Context = itemView.context
 
@@ -106,7 +108,6 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
             cardView = itemView.findViewById(R.id.cardView) as CardView
 
             cardView.setOnClickListener({
-                Log.d("MovieBinder", "CardView ClickListener trigger")
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("movieid", item.id)
                 context.startActivity(intent)
@@ -114,14 +115,13 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
             })
             cardView.setOnLongClickListener(object : View.OnLongClickListener {
                 override fun onLongClick(v: View?): Boolean {
-                    Log.d("MovieBinder", "OnItemLongClick trigger")
 
                     Realm.init(context)
                     realm = Realm.getDefaultInstance()
                     realm.executeTransaction {
                         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
                         if (results.size > 0) {
-                            Log.d("MovieBinder", "MyList is not empty -> updates List")
+                            Log.i(TAG, "MyList is not empty -> updates List")
                             val List = results[0]
                             var check = false
                             for (movie2 in List.results) {
@@ -134,7 +134,7 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
                             }
 
                         } else {
-                            Log.d("MovieBinder", "MyList is empty -> creates new List")
+                            Log.i(TAG, "MyList is empty -> creates new List")
                             val List = List()
                             List.id = 2
                             List.name = "MyList"
@@ -162,7 +162,7 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
             // Request a string response from the provided URL.
             val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
                 // Display the first 500 characters of the response string.
-                Log.d("MovieBinder", "Movie Details update:" + response)
+                Log.i(TAG, "Movie Details update:" + response)
                 fetchRequest(response)
             }, Response.ErrorListener { error -> error.printStackTrace() })
 

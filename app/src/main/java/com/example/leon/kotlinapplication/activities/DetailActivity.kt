@@ -6,10 +6,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
-import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -23,6 +23,7 @@ import com.example.leon.kotlinapplication.adapter.CastAdapter
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.model.Trailers
 import com.github.chuross.library.ExpandableLayout
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -36,6 +37,7 @@ import kotlin.properties.Delegates
 
 class DetailActivity : AppCompatActivity() {
 
+    val TAG: String = DetailActivity::class.simpleName!!
 
     var realm: Realm by Delegates.notNull()
     lateinit var textViewTitle: TextView
@@ -55,6 +57,8 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+
+
 
         textViewTitle = findViewById(R.id.textViewMovieTitle) as TextView
         textViewOverview = findViewById(R.id.textViewMovieOverview) as TextView
@@ -82,7 +86,6 @@ class DetailActivity : AppCompatActivity() {
         // Set up cast recycler view
         var adapter = CastAdapter(this)
         recylcerViewCast.adapter = adapter
-        val itemAnimator = DefaultItemAnimator()
         val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
         recylcerViewCast.layoutManager = layout
 
@@ -129,7 +132,7 @@ class DetailActivity : AppCompatActivity() {
                 + movie.backdrop_path)
         Picasso.with(this).load(uri).into(imageView, object : Callback {
             override fun onSuccess() {
-                var bitmap: Bitmap = (imageView.getDrawable() as BitmapDrawable).getBitmap()
+                val bitmap: Bitmap = (imageView.getDrawable() as BitmapDrawable).getBitmap()
                 Palette.from(bitmap).generate(object : Palette.PaletteAsyncListener {
                     override fun onGenerated(palette: Palette?) {
                         if (palette != null) {
@@ -153,7 +156,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     fun updateUI(movie: Movie, adapter: CastAdapter, recomAdapter: MovieAdapter) {
-        Log.d("DetailActivity", "MovieChangeListener Trigger")
+        Log.i(TAG, "MovieChangeListener Trigger")
         with(movie) {
             textViewTitle.text = title
             textViewOverview.text = overview
@@ -165,33 +168,35 @@ class DetailActivity : AppCompatActivity() {
         if (movie.results.size > 0) {
             for (trailer in movie.results) {
                 if (trailer.name == "Official Trailer") {
-                    try {
-                        val youtubeFragment = fragmentManager.findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
-                        youtubeFragment?.initialize(getString(R.string.youtube_key),
-                                object : YouTubePlayer.OnInitializedListener {
-                                    override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
-                                        // do any work here to cue video, play video, etc.
-                                        youTubePlayer.cueVideo(trailer.key)
-                                    }
-
-                                    override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
-                                        Log.d("DetailActivity", "YoutubePlayer failed")
-                                    }
-                                })
-
-                    } catch (e: TypeCastException) {
-                        e.printStackTrace()
-                    }
-
+                    initializeYoutubeFragment(trailer)
                 }
             }
         }
     }
 
+    private fun initializeYoutubeFragment(trailer: Trailers) {
+        try {
+            val youtubeFragment = fragmentManager.findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
+            youtubeFragment.initialize(getString(R.string.youtube_key), object : YouTubePlayer.OnInitializedListener {
+                override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
+                    // do any work here to cue video, play video, etc.
+                    youTubePlayer.cueVideo(trailer.key)
+                }
+
+                override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
+                    Log.i(TAG, "YoutubePlayer failed")
+                }
+            })
+
+        } catch (e: TypeCastException) {
+            e.printStackTrace()
+        }
+    }
+
 
     fun applyPalette(palette: Palette) {
-        var primaryDark: Int = resources.getColor(R.color.colorPrimaryDark)
-        var primary: Int = resources.getColor(R.color.colorPrimary)
+        var primaryDark: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
+        var primary: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimary)
         //collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
         //collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
 
@@ -205,7 +210,7 @@ class DetailActivity : AppCompatActivity() {
 
         if (vibrantColor == resources.getColor(R.color.colorAccent)) {
             vibrantColor = palette.getMutedColor(resources.getColor(R.color.colorPrimaryDark))
-            Log.d("DetailActivity", "Palette default")
+            Log.i(TAG, "Palette default")
         }
 
     }

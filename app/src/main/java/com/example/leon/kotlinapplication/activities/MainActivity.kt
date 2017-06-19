@@ -27,6 +27,8 @@ import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
+    val TAG: String = MainActivity::class.simpleName!!
+
     var rootLayout: CoordinatorLayout by Delegates.notNull()
     var toolbar: Toolbar by Delegates.notNull()
     lateinit var drawerLayoutgesamt: DrawerLayout
@@ -69,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
             false
         }
+        navigationView.setCheckedItem(0)
         setSupportActionBar(toolbar)
 
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
@@ -176,12 +179,12 @@ class MainActivity : AppCompatActivity() {
         searchView.setSubmitButtonEnabled(true)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("MainActivity", "Search for String")
+                Log.i(TAG, "Search for String")
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                Log.d("MainActivity", "Autocomplete with Realm database")
+                Log.i(TAG, "Autocomplete with Realm database")
                 return true
             }
 
