@@ -93,7 +93,7 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
     class ViewHolder(itemView: View, activity: MainActivity) : SelectableViewHolder<Movie>(itemView) {
 
         val TAG: String = ViewHolder::javaClass.name
-        val mainActivity: MainActivity
+        val mainActivity: MainActivity = activity
         val context: Context = itemView.context
 
         var tvMovie: TextView
@@ -102,7 +102,6 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
         var realm: Realm by Delegates.notNull()
 
         init {
-            this.mainActivity = activity
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             imageV = itemView.findViewById(R.id.imageView) as ImageView
             cardView = itemView.findViewById(R.id.cardView) as CardView
@@ -113,42 +112,36 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
                 context.startActivity(intent)
 
             })
-            cardView.setOnLongClickListener(object : View.OnLongClickListener {
-                override fun onLongClick(v: View?): Boolean {
+            cardView.setOnLongClickListener {
+                Realm.init(context)
+                realm = Realm.getDefaultInstance()
+                realm.executeTransaction {
+                    val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+                    if (results.size > 0) {
+                        Log.i(TAG, "MyList is not empty -> updates List")
+                        val List = results[0]
+                        val check = List.results.any { item!!.id == it.id }
 
-                    Realm.init(context)
-                    realm = Realm.getDefaultInstance()
-                    realm.executeTransaction {
-                        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-                        if (results.size > 0) {
-                            Log.i(TAG, "MyList is not empty -> updates List")
-                            val List = results[0]
-                            var check = false
-                            for (movie2 in List.results) {
-                                if (item!!.id == movie2.id) check = true
-                            }
-
-                            if (!check) {
-                                List.results.add(item)
-                                List.total_results++
-                            }
-
-                        } else {
-                            Log.i(TAG, "MyList is empty -> creates new List")
-                            val List = List()
-                            List.id = 2
-                            List.name = "MyList"
+                        if (!check) {
                             List.results.add(item)
                             List.total_results++
-                            realm.copyToRealmOrUpdate(List)
                         }
-                        mainActivity.addToFavorite(item)
-                        httpRequest(item.id)
-                    }
 
-                    return true
+                    } else {
+                        Log.i(TAG, "MyList is empty -> creates new List")
+                        val List = List()
+                        List.id = 2
+                        List.name = "MyList"
+                        List.results.add(item)
+                        List.total_results++
+                        realm.copyToRealmOrUpdate(List)
+                    }
+                    mainActivity.addToFavorite(item)
+                    httpRequest(item.id)
                 }
-            })
+
+                true
+            }
         }
 
         private fun httpRequest(id: Int) {

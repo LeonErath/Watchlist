@@ -72,18 +72,14 @@ class PopularFragment(val a: MainActivity) : Fragment() {
         itemAnimator.addDuration = 300
         itemAnimator.removeDuration = 300
         recyclerView.itemAnimator = itemAnimator
-        var layout = GridLayoutManager(activity, 2)
+        val layout = GridLayoutManager(activity, 2)
         recyclerView.layoutManager = layout
         recyclerView.setOnScrollListener(object : EndlessRecylcerViewScrollListener(layout) {
             override fun onLoadMore(current_page: Int) {
-                recyclerView.post(object : Runnable {
-                    override fun run() {
-                        pageCounter++
-                        query.getPopular(page = pageCounter, loadData = load)
-                    }
-
-                })
-
+                recyclerView.post {
+                    pageCounter++
+                    query.getPopular(page = pageCounter, loadData = load)
+                }
 
 
             }

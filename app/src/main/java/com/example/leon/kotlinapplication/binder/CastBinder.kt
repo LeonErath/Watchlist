@@ -20,13 +20,9 @@ import com.squareup.picasso.Picasso
  */
 
 open class CastBinder(activity: DetailActivity) : SelectableBinder<Casting, CastBinder.ViewHolder>() {
-    val TAG = CastBinder::class.java.simpleName
+    val TAG = CastBinder::class.java.simpleName!!
 
-    val mainActivity: DetailActivity
-
-    init {
-        this.mainActivity = activity
-    }
+    val mainActivity: DetailActivity = activity
 
 
     override fun bind(holder: ViewHolder?, cast: Casting?, p2: Boolean) {
@@ -58,13 +54,12 @@ open class CastBinder(activity: DetailActivity) : SelectableBinder<Casting, Cast
 
     class ViewHolder(itemView: View, activity: DetailActivity) : SelectableViewHolder<Casting>(itemView) {
 
-        val activity: DetailActivity
+        val activity: DetailActivity = activity
         var textViewName: TextView
         var imageView: ImageView
         val context: Context = itemView.context
 
         init {
-            this.activity = activity
             this.textViewName = itemView.findViewById(R.id.textViewName) as TextView
             this.imageView = itemView.findViewById(R.id.imageView) as ImageView
 

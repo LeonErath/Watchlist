@@ -1,6 +1,5 @@
 package com.example.leon.kotlinapplication.activities
 
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -84,7 +83,7 @@ class DetailActivity : AppCompatActivity() {
 
 
         // Set up cast recycler view
-        var adapter = CastAdapter(this)
+        val adapter = CastAdapter(this)
         recylcerViewCast.adapter = adapter
         val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
         recylcerViewCast.layoutManager = layout
@@ -132,15 +131,12 @@ class DetailActivity : AppCompatActivity() {
                 + movie.backdrop_path)
         Picasso.with(this).load(uri).into(imageView, object : Callback {
             override fun onSuccess() {
-                val bitmap: Bitmap = (imageView.getDrawable() as BitmapDrawable).getBitmap()
-                Palette.from(bitmap).generate(object : Palette.PaletteAsyncListener {
-                    override fun onGenerated(palette: Palette?) {
-                        if (palette != null) {
-                            applyPalette(palette)
-                        }
+                val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+                Palette.from(bitmap).generate { palette ->
+                    if (palette != null) {
+                        applyPalette(palette)
                     }
-
-                });
+                }
             }
 
             override fun onError() {
@@ -166,11 +162,9 @@ class DetailActivity : AppCompatActivity() {
         adapter.addData(movie.cast)
         recomAdapter.addData(movie.recommendations)
         if (movie.results.size > 0) {
-            for (trailer in movie.results) {
-                if (trailer.name == "Official Trailer") {
-                    initializeYoutubeFragment(trailer)
-                }
-            }
+            movie.results
+                    .filter { it.name == "Official Trailer" }
+                    .forEach { initializeYoutubeFragment(it) }
         }
     }
 
@@ -200,13 +194,13 @@ class DetailActivity : AppCompatActivity() {
         //collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
         //collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
 
-        supportStartPostponedEnterTransition();
+        supportStartPostponedEnterTransition()
 
     }
 
     fun updateBackground(fab: FloatingActionButton, palette: Palette) {
-        var lightVibrantColor: Int = palette.getLightVibrantColor(getResources().getColor(android.R.color.white));
-        var vibrantColor: Int = palette.getVibrantColor(getResources().getColor(R.color.colorAccent));
+        var lightVibrantColor: Int = palette.getLightVibrantColor(resources.getColor(android.R.color.white))
+        var vibrantColor: Int = palette.getVibrantColor(resources.getColor(R.color.colorAccent))
 
         if (vibrantColor == resources.getColor(R.color.colorAccent)) {
             vibrantColor = palette.getMutedColor(resources.getColor(R.color.colorPrimaryDark))

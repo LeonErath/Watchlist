@@ -23,7 +23,7 @@ https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
 - [x] Functionality to show movies which are currently displayed in cinemas [13.06.2017]
 - [x] Added parser to display release date and movie revenue [14.06.2017]
 - [x] Added snackbar for a good user experience [14.06.2017]
-- [x] Trailers for Movies in DetailActivit[16.06.2017]
+- [x] Trailers for Movies in DetailActivity[16.06.2017]
 - [x] Added NavigationView for more Features [16.06.2017]
 - [x] Actors in DetailActivity [16.06.2017]
 - [ ] Genre Overview

@@ -24,7 +24,7 @@ import kotlin.properties.Delegates
 class QueryAdapter(c: Context) {
     var realm: Realm by Delegates.notNull()
     var c: Context
-    val TAG = QueryAdapter::class.java.simpleName
+    val TAG = QueryAdapter::class.java.simpleName!!
 
     init {
         Realm.init(c)
@@ -120,10 +120,7 @@ class QueryAdapter(c: Context) {
             if (results.size > 0) {
                 Log.d(TAG, "MyList is not empty -> updates List")
                 val List = results[0]
-                var check = false
-                for (movie2 in List.results) {
-                    if (movie!!.id == movie2.id) check = true
-                }
+                val check = List.results.any { movie!!.id == it.id }
 
                 if (!check) {
                     List.results.add(movie)
@@ -224,8 +221,8 @@ class QueryAdapter(c: Context) {
 
 
     private fun findMovie(movieid: Int): Movie {
-        var query: RealmQuery<Movie> = realm.where(Movie::class.java)
-        var results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
+        val query: RealmQuery<Movie> = realm.where(Movie::class.java)
+        val results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
         Log.d(TAG, " " + results.size)
 
         return results.first()

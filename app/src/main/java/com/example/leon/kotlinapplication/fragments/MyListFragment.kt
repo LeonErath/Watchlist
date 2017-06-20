@@ -41,8 +41,8 @@ class MyListFragment(var a: MainActivity) : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        var rootView = inflater!!.inflate(R.layout.fragment_my_list, container, false)
-        var recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
+        val rootView = inflater!!.inflate(R.layout.fragment_my_list, container, false)
+        val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
 
 

@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         rootLayout = findViewById(R.id.rootLayout) as CoordinatorLayout
         val viewPager = findViewById(R.id.viewPager) as ViewPager
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, this)
-        var tabLayout = findViewById(R.id.tab_layout) as TabLayout
+        val tabLayout = findViewById(R.id.tab_layout) as TabLayout
         toolbar = findViewById(R.id.toolbar) as Toolbar
         drawerLayoutgesamt = findViewById(R.id.drawer_layout) as DrawerLayout
         drawerToggle = ActionBarDrawerToggle(this@MainActivity, drawerLayoutgesamt, R.string.auf, R.string.zu)
@@ -67,17 +67,17 @@ class MainActivity : AppCompatActivity() {
             }
 
             drawerLayoutgesamt.closeDrawers()
-            menuItem.setChecked(true)
+            menuItem.isChecked = true
 
             false
         }
         navigationView.setCheckedItem(0)
         setSupportActionBar(toolbar)
 
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar()?.setHomeButtonEnabled(true);
-        getSupportActionBar()?.setHomeAsUpIndicator(R.drawable.ic_drawer);
-        drawerToggle.syncState();
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_drawer)
+        drawerToggle.syncState()
 
 
         toolbar.title = "Movies"
@@ -105,9 +105,9 @@ class MainActivity : AppCompatActivity() {
 
             override fun onTabSelected(p0: TabLayout.Tab?) {
                 when (p0?.position) {
-                    0 -> viewPager.setCurrentItem(0)
-                    1 -> viewPager.setCurrentItem(1)
-                    2 -> viewPager.setCurrentItem(2)
+                    0 -> viewPager.currentItem = 0
+                    1 -> viewPager.currentItem = 1
+                    2 -> viewPager.currentItem = 2
                 }
             }
 
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onPostCreate(savedInstanceState, persistentState)
-        drawerToggle.syncState();
+        drawerToggle.syncState()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
+            return true
         }
         return super.onOptionsItemSelected(item)
 
@@ -172,11 +172,11 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main_menu, menu)
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        var searchMenuItem = menu?.findItem(R.id.search_btn)
-        var searchView = searchMenuItem?.getActionView() as SearchView
+        val searchMenuItem = menu?.findItem(R.id.search_btn)
+        val searchView = searchMenuItem?.actionView as SearchView
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        searchView.setSubmitButtonEnabled(true)
+        searchView.isSubmitButtonEnabled = true
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.i(TAG, "Search for String")

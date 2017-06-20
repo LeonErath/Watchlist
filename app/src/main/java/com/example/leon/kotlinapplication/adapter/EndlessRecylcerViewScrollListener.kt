@@ -10,7 +10,7 @@ import android.util.Log
  */
 
 abstract class EndlessRecylcerViewScrollListener(linearLayoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
-    var TAG = EndlessRecylcerViewScrollListener::class.java.getSimpleName()
+    var TAG = EndlessRecylcerViewScrollListener::class.java.simpleName!!
 
     private var previousTotal = 0 // The total number of items in the dataset after the last load
     private var loading = true // True if we are still waiting for the last set of data to load.
@@ -21,11 +21,7 @@ abstract class EndlessRecylcerViewScrollListener(linearLayoutManager: LinearLayo
 
     private var current_page = 1
 
-    private val mLinearLayoutManager: LinearLayoutManager
-
-    init {
-        this.mLinearLayoutManager = linearLayoutManager
-    }
+    private val mLinearLayoutManager: LinearLayoutManager = linearLayoutManager
 
 
     override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {

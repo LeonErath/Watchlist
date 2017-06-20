@@ -26,11 +26,10 @@ import io.realm.RealmResults
 
 
 open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>() {
-    val adapater: MovieFlatAdapter
+    val adapater: MovieFlatAdapter = adapter2
     val mainActivity: MainActivity
 
     init {
-        this.adapater = adapter2
         this.mainActivity = activity
     }
 
@@ -52,7 +51,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
             val uri: Uri = Uri
                     .parse(holder.context.getString(R.string.image_base_url)
                             + "/w342"
-                            + movie?.poster_path)
+                            + movie.poster_path)
             Picasso.with(holder.context)
                     .load(uri)
                     .into(holder.imageMovie)
@@ -74,7 +73,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
     class ViewHolder(itemView: View, adapter: MovieFlatAdapter, activity: MainActivity) : SelectableViewHolder<Movie>(itemView) {
 
-        val mainActivity: MainActivity
+        val mainActivity: MainActivity = activity
         val context: Context = itemView.context
         val adapter: MovieFlatAdapter
 
@@ -93,7 +92,6 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
 
         init {
-            this.mainActivity = activity
             this.adapter = adapter
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             tvOverview = itemView.findViewById(R.id.textViewOverview) as TextView
@@ -111,26 +109,24 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
                 context.startActivity(intent)
             }
 
-            setItemLongClickListener(object : OnItemLongClickListener<Movie> {
-                override fun onItemLongClick(view: View?, movie: Movie?): Boolean {
-                    Log.d("MovieFlatBinder", "OnItemLongClick trigger")
+            setItemLongClickListener { view, movie ->
+                Log.d("MovieFlatBinder", "OnItemLongClick trigger")
 
-                    realm.executeTransaction {
-                        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-                        if (results.size > 0) {
-                            Log.d("MovieFlatBinder", "MyList is not empty -> updates List")
-                            val List = results[0]
-                            List.results.remove(movie)
-                            List.total_results--
-                            adapter.removeMovie(movie)
-                        }
+                realm.executeTransaction {
+                    val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+                    if (results.size > 0) {
+                        Log.d("MovieFlatBinder", "MyList is not empty -> updates List")
+                        val List = results[0]
+                        List.results.remove(movie)
+                        List.total_results--
+                        adapter.removeMovie(movie)
                     }
-                    if (movie != null) {
-                        mainActivity.removeFromFavorite(movie)
-                    }
-                    return true
                 }
-            })
+                if (movie != null) {
+                    mainActivity.removeFromFavorite(movie)
+                }
+                true
+            }
         }
 
 

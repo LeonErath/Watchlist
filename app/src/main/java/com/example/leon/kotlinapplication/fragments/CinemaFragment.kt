@@ -31,6 +31,7 @@ import kotlin.properties.Delegates
  */
 class CinemaFragment(val a: MainActivity) : Fragment() {
 
+
     val TAG: String = CinemaFragment::class.simpleName!!
     var realm: Realm by Delegates.notNull()
     var adapter = MovieAdapter(a)
@@ -46,8 +47,8 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        var rootView = inflater!!.inflate(R.layout.fragment_cinema, container, false)
-        var recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
+        val rootView = inflater!!.inflate(R.layout.fragment_cinema, container, false)
+        val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
         val query = QueryAdapter(context)
 
@@ -73,7 +74,7 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
         itemAnimator.addDuration = 300
         itemAnimator.removeDuration = 300
         recyclerView.itemAnimator = itemAnimator
-        var layout = GridLayoutManager(activity, 2)
+        val layout = GridLayoutManager(activity, 2)
         recyclerView.layoutManager = layout
         recyclerView.setOnScrollListener(object : EndlessRecylcerViewScrollListener(layout) {
             override fun onLoadMore(current_page: Int) {
@@ -95,7 +96,7 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
 
     fun deleteRealm() {
         Realm.init(activity)
-        var realm: Realm = Realm.getDefaultInstance()
+        val realm: Realm = Realm.getDefaultInstance()
         realm.executeTransaction {
             realm.deleteAll()
         }

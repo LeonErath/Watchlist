@@ -4,11 +4,7 @@ package com.example.leon.kotlinapplication
  * Created by Leon on 14.06.17.
  */
 class moneyParser(money: Int) {
-    var money: Int
-
-    init {
-        this.money = money
-    }
+    var money: Int = money
 
     fun parse(): String {
         var shortMoney: Int = 0

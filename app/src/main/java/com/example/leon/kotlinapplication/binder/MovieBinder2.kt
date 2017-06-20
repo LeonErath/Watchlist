@@ -27,7 +27,7 @@ import kotlin.properties.Delegates
  * Created by Leon on 07.06.17.
  */
 
-open class MovieBinder2() : SelectableBinder<Movie, MovieBinder2.ViewHolder>() {
+open class MovieBinder2 : SelectableBinder<Movie, MovieBinder2.ViewHolder>() {
 
 
     override fun bind(holder: ViewHolder?, movie: Movie?, b: Boolean) {
@@ -84,13 +84,12 @@ open class MovieBinder2() : SelectableBinder<Movie, MovieBinder2.ViewHolder>() {
         val context: Context = itemView.context
 
 
-        var imageV: ImageView
+        var imageV: ImageView = itemView.findViewById(R.id.imageView) as ImageView
         var cardView: CardView
         var realm: Realm by Delegates.notNull()
 
         init {
 
-            imageV = itemView.findViewById(R.id.imageView) as ImageView
             cardView = itemView.findViewById(R.id.cardView) as CardView
 
             cardView.setOnClickListener({
@@ -100,43 +99,38 @@ open class MovieBinder2() : SelectableBinder<Movie, MovieBinder2.ViewHolder>() {
                 context.startActivity(intent)
 
             })
-            cardView.setOnLongClickListener(object : View.OnLongClickListener {
-                override fun onLongClick(v: View?): Boolean {
-                    Log.d("MovieBinder", "OnItemLongClick trigger")
+            cardView.setOnLongClickListener {
+                Log.d("MovieBinder", "OnItemLongClick trigger")
 
-                    Realm.init(context)
-                    realm = Realm.getDefaultInstance()
-                    realm.executeTransaction {
-                        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-                        if (results.size > 0) {
-                            Log.d("MovieBinder", "MyList is not empty -> updates List")
-                            val List = results[0]
-                            var check = false
-                            for (movie2 in List.results) {
-                                if (item!!.id == movie2.id) check = true
-                            }
+                Realm.init(context)
+                realm = Realm.getDefaultInstance()
+                realm.executeTransaction {
+                    val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+                    if (results.size > 0) {
+                        Log.d("MovieBinder", "MyList is not empty -> updates List")
+                        val List = results[0]
+                        val check = List.results.any { item!!.id == it.id }
 
-                            if (!check) {
-                                List.results.add(item)
-                                List.total_results++
-                            }
-
-                        } else {
-                            Log.d("MovieBinder", "MyList is empty -> creates new List")
-                            val List = List()
-                            List.id = 2
-                            List.name = "MyList"
+                        if (!check) {
                             List.results.add(item)
                             List.total_results++
-                            realm.copyToRealmOrUpdate(List)
                         }
 
-
+                    } else {
+                        Log.d("MovieBinder", "MyList is empty -> creates new List")
+                        val List = List()
+                        List.id = 2
+                        List.name = "MyList"
+                        List.results.add(item)
+                        List.total_results++
+                        realm.copyToRealmOrUpdate(List)
                     }
 
-                    return true
+
                 }
-            })
+
+                true
+            }
         }
 
 
