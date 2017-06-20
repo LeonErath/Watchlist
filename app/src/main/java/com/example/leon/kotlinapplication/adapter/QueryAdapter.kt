@@ -13,6 +13,9 @@ import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
 import io.realm.RealmQuery
 import io.realm.RealmResults
+import io.realm.exceptions.RealmPrimaryKeyConstraintException
+import io.realm.internal.IOException
+import java.io.FileNotFoundException
 import kotlin.properties.Delegates
 
 /**
@@ -52,9 +55,51 @@ class QueryAdapter(c: Context) {
                 c.getString(R.string.key) +
                 "&language=en-US"
         Log.d(TAG, urlRecom)
-        httpRequest(url, urlCast, urlTrailer, urlRecom, id)
+        httpRequestDetail(url, urlCast, urlTrailer, urlRecom, id)
         return findMovie(id)
     }
+
+
+    fun getCinema(page: Int, loadData: LoadData) {
+        val queue = Volley.newRequestQueue(c)
+        val url = c.getString(R.string.base_url) +
+                "movie/now_playing?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US&page=$page"
+
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.i(TAG, "Response:" + response)
+            fetchRequestCinema(response, loadData)
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+        })
+
+        queue.add(stringRequest)
+        queue.start()
+    }
+
+    fun getPopular(page: Int, loadData: LoadData) {
+        val queue = Volley.newRequestQueue(c)
+        val url = c.getString(R.string.base_url) +
+                "movie/popular?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US&page=$page"
+
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.i(TAG, "Response:" + response)
+            fetchRequestPopular(response, loadData)
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+        })
+
+        queue.add(stringRequest)
+        queue.start()
+    }
+
 
     fun deleteFromMyList(adapter: MovieFlatAdapter, movie: Movie) {
         realm.executeTransaction {
@@ -100,7 +145,7 @@ class QueryAdapter(c: Context) {
 
     }
 
-    private fun httpRequest(url: String, urlCast: String, urlTrailer: String, urlRecom: String, id: Int) {
+    private fun httpRequestDetail(url: String, urlCast: String, urlTrailer: String, urlRecom: String, id: Int) {
 
         val queue = Volley.newRequestQueue(c)
 
@@ -114,6 +159,52 @@ class QueryAdapter(c: Context) {
         queue.add(makeRequest(urlCast))
         queue.add(makeRequest(urlTrailer))
         queue.add(stringRequestRecom)
+
+    }
+
+    // fetches the json string response to the realm database
+    // calls updateUIfromRealm afterwards to notify the user about the new data
+    private fun fetchRequestPopular(response: String, loadData: LoadData) {
+        try {
+            realm.executeTransaction {
+                val modedResponse: String = jsonParser(response)
+                        .insertValueInt("id", 0)
+                        .insertValueString("name", "popularMovies")
+                        .makeArray().json
+
+                Log.i(TAG, "moded Response: " + modedResponse)
+                realm.createOrUpdateAllFromJson(List::class.java, modedResponse)
+            }
+            loadData.update(0)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        } catch (e: RealmPrimaryKeyConstraintException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun fetchRequestCinema(response: String, loadData: LoadData) {
+        try {
+            realm.executeTransaction {
+                val modedResponse: String = jsonParser(response)
+                        .insertValueInt("id", 1)
+                        .insertValueString("name", "cinemaMovies")
+                        .makeArray().json
+
+                Log.i(TAG, "moded Response: " + modedResponse)
+                realm.createOrUpdateAllFromJson(List::class.java, modedResponse)
+            }
+            loadData.update(1)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        } catch (e: RealmPrimaryKeyConstraintException) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -141,4 +232,8 @@ class QueryAdapter(c: Context) {
     }
 
 
+}
+
+interface LoadData {
+    fun update(type: Int)
 }

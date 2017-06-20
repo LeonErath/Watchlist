@@ -41,6 +41,7 @@ public class MovieAdapter extends SelectableAdapter {
         for (Movie movie : dataList) {
             if (!dataManager.contains(movie)) {
                 dataManager.add(movie);
+                notifyItemInserted(dataManager.getCount() - 1);
             }
         }
     }
