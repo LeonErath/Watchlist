@@ -75,20 +75,11 @@ class MyListFragment(var a: MainActivity) : Fragment() {
 
         results.addChangeListener(RealmChangeListener {
             Log.i(TAG, "Change in List")
+            adapter.addData(results[0].results)
 
         })
-
-
-        if (adapter != null) {
-            if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
-        } else {
-            Log.i(TAG, "adapter is null")
-        }
-        if (refreshLayout != null) {
-            refreshLayout.isRefreshing = false
-        } else {
-            Log.i(TAG, "refreshLayout is null")
-        }
+        if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
+        refreshLayout.isRefreshing = false
     }
 
 }

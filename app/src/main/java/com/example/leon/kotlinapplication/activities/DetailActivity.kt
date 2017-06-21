@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -117,7 +118,7 @@ class DetailActivity : AppCompatActivity() {
         //set up toolbar
         setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
 
-        supportActionBar!!.subtitle = movie.tagline
+        supportActionBar!!.title = movie.title
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         refreshLayout.setOnRefreshListener {
@@ -207,6 +208,16 @@ class DetailActivity : AppCompatActivity() {
             Log.i(TAG, "Palette default")
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                this.finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 

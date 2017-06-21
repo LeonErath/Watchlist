@@ -21,7 +21,10 @@ import android.view.MenuItem
 import android.widget.SearchView
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
+import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
+import io.realm.Realm
+import io.realm.RealmResults
 import kotlin.properties.Delegates
 
 
@@ -34,11 +37,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var drawerLayoutgesamt: DrawerLayout
     lateinit var drawerToggle: ActionBarDrawerToggle
     lateinit var navigationView: NavigationView
+    lateinit var realm: Realm
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Realm.init(applicationContext)
+        realm = Realm.getDefaultInstance()
 
         rootLayout = findViewById(R.id.rootLayout) as CoordinatorLayout
         val viewPager = findViewById(R.id.viewPager) as ViewPager
@@ -128,7 +134,15 @@ class MainActivity : AppCompatActivity() {
         val snackbar = Snackbar
                 .make(rootLayout, movie.title + " added to Watchlist", Snackbar.LENGTH_LONG)
                 .setAction("UNDO") {
-                    //TODO implement UNDO Function
+                    realm.executeTransaction {
+                        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+                        if (results.size > 0) {
+                            Log.d("MovieFlatBinder", "MyList is not empty -> updates List")
+                            val List = results[0]
+                            List.results.remove(movie)
+                            List.total_results--
+                        }
+                    }
                     val snackbar1 = Snackbar.make(rootLayout, movie.title + " remove from Watchlist!", Snackbar.LENGTH_SHORT)
                     snackbar1.show()
                 }
@@ -139,7 +153,28 @@ class MainActivity : AppCompatActivity() {
         val snackbar = Snackbar
                 .make(rootLayout, movie.title + " removed from Watchlist", Snackbar.LENGTH_LONG)
                 .setAction("UNDO") {
-                    //TODO implement UNDO Function
+                    realm.executeTransaction {
+                        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+                        if (results.size > 0) {
+                            Log.i(TAG, "MyList is not empty -> updates List")
+                            val List = results[0]
+                            val check = List.results.any { movie!!.id == it.id }
+
+                            if (!check) {
+                                List.results.add(movie)
+                                List.total_results++
+                            }
+
+                        } else {
+                            Log.i(TAG, "MyList is empty -> creates new List")
+                            val List = List()
+                            List.id = 2
+                            List.name = "MyList"
+                            List.results.add(movie)
+                            List.total_results++
+                            realm.copyToRealmOrUpdate(List)
+                        }
+                    }
                     val snackbar1 = Snackbar.make(rootLayout, movie.title + " added to Watchlist!", Snackbar.LENGTH_SHORT)
                     snackbar1.show()
                 }
