@@ -1,4 +1,4 @@
-[<img src="screenshots/banner.png" />]()
+[<img src="screenshots/Banner.png" />]()
 
 ### A little App to Learn the Basics of the new Programming Language Kotlin
 
