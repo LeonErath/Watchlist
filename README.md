@@ -1,4 +1,4 @@
-# Watchlist
+# [<img src="screenshots/Logo.png" width="40" />]()  Watchlist
 
 ### A little App to Learn the Basics of the new Programming Language Kotlin
 
