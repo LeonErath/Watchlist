@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.SearchView
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
@@ -202,6 +203,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val searchViewMenuItem = menu!!.findItem(R.id.search_btn)
+        var mSearchView = searchViewMenuItem.actionView as SearchView
+        val searchImgId = resources.getIdentifier("android:id/search_button", null, null)
+        val v = mSearchView.findViewById(searchImgId) as ImageView
+        v.setImageResource(R.drawable.ic_search_white_24dp)
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
