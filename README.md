@@ -1,4 +1,4 @@
-# [<img src="screenshots/Logo.png" width="40" />]()  Watchlist
+[<img src="screenshots/banner.png" />]()
 
 ### A little App to Learn the Basics of the new Programming Language Kotlin
 
