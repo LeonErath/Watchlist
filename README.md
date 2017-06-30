@@ -1,6 +1,5 @@
-#   Watchlist
+# [<img src="screenshots/Logo.png" width="80" />]()  Watchlist
 
-[<img src="screenshots/Logo.png" width="240" />]()
 ### A little App to Learn the Basics of the new Programming Language Kotlin
 
 I've programmed an App, where I can see all upcoming Movies. I can store Movies that I like in a separate Watchlist. The reason for programming this App is to learn the new language Kotlin. I'm hoping to get a better understanding of its functions and why everybody loves kotlin. I will publish now and then new updates.
