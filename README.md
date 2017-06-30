@@ -1,4 +1,4 @@
-### ![alt text](https://raw.githubusercontent.com/LeonErath/Watchlist/master/screenshots/Logo.png) Watchlist
+# ![alt text](https://raw.githubusercontent.com/LeonErath/Watchlist/master/screenshots/Logo.png) Watchlist
 
 
 ### A little App to Learn the Basics of the new Programming Language Kotlin
