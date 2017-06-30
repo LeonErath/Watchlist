@@ -1,6 +1,7 @@
 package com.example.leon.kotlinapplication.activities
 
 import android.app.SearchManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -210,21 +211,8 @@ class MainActivity : AppCompatActivity() {
         val searchMenuItem = menu?.findItem(R.id.search_btn)
         val searchView = searchMenuItem?.actionView as SearchView
 
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        searchView.isSubmitButtonEnabled = true
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.i(TAG, "Search for String")
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                Log.i(TAG, "Autocomplete with Realm database")
-                return true
-            }
-
-
-        })
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(ComponentName(this, SearchActivity::class.java)))
+        searchView.queryHint = resources.getString(R.string.search_hint)
 
         return true
     }
