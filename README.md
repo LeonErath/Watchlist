@@ -25,6 +25,9 @@ https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
 - [ ] Search Function (started implementing)
 - [ ] Series Overview
 
+[<img src="screenshots/tmbd_logo.png"/>]()
+This product uses the TMDb API but is not endorsed or certified by TMDb.
+
 ## Update 16.06.2017
 
 Today was a good day. I had a lot of time so I could read me through the Youtube API. I found it quite hard to understand what exactly I should do, but with some Youtube videos I figured it out. So now you can watch trailers in the DetailActivity. I also added a recyclerview to display all actors from the movie. Later that day I quickly added an NavigationView so that I can implement more features in my app. I'm not really happy about the design but for now, it will work. When I have more time I will definitely revise my design. 
