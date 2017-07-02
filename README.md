@@ -4,8 +4,18 @@
 
 I've programmed an App, where I can see all upcoming Movies. I can store Movies that I like in a separate Watchlist. The reason for programming this App is to learn the new language Kotlin. I'm hoping to get a better understanding of its functions and why everybody loves kotlin. I will publish now and then new updates.
 
+## NEW Design
 
-[<img src="videos/watchlist fin.gif" width="240" />]()
+[<img src="videos/Home.gif"/>]()
+
+
+[<img src="videos/MyList.gif"  />]()
+
+
+[<img src="videos/Drawer.gif"  />]()
+
+
+[<img src="videos/Detail.gif"/>]()
 
 # Design Link
 https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
