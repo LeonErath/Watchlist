@@ -41,6 +41,6 @@ Cleaned my Code. I'm still making many mistakes when it comes to Kotlins syntax.
 
 
 
-[<img src="screenshots/tmdb_logo.png"/>]()
+[<img src="screenshots/tmdb_logo.png" width="150"/>]()
 
 ###### This product uses the TMDb API but is not endorsed or certified by TMDb.
