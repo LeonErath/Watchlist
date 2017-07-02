@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:checkableBehavior="single">
     <item
         android:title="More"
@@ -10,13 +11,16 @@
                     android:checkableBehavior="single"
                     android:id="@+id/home"
                     android:checked="true"
+                    android:checkable="true"
                     android:icon="@drawable/ic_home_black_24dp"
                     android:title="@string/home" />
                 <item
+                    android:checkable="true"
                     android:id="@+id/top_rated"
                     android:icon="@drawable/ic_movie_filter_black_24dp"
                     android:title="@string/top_rated" />
                 <item
+                    android:checkable="true"
                     android:id="@+id/recommendation"
                     android:icon="@drawable/ic_local_movies_black_24dp"
                     android:title="@string/recommendation" />
@@ -27,10 +31,12 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
+                    android:checkable="true"
                     android:id="@+id/series"
                     android:icon="@drawable/ic_tv_black_24dp"
                     android:title="@string/series" />
                 <item
+                    android:checkable="true"
                     android:id="@+id/reviews"
                     android:icon="@drawable/ic_insert_comment_black_24dp"
                     android:title="@string/reviews" />

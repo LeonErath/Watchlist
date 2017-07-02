@@ -9,10 +9,11 @@
         android:layout_height="180dp">
 
         <ImageView
-            android:src="@drawable/cover"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_logo"
             android:scaleType="centerCrop"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:id="@+id/imageView" />
 
 

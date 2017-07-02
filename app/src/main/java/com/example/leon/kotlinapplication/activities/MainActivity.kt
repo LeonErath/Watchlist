@@ -12,8 +12,6 @@ import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -21,6 +19,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.SearchView
+import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle
+import com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
 import com.example.leon.kotlinapplication.model.List
@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity() {
 
     var rootLayout: CoordinatorLayout by Delegates.notNull()
     var toolbar: Toolbar by Delegates.notNull()
-    lateinit var drawerLayoutgesamt: DrawerLayout
-    lateinit var drawerToggle: ActionBarDrawerToggle
+    lateinit var drawerLayoutgesamt: BlurDrawerLayout
+    lateinit var drawerToggle: BlurActionBarDrawerToggle
     lateinit var navigationView: NavigationView
     lateinit var realm: Realm
 
@@ -53,8 +53,15 @@ class MainActivity : AppCompatActivity() {
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, this)
         val tabLayout = findViewById(R.id.tab_layout) as TabLayout
         toolbar = findViewById(R.id.toolbar) as Toolbar
-        drawerLayoutgesamt = findViewById(R.id.drawer_layout) as DrawerLayout
-        drawerToggle = ActionBarDrawerToggle(this@MainActivity, drawerLayoutgesamt, R.string.auf, R.string.zu)
+        drawerLayoutgesamt = findViewById(R.id.drawer_layout) as BlurDrawerLayout
+
+        drawerToggle = BlurActionBarDrawerToggle(this@MainActivity,
+                drawerLayoutgesamt,
+                R.string.auf,
+                R.string.zu)
+        drawerToggle.setRadius(15)
+        drawerToggle.setDownScaleFactor(6.0f)
+
         drawerLayoutgesamt.setDrawerListener(drawerToggle)
 
         navigationView = findViewById(R.id.navView) as NavigationView

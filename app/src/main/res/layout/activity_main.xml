@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
-    android:fitsSystemWindows="true"
-    android:theme="@style/AppTheme"
+<com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.leon.kotlinapplication.activities.MainActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:blurRadius="19"
+    app:downScaleFactor="8.0"
+    android:id="@+id/drawer_layout"
+    app:openDescription="@string/drawer_open"
+    app:closeDescription="@string/drawer_close"
+    app:toolbar="@+id/toolbarRef"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -64,19 +67,19 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/drawerlayoutsingle"
-        android:layout_gravity="start"
-        android:background="#fff">
+        android:layout_gravity="start">
 
         <android.support.design.widget.NavigationView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#ffffff"
             android:id="@+id/navView"
             app:menu="@menu/navigation_view_menu"
             app:itemIconTint="@color/itemtintcolor"
             app:itemTextColor="@color/itemtintcolor"
+            app:itemBackground="@drawable/menu_background"
+            android:background="#50868585"
             app:headerLayout="@layout/header_layout" />
 
 
     </RelativeLayout>
-</android.support.v4.widget.DrawerLayout>
+</com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout>
