@@ -11,6 +11,7 @@ import io.realm.annotations.PrimaryKey
 open class Movie : RealmObject() {
     @PrimaryKey
     var id: Int = 0
+    var evolution: Int = 0
     var video: Boolean = false
     var vote_average: Double = 0.0
     var vote_count: Int = 0

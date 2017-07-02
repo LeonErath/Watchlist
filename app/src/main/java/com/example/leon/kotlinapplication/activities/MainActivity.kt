@@ -25,6 +25,7 @@ import android.widget.SearchView
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle
 import com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout
 import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
@@ -140,7 +141,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerToggle.syncState()
     }
 
-    fun addToFavorite(movie: Movie) {
+    fun addToFavorite(movie: Movie, adapter: MovieAdapter, position: Int) {
         val snackbar = Snackbar
                 .make(rootLayout, movie.title + " added to Watchlist", Snackbar.LENGTH_LONG)
                 .setAction("UNDO") {
@@ -151,10 +152,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             val List = results[0]
                             List.results.remove(movie)
                             List.total_results--
+                            movie.evolution--
                         }
                     }
                     val snackbar1 = Snackbar.make(rootLayout, movie.title + " remove from Watchlist!", Snackbar.LENGTH_SHORT)
                     snackbar1.show()
+                    adapter.notifyItemChanged(position)
+
                 }
         snackbar.show()
     }
@@ -164,6 +168,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .make(rootLayout, movie.title + " removed from Watchlist", Snackbar.LENGTH_LONG)
                 .setAction("UNDO") {
                     realm.executeTransaction {
+                        movie.evolution++
                         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
                         if (results.size > 0) {
                             Log.i(TAG, "MyList is not empty -> updates List")

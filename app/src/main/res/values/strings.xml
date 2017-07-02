@@ -22,5 +22,7 @@
     <string name="recommendation">Recommendation</string>
     <string name="series">Series</string>
     <string name="reviews">Reviews</string>
+    <string name="updates">Updates</string>
+    <string name="credtis">Credtis</string>
 
 </resources>

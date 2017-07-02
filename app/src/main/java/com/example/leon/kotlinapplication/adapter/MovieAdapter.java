@@ -27,7 +27,7 @@ public class MovieAdapter extends SelectableAdapter {
         addDataManager(dataManager);
 
 
-        registerBinder(new MovieBinder(activity));
+        registerBinder(new MovieBinder(activity, this));
     }
 
     public MovieAdapter(DetailActivity activity) {
