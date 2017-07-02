@@ -1,328 +1,349 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:id="@+id/coordinatorLayout"
     tools:context="com.example.leon.kotlinapplication.activities.DetailActivity">
 
-
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:layout_height="300dp"
+            app:contentScrim="?colorPrimary"
+            app:expandedTitleMarginBottom="94dp"
+            app:expandedTitleTextAppearance="@style/CollapsingTextAppearance.Inverse"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="Movie">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-8dp"
+                android:layout_marginTop="-8dp"
+                android:background="#000"
+                android:scaleType="centerCrop" />
 
             <android.support.v7.widget.Toolbar
+                app:layout_collapseMode="pin"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="?attr/actionBarSize"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary">
+
             </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-        </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>
 
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:behavior_overlapTop="78dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refreshContainer"
+        <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="vertical">
 
-            <android.support.v4.widget.NestedScrollView
-                android:id="@+id/scroll"
+
+            // Movie generell information
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#E6E6E6"
-                android:clipToPadding="false">
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="#fff"
+                app:cardCornerRadius="2dp">
+
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-
-                    <android.support.v7.widget.CardView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="#fff"
-                        app:cardCornerRadius="2dp"
-                        app:cardElevation="8dp">
+                        android:orientation="vertical"></LinearLayout>
 
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-                                <ImageView
-                                    android:layout_marginBottom="-8dp"
-                                    android:layout_marginTop="-8dp"
-                                    android:scaleType="centerCrop"
-                                    android:id="@+id/imageView"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="#000" />
-                            </LinearLayout>
-
-
-                            <TextView
-                                android:id="@+id/textViewMovieTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="24dp"
-                                android:text="Movie Title"
-                                android:textColor="#000"
-                                android:textSize="24sp" />
-
-                            <TextView
-                                android:id="@+id/textViewTagline"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="8dp"
-                                android:text="Movie Tag line"
-                                android:textColor="#535353"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="16dp"
-                                android:layout_marginBottom="16dp"
-                                >
-
-                                <Button
-                                    style="@style/Widget.AppCompat.Button.Borderless"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="8dp"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:theme="@style/MyButton"
-                                    android:background="#FFF"
-                                    android:text="ADD"
-                                    android:id="@+id/buttonAdd"
-                                    android:textColor="@color/colorPrimary" />
-
-                                <Button
-                                    android:id="@+id/buttonLike"
-                                    android:layout_toRightOf="@+id/buttonAdd"
-                                    style="@style/Widget.AppCompat.Button.Borderless"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="8dp"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:theme="@style/MyButton"
-                                    android:background="#FFF"
-                                    android:text="LIKE"
-                                    android:textColor="@color/colorPrimary" />
-                                <ImageButton
-                                    android:layout_alignParentEnd="true"
-                                    style="@style/Widget.AppCompat.Button.Borderless"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="8dp"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:theme="@style/MyButton"
-                                    android:background="#FFF"
-                                    android:src="@drawable/ic_expand_less_black_24dp"
-                                    android:id="@+id/button"
-                                    android:textColor="@color/colorPrimary" />
-                            </RelativeLayout>
-
-                            <com.github.chuross.library.ExpandableLayout
-                                android:id="@+id/layoutExpand"
-                                android:layout_width="match_parent"
-                                android:layout_marginBottom="24dp"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_height="wrap_content">
-                                <TextView
-                                    android:id="@+id/textViewMovieOverview"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="Movie Overview\nMovie Overview\nMovieOverview"
-                                    android:textColor="#757575"
-                                    android:textSize="14sp" />
-                            </com.github.chuross.library.ExpandableLayout>
-
-
-
-                        </LinearLayout>
-
-
-                    </android.support.v7.widget.CardView>
-
-
-                    <android.support.v7.widget.CardView
+                    <TextView
+                        android:id="@+id/textViewMovieTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="#fff"
-                        app:cardCornerRadius="2dp"
-                        app:cardElevation="8dp">
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Movie Title"
+                        android:textColor="#000"
+                        android:textSize="24sp" />
 
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-
-                            <fragment
-                                android:id="@+id/youtubeFragment"
-                                android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-
-                            </fragment>
-
-                            <RelativeLayout
-                                android:layout_margin="16dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-                                <ImageView
-                                    android:src="@drawable/ic_favorite_border_black_24dp"
-                                    android:layout_marginRight="16dp"
-                                    android:layout_toLeftOf="@+id/imageShare"
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp" />
-                                <ImageView
-                                    android:id="@+id/imageShare"
-                                    android:layout_alignParentEnd="true"
-                                    android:src="@drawable/ic_share_black_24dp"
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp" />
-                                
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-
-                    </android.support.v7.widget.CardView>
-
-                    <android.support.v7.widget.CardView
+                    <TextView
+                        android:id="@+id/textViewTagline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="#fff"
-                        app:cardCornerRadius="2dp"
-                        app:cardElevation="8dp">
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Movie Tag line"
+                        android:textColor="#535353"
+                        android:textSize="14sp" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="24dp"
-                                android:text="Reviews"
-                                android:textColor="#000"
-                                android:textSize="24sp" />
-
-
-                        </LinearLayout>
-
-
-                    </android.support.v7.widget.CardView>
-
-                    <android.support.v7.widget.CardView
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="#fff"
-                        app:cardCornerRadius="2dp"
-                        app:cardElevation="8dp">
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="16dp">
 
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/buttonAdd"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:background="#FFF"
+                            android:text="ADD"
+                            android:textColor="@color/colorPrimary"
+                            android:theme="@style/MyButton" />
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="24dp"
-                                android:text="Actors"
-                                android:textColor="#000"
-                                android:textSize="24sp" />
+                        <Button
+                            android:id="@+id/buttonLike"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_toRightOf="@+id/buttonAdd"
+                            android:background="#FFF"
+                            android:text="LIKE"
+                            android:textColor="@color/colorPrimary"
+                            android:theme="@style/MyButton" />
 
-                            <android.support.v7.widget.RecyclerView
-                                android:layout_margin="16dp"
-                                android:id="@+id/recyclerViewCast"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#FFF"
-                                android:nestedScrollingEnabled="true"></android.support.v7.widget.RecyclerView>
-                        </LinearLayout>
+                        <ImageButton
+                            android:id="@+id/button"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:background="#FFF"
+                            android:src="@drawable/ic_expand_less_black_24dp"
+                            android:textColor="@color/colorPrimary"
+                            android:theme="@style/MyButton" />
+                    </RelativeLayout>
 
-
-                    </android.support.v7.widget.CardView>
-
-                    <android.support.v7.widget.CardView
+                    <com.github.chuross.library.ExpandableLayout
+                        android:id="@+id/layoutExpand"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="#fff"
-                        app:cardCornerRadius="2dp"
-                        app:cardElevation="8dp">
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/textViewMovieOverview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:text="Movie Overview\nMovie Overview\nMovieOverview"
+                            android:textColor="#757575"
+                            android:textSize="14sp" />
+                    </com.github.chuross.library.ExpandableLayout>
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="24dp"
-                                android:text="Recommendations"
-                                android:textColor="#000"
-                                android:textSize="24sp" />
-
-                            <android.support.v7.widget.RecyclerView
-                                android:layout_margin="16dp"
-                                android:id="@+id/recyclerViewRecommendation"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="#FFF"
-                                android:nestedScrollingEnabled="true"></android.support.v7.widget.RecyclerView>
-                        </LinearLayout>
-
-
-                    </android.support.v7.widget.CardView>
 
                 </LinearLayout>
 
-            </android.support.v4.widget.NestedScrollView>
-        </android.support.v4.widget.SwipeRefreshLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+            </android.support.v7.widget.CardView>
+            // Youtube trailer
 
-</RelativeLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="#fff"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="8dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <fragment
+                        android:id="@+id/youtubeFragment"
+                        android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                    </fragment>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_toLeftOf="@+id/imageShare"
+                            android:src="@drawable/ic_favorite_border_black_24dp" />
+
+                        <ImageView
+                            android:id="@+id/imageShare"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/ic_share_black_24dp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+            // Review
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#fff"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Reviews"
+                        android:textColor="#000"
+                        android:textSize="24sp" />
+
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+            // Cast
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#fff"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="8dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Actors"
+                        android:textColor="#000"
+                        android:textSize="24sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewCast"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:background="#FFF"
+                        android:nestedScrollingEnabled="true"></android.support.v7.widget.RecyclerView>
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+            // Recommendations
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#fff"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Recommendations"
+                        android:textColor="#000"
+                        android:textSize="24sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewRecommendation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:background="#FFF"
+                        android:nestedScrollingEnabled="true"></android.support.v7.widget.RecyclerView>
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/flexible.example.fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="32dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_add_white_24dp"
+        app:layout_anchor="@id/cardView"
+        app:layout_anchorGravity="top|right|end"
+        tools:ignore="RtlHardcoded" />
+
+</android.support.design.widget.CoordinatorLayout>

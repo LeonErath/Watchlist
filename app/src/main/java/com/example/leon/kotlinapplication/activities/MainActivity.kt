@@ -1,5 +1,6 @@
 package com.example.leon.kotlinapplication.activities
 
+import android.app.Activity
 import android.app.SearchManager
 import android.content.ComponentName
 import android.content.Context
@@ -7,6 +8,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.support.annotation.IdRes
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -17,6 +19,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.SearchView
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle
@@ -27,88 +30,86 @@ import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
 import io.realm.RealmResults
-import kotlin.properties.Delegates
 
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     val TAG: String = MainActivity::class.simpleName!!
 
-    var rootLayout: CoordinatorLayout by Delegates.notNull()
-    var toolbar: Toolbar by Delegates.notNull()
-    lateinit var drawerLayoutgesamt: BlurDrawerLayout
-    lateinit var drawerToggle: BlurActionBarDrawerToggle
-    lateinit var navigationView: NavigationView
-    lateinit var realm: Realm
+    private val rootLayout: CoordinatorLayout by bind(R.id.rootLayout)
+    private val toolbar: Toolbar by bind(R.id.toolbar)
+    private val drawerLayoutgesamt: BlurDrawerLayout by bind(R.id.drawer_layout)
+    private val navigationView: NavigationView by bind(R.id.navView)
+    private val tabLayout: TabLayout by bind(R.id.tab_layout)
+    private val viewPager: ViewPager by bind(R.id.viewPager)
 
+    private val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, this)
+    lateinit var drawerToggle: BlurActionBarDrawerToggle
+    lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         Realm.init(applicationContext)
         realm = Realm.getDefaultInstance()
 
-        rootLayout = findViewById(R.id.rootLayout) as CoordinatorLayout
-        val viewPager = findViewById(R.id.viewPager) as ViewPager
-        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, this)
-        val tabLayout = findViewById(R.id.tab_layout) as TabLayout
-        toolbar = findViewById(R.id.toolbar) as Toolbar
-        drawerLayoutgesamt = findViewById(R.id.drawer_layout) as BlurDrawerLayout
+        navigationView.setNavigationItemSelectedListener(this)
+        navigationView.setCheckedItem(R.id.home)
 
-        drawerToggle = BlurActionBarDrawerToggle(this@MainActivity,
-                drawerLayoutgesamt,
-                R.string.auf,
-                R.string.zu)
-        drawerToggle.setRadius(15)
-        drawerToggle.setDownScaleFactor(6.0f)
+        setUpToolbar()
+        setupDrawer()
+        setupTablayout()
+        setUpViewPager()
 
-        drawerLayoutgesamt.setDrawerListener(drawerToggle)
+    }
 
-        navigationView = findViewById(R.id.navView) as NavigationView
+    fun <T : View> Activity.bind(@IdRes res: Int): Lazy<T> {
+        @Suppress("UNCHECKED_CAST")
+        return lazy { findViewById(res) as T }
+    }
 
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.home -> {
-
-                }
-
-                R.id.top_rated -> {
-
-                }
-
-                R.id.recommendation -> {
-
-                }
-            }
-
-            drawerLayoutgesamt.closeDrawers()
-            menuItem.isChecked = true
-
-            false
-        }
-        navigationView.setCheckedItem(0)
+    private fun setUpToolbar() {
         setSupportActionBar(toolbar)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_drawer)
-        drawerToggle.syncState()
-
-
         toolbar.title = "Movies"
         toolbar.setTitleTextColor(Color.WHITE)
+    }
 
+    private fun setUpViewPager() {
+        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        viewPager.adapter = viewPagerAdapter
+        viewPager.offscreenPageLimit = 3
+    }
 
+    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.home -> {
 
+            }
+
+            R.id.top_rated -> {
+
+            }
+
+            R.id.recommendation -> {
+
+            }
+        }
+
+        drawerLayoutgesamt.closeDrawers()
+        menuItem.isChecked = true
+
+        return true
+    }
+
+    private fun setupTablayout() {
         tabLayout.addTab(tabLayout.newTab().setText("Popular"))
         tabLayout.addTab(tabLayout.newTab().setText("Cinema"))
         tabLayout.addTab(tabLayout.newTab().setText("My List"))
-
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
 
-
-
-        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {
 
@@ -127,17 +128,17 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-
-
-        viewPager.adapter = viewPagerAdapter
-        viewPager.offscreenPageLimit = 3
-
-
     }
 
-
-
-
+    private fun setupDrawer() {
+        drawerToggle = BlurActionBarDrawerToggle(this@MainActivity, drawerLayoutgesamt,
+                R.string.auf,
+                R.string.zu)
+        drawerToggle.setRadius(15)
+        drawerToggle.setDownScaleFactor(6.0f)
+        drawerLayoutgesamt.setDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+    }
 
     fun addToFavorite(movie: Movie) {
         val snackbar = Snackbar
@@ -208,10 +209,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val searchViewMenuItem = menu!!.findItem(R.id.search_btn)
         var mSearchView = searchViewMenuItem.actionView as SearchView
@@ -233,7 +230,6 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
-
 
 
 }

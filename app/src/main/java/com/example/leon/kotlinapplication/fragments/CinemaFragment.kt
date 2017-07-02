@@ -103,4 +103,5 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
 
     }
 
+
 }

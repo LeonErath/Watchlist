@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.android.volley.Request
@@ -44,37 +43,39 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
     }
 
     override fun bind(holder: ViewHolder?, movie: Movie?, b: Boolean) {
-        holder?.tvMovie!!.text = movie?.title
+        //holder?.tvMovie!!.text = movie?.title
+        if (holder != null && holder.context != null) {
+            val uri: Uri = Uri
+                    .parse(holder.context.getString(R.string.image_base_url)
+                            + "/w342"
+                            + movie?.poster_path)
 
-        val uri: Uri = Uri
-                .parse(holder.context.getString(R.string.image_base_url)
-                        + "/w342"
-                        + movie?.poster_path)
+            Picasso.with(holder.context)
+                    .load(uri)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(holder.imageV, object : Callback {
+                        override fun onSuccess() {
 
-        Picasso.with(holder.context)
-                .load(uri)
-                .networkPolicy(NetworkPolicy.OFFLINE)
-                .into(holder.imageV, object : Callback {
-                    override fun onSuccess() {
+                        }
 
-                    }
+                        override fun onError() {
+                            //Try again online if cache failed
+                            Picasso.with(holder.context)
+                                    .load(uri)
+                                    .error(R.drawable.cover)
+                                    .into(holder.imageV, object : Callback {
+                                        override fun onSuccess() {
 
-                    override fun onError() {
-                        //Try again online if cache failed
-                        Picasso.with(holder.context)
-                                .load(uri)
-                                .error(R.drawable.cover)
-                                .into(holder.imageV, object : Callback {
-                                    override fun onSuccess() {
+                                        }
 
-                                    }
+                                        override fun onError() {
+                                            Log.v("Picasso", "Could not fetch image")
+                                        }
+                                    })
+                        }
+                    })
+        }
 
-                                    override fun onError() {
-                                        Log.v("Picasso", "Could not fetch image")
-                                    }
-                                })
-                    }
-                })
     }
 
 
@@ -96,13 +97,13 @@ open class MovieBinder(activity: MainActivity) : SelectableBinder<Movie, MovieBi
         val mainActivity: MainActivity = activity
         val context: Context = itemView.context
 
-        var tvMovie: TextView
+        //var tvMovie: TextView
         var imageV: ImageView
         var cardView: CardView
         var realm: Realm by Delegates.notNull()
 
         init {
-            tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
+            //tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             imageV = itemView.findViewById(R.id.imageView) as ImageView
             cardView = itemView.findViewById(R.id.cardView) as CardView
 

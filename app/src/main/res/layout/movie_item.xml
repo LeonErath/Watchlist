@@ -9,6 +9,7 @@
 
     <android.support.v7.widget.CardView
         app:cardElevation="0dp"
+        app:cardCornerRadius="0dp"
         android:id="@+id/cardView"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
@@ -22,13 +23,13 @@
 
             <ImageView
                 android:contentDescription="movie poster"
-                android:layout_gravity="center"
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
                 android:minHeight="240dp"/>
 
-            <TextView
+            <!--<TextView
                 android:gravity="center"
                 android:id="@+id/textViewMovie"
                 android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:text="Movie Name"
-                android:layout_margin="8dp"/>
+                android:layout_margin="8dp"/>-->
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

@@ -1,11 +1,16 @@
 package com.example.leon.kotlinapplication.activities
 
+import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.IdRes
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
@@ -14,6 +19,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -35,98 +41,106 @@ import io.realm.RealmChangeListener
 import kotlin.properties.Delegates
 
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
 
     val TAG: String = DetailActivity::class.simpleName!!
 
     var realm: Realm by Delegates.notNull()
-    lateinit var textViewTitle: TextView
-    lateinit var textViewOverview: TextView
-    lateinit var imageView: ImageView
-    lateinit var textViewDate: TextView
-    lateinit var textViewTagline: TextView
-    lateinit var textViewScore: TextView
-    lateinit var textViewRevenue: TextView
-    lateinit var imageViewAdd: ImageView
-    lateinit var recylcerViewCast: RecyclerView
-    lateinit var recyclerViewYoutube: RecyclerView
-    lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
-    lateinit var recyclverViewRecom: RecyclerView
-    lateinit var recomAdapter: MovieAdapter
+    private val textViewTitle: TextView by bind(R.id.textViewMovieTitle)
+    private val textViewOverview: TextView by bind(R.id.textViewMovieOverview)
+    private val imageView: ImageView by bind(R.id.imageView)
+    private val textViewTagline: TextView by bind(R.id.textViewTagline)
+    private val recylcerViewCast: RecyclerView by bind(R.id.recyclerViewCast)
+    private val recyclerViewRecom: RecyclerView by bind(R.id.recyclerViewRecommendation)
+    private val buttonExpand: ImageButton by bind(R.id.button)
+    private val expandLayout: ExpandableLayout by bind(R.id.layoutExpand)
+    private val mFab: FloatingActionButton by bind(R.id.flexible_example_fab)
+    private val collapsingToolbarLayout: CollapsingToolbarLayout by bind(R.id.collapsingToolbarLayout)
+    //private val refreshLayout: SwipeRefreshLayout by bind(R.id.refreshContainer)
+    private val toolbar: Toolbar by bind(R.id.toolbar)
+
+    private val recomAdapter: MovieAdapter = MovieAdapter(this)
+    private val castAdapter: CastAdapter = CastAdapter(this)
+
+    lateinit var movie: Movie
+    private var movieid: Int = 0
+    private val queryAdapter: QueryAdapter = QueryAdapter(this)
+    private val PERCENTAGE_TO_SHOW_IMAGE = 20
+    private var mMaxScrollSize: Int = 0
+    private var mIsImageHidden: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-
-
-
-        textViewTitle = findViewById(R.id.textViewMovieTitle) as TextView
-        textViewOverview = findViewById(R.id.textViewMovieOverview) as TextView
-        imageView = findViewById(R.id.imageView) as ImageView
-        textViewTagline = findViewById(R.id.textViewTagline) as TextView
-        val buttonExpand = findViewById(R.id.button) as ImageButton
-        val expandLayout = findViewById(R.id.layoutExpand) as ExpandableLayout
-
-
-        buttonExpand.setOnClickListener {
-            if (expandLayout.isCollapsed){
-                buttonExpand.setImageResource(R.drawable.ic_expand_more_black_24dp)
-                expandLayout.expand()
-            }else{
-                expandLayout.collapse()
-                buttonExpand.setImageResource(R.drawable.ic_expand_less_black_24dp)
-            }
-        }
-
-
-        recylcerViewCast = findViewById(R.id.recyclerViewCast) as RecyclerView
-        val refreshLayout = findViewById(R.id.refreshContainer) as SwipeRefreshLayout
-
-
-        // Set up cast recycler view
-        val adapter = CastAdapter(this)
-        recylcerViewCast.adapter = adapter
-        val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
-        recylcerViewCast.layoutManager = layout
-
-        recyclverViewRecom = findViewById(R.id.recyclerViewRecommendation) as RecyclerView
-        recomAdapter = MovieAdapter(this)
-        recyclverViewRecom.adapter = recomAdapter
-        val layout2 = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
-        recyclverViewRecom.layoutManager = layout2
-
-
-        val extras: Bundle = intent.extras
-        val movieid: Int = extras.getInt("movieid")
-
+        setSupportActionBar(toolbar)
 
         // Initialize realm
         Realm.init(this)
         realm = Realm.getDefaultInstance()
 
 
-        val queryAdapter = QueryAdapter(this)
-        var movie: Movie = queryAdapter.getDetail(movieid)
+        // Get movie from database
+        val extras: Bundle = intent.extras
+        movieid = extras.getInt("movieid")
+        movie = queryAdapter.getDetail(movieid)
+
         movie.addChangeListener(RealmChangeListener {
-            updateUI(movie, adapter, recomAdapter)
+            updateUI(movie, castAdapter, recomAdapter)
         })
-        adapter.addData(movie.cast)
-        recomAdapter.addData(movie.recommendations)
-
-        updateUI(movie, adapter, recomAdapter)
-
-        //set up toolbar
-        setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
 
         supportActionBar!!.title = movie.title
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        refreshLayout.setOnRefreshListener {
-            movie = queryAdapter.getDetail(movieid)
-            updateUI(movie, adapter, recomAdapter)
-            refreshLayout.isRefreshing = false
+        setupCast()
+        setupRecom()
+
+        updateUI(movie, castAdapter, recomAdapter)
+
+        buttonExpand.setOnClickListener(this)
+        //refreshLayout.setOnRefreshListener(this)
+
+        loadImage()
+
+
+        var appbar: AppBarLayout = findViewById(R.id.app_bar_layout) as AppBarLayout
+        appbar.addOnOffsetChangedListener(this)
+
+        ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), "transition")
+        collapsingToolbarLayout.setTitle(movie.title);
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+    }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+        try {
+            if (mMaxScrollSize == 0)
+                mMaxScrollSize = appBarLayout!!.getTotalScrollRange();
+
+            var currentScrollPercentage: Int = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
+
+            if (currentScrollPercentage >= PERCENTAGE_TO_SHOW_IMAGE) {
+                if (!mIsImageHidden) {
+                    mIsImageHidden = true;
+                    mFab.animate().scaleY(0f).scaleX(0f).start()
+                    toolbar.animate().alpha(1.0f).start()
+                }
+            }
+
+            if (currentScrollPercentage < PERCENTAGE_TO_SHOW_IMAGE) {
+                if (mIsImageHidden) {
+                    mIsImageHidden = false;
+
+                    mFab.animate().scaleY(1.0f).scaleX(1.0f).start();
+                }
+            }
+        } catch (e: ArithmeticException) {
+            e.printStackTrace()
         }
 
+    }
+
+
+    private fun loadImage() {
         val uri: Uri = Uri.parse(getString(R.string.image_base_url)
                 + "/w1280"
                 + movie.backdrop_path)
@@ -136,6 +150,7 @@ class DetailActivity : AppCompatActivity() {
                 Palette.from(bitmap).generate { palette ->
                     if (palette != null) {
                         applyPalette(palette)
+                        updateBackground(mFab, palette)
                     }
                 }
             }
@@ -146,10 +161,42 @@ class DetailActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    override fun onRefresh() {
+        movie = queryAdapter.getDetail(movieid)
+        updateUI(movie, castAdapter, recomAdapter)
+        //refreshLayout.isRefreshing = false
+    }
+
+    private fun setupRecom() {
+        recyclerViewRecom.adapter = recomAdapter
+        val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
+        recyclerViewRecom.layoutManager = layout
+        recomAdapter.addData(movie.recommendations)
+    }
+
+    private fun setupCast() {
+        recylcerViewCast.adapter = castAdapter
+        val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
+        recylcerViewCast.layoutManager = layout
+        castAdapter.addData(movie.cast)
+    }
 
 
+    fun <T : View> Activity.bind(@IdRes res: Int): Lazy<T> {
+        @Suppress("UNCHECKED_CAST")
+        return lazy { findViewById(res) as T }
+    }
 
-
+    override fun onClick(v: View?) {
+        if (expandLayout.isCollapsed) {
+            buttonExpand.setImageResource(R.drawable.ic_expand_more_black_24dp)
+            expandLayout.expand()
+        } else {
+            expandLayout.collapse()
+            buttonExpand.setImageResource(R.drawable.ic_expand_less_black_24dp)
+        }
     }
 
     fun updateUI(movie: Movie, adapter: CastAdapter, recomAdapter: MovieAdapter) {
@@ -188,12 +235,11 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-
     fun applyPalette(palette: Palette) {
         var primaryDark: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
         var primary: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimary)
-        //collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
-        //collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
+        collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
+        collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
 
         supportStartPostponedEnterTransition()
 
@@ -207,6 +253,9 @@ class DetailActivity : AppCompatActivity() {
             vibrantColor = palette.getMutedColor(resources.getColor(R.color.colorPrimaryDark))
             Log.i(TAG, "Palette default")
         }
+
+        fab.backgroundTintList = ColorStateList.valueOf(vibrantColor)
+        fab.rippleColor = lightVibrantColor
 
     }
 
