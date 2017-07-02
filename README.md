@@ -15,7 +15,7 @@ I've programmed an App, where I can see all upcoming Movies. I can store Movies 
 [<img src="videos/Drawer.gif" width="260" />]()
 
 
-[<img src="videos/Detail.gif"width="260"/>]()
+[<img src="videos/Detail.gif" width="260" />]()
 
 # Design Link
 https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
