@@ -25,7 +25,7 @@ https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
 - [ ] Search Function (started implementing)
 - [ ] Series Overview
 
-[<img src="screenshots/tmbd_logo.png"/>]()
+[<img src="screenshots/tmdb_logo.png"/>]()
 This product uses the TMDb API but is not endorsed or certified by TMDb.
 
 ## Update 16.06.2017
