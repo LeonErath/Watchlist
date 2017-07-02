@@ -31,8 +31,12 @@ https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
 - [x] Trailers for Movies in DetailActivity[16.06.2017]
 - [x] Added NavigationView for more Features [16.06.2017]
 - [x] Actors in DetailActivity [16.06.2017]
-- [ ] Genre Overview
-- [ ] Search Function (started implementing)
+- [x] New Design included Logo and Animations [02.07.2017]
+- [ ] Personal Movie Recommendation **Important**
+- [ ] Add Functionallity to DetailActivity
+- [ ] Filter Lists via Menu 
+- [ ] Genre Overview 
+- [ ] Search Function  **Important**
 - [ ] Series Overview
 
 ## Update 16.06.2017
