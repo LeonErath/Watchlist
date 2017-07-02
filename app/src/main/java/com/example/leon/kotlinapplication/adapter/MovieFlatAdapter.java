@@ -1,5 +1,7 @@
 package com.example.leon.kotlinapplication.adapter;
 
+import android.util.Log;
+
 import com.ahamed.multiviewadapter.DataListManager;
 import com.ahamed.multiviewadapter.SelectableAdapter;
 import com.example.leon.kotlinapplication.activities.MainActivity;
@@ -24,15 +26,18 @@ public class MovieFlatAdapter extends SelectableAdapter {
     }
 
     public void addData(List<Movie> dataList) {
-        dataManager.clear();
         for (Movie movie : dataList) {
             if (!dataManager.contains(movie)) {
+                Log.i("Adapter", "trigger");
                 dataManager.add(movie);
+                notifyItemInserted(dataManager.indexOf(movie));
             }
         }
     }
 
     public void removeMovie(Movie movie) {
-        dataManager.remove(movie);
+        int position = dataManager.indexOf(movie);
+        dataManager.remove(position);
+        notifyItemRemoved(position);
     }
 }

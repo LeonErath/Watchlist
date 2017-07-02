@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,16 +15,16 @@ import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
+import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.dateParser
-import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import com.example.leon.kotlinapplication.moneyParser
 import com.squareup.picasso.Picasso
-import io.realm.Realm
-import io.realm.RealmResults
 
 
 open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>() {
+    val TAG: String? = MovieFlatBinder::class.simpleName
+
     val adapater: MovieFlatAdapter = adapter2
     val mainActivity: MainActivity
 
@@ -100,8 +99,8 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
             tvDate = itemView.findViewById(R.id.textViewDate) as TextView
 
             imageMovie = itemView.findViewById(R.id.imageMovie) as ImageView
-            Realm.init(context)
-            val realm: Realm = Realm.getDefaultInstance()
+
+            val queryAdapter = QueryAdapter(context)
 
             setItemClickListener { view, item ->
                 val intent = Intent(context, DetailActivity::class.java)
@@ -110,21 +109,14 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
             }
 
             setItemLongClickListener { view, movie ->
-                Log.d("MovieFlatBinder", "OnItemLongClick trigger")
+                val check: Boolean = queryAdapter.movieClick(item)
+                if (check) {
+                    mainActivity.addToFavorite(item)
+                } else {
+                    mainActivity.removeFromFavorite(item)
 
-                realm.executeTransaction {
-                    val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-                    if (results.size > 0) {
-                        Log.d("MovieFlatBinder", "MyList is not empty -> updates List")
-                        val List = results[0]
-                        List.results.remove(movie)
-                        List.total_results--
-                        adapter.removeMovie(movie)
-                    }
                 }
-                if (movie != null) {
-                    mainActivity.removeFromFavorite(movie)
-                }
+                adapter.removeMovie(item)
                 true
             }
         }

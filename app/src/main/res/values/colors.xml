@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#d70c51</color>
     <color name="checkColor">#63ffffff</color>
+
+    <color name="logoBlue">#303F9F</color>
+    <color name="logoDarkPink">#B20741</color>
+    <color name="logoPink">#D70C51</color>
 </resources>

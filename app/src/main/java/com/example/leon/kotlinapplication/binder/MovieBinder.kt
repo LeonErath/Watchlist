@@ -3,6 +3,7 @@ package com.example.leon.kotlinapplication.binder
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,21 +12,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
-import com.example.leon.kotlinapplication.model.List
+import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import io.realm.Realm
-import io.realm.RealmResults
+import io.realm.RealmChangeListener
 import kotlin.properties.Delegates
 
 
@@ -39,20 +36,46 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
 
     val mainActivity: MainActivity
     val movieAdapter: MovieAdapter
+
     init {
         this.mainActivity = activity
         this.movieAdapter = movieAdapter
     }
 
     override fun bind(holder: ViewHolder?, movie: Movie?, b: Boolean) {
-        //holder?.tvMovie!!.text = movie?.title
-        if (holder != null && holder.context != null) {
-            if (movie!!.evolution == 0) {
-                holder.imageBage.visibility = View.INVISIBLE
-            } else {
-                holder.imageBage.visibility = View.VISIBLE
-            }
 
+        //holder?.tvMovie!!.text = movie?.title
+        if (holder != null) {
+            movie!!.addChangeListener(RealmChangeListener {
+                when (movie!!.evolution) {
+                    0 -> holder.imageBage.visibility = View.INVISIBLE
+                    1 -> {
+                        val color: Int = ContextCompat.getColor(holder.context, R.color.logoPink)
+                        holder.imageBage.setColorFilter(color)
+                        holder.imageBage.visibility = View.VISIBLE
+                    }
+                    2 -> {
+                        val color: Int = ContextCompat.getColor(holder.context, R.color.logoBlue)
+                        holder.imageBage.setColorFilter(color)
+                        holder.imageBage.visibility = View.VISIBLE
+                    }
+
+                }
+            })
+            when (movie!!.evolution) {
+                0 -> holder.imageBage.visibility = View.INVISIBLE
+                1 -> {
+                    val color: Int = ContextCompat.getColor(holder.context, R.color.logoPink)
+                    holder.imageBage.setColorFilter(color)
+                    holder.imageBage.visibility = View.VISIBLE
+                }
+                2 -> {
+                    val color: Int = ContextCompat.getColor(holder.context, R.color.logoBlue)
+                    holder.imageBage.setColorFilter(color)
+                    holder.imageBage.visibility = View.VISIBLE
+                }
+
+            }
 
             val uri: Uri = Uri
                     .parse(holder.context.getString(R.string.image_base_url)
@@ -119,6 +142,7 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
             cardView = itemView.findViewById(R.id.cardView) as CardView
             imageBage = itemView.findViewById(R.id.imageBadge) as ImageView
 
+            var queryAdapter = QueryAdapter(mainActivity)
 
             cardView.setOnClickListener({
                 val intent = Intent(context, DetailActivity::class.java)
@@ -127,65 +151,17 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
 
             })
             cardView.setOnLongClickListener {
-                //TODO add Use Case if movie is already in Watchlist!!
-                Realm.init(context)
-                realm = Realm.getDefaultInstance()
-                realm.executeTransaction {
-                    item.evolution++
-                    val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-                    if (results.size > 0) {
-                        Log.i(TAG, "MyList is not empty -> updates List")
-                        val List = results[0]
-                        val check = List.results.any { item!!.id == it.id }
-
-                        if (!check) {
-                            List.results.add(item)
-                            List.total_results++
-                        }
-
-                    } else {
-                        Log.i(TAG, "MyList is empty -> creates new List")
-                        val List = List()
-                        List.id = 2
-                        List.name = "MyList"
-                        List.results.add(item)
-                        List.total_results++
-                        realm.copyToRealmOrUpdate(List)
-                    }
-                    mainActivity.addToFavorite(item, movieAdapter, adapterPosition)
-                    httpRequest(item.id)
+                val check: Boolean = queryAdapter.movieClick(item)
+                if (check) {
+                    mainActivity.addToFavorite(item)
+                } else {
+                    mainActivity.removeFromFavorite(item)
                 }
-
                 movieAdapter.notifyItemChanged(adapterPosition)
                 true
             }
         }
 
-        private fun httpRequest(id: Int) {
-            val queue = Volley.newRequestQueue(context)
-            val url = mainActivity.getString(R.string.base_url) +
-                    "movie/$id?api_key=" +
-                    mainActivity.getString(R.string.key) +
-                    "&language=en-US"
-
-
-            // Request a string response from the provided URL.
-            val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-                // Display the first 500 characters of the response string.
-                Log.i(TAG, "Movie Details update:" + response)
-                fetchRequest(response)
-            }, Response.ErrorListener { error -> error.printStackTrace() })
-
-            queue.add(stringRequest)
-            queue.start()
-        }
-
-        fun fetchRequest(response: String) {
-            realm.executeTransaction {
-                realm.createOrUpdateObjectFromJson(Movie::class.java, response)
-            }
-
-        }
 
     }
 

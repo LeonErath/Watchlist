@@ -20,9 +20,14 @@
                     android:title="@string/top_rated" />
                 <item
                     android:checkable="true"
-                    android:id="@+id/recommendation"
+                    android:id="@+id/watched"
                     android:icon="@drawable/ic_local_movies_black_24dp"
-                    android:title="@string/recommendation" />
+                    android:title="@string/watched" />
+                <item
+                    android:checkable="true"
+                    android:id="@+id/personalRecom"
+                    android:icon="@drawable/ic_whatshot_white_24dp"
+                    android:title="Personal Recommendation Test" />
             </group>
         </menu>
     </item>

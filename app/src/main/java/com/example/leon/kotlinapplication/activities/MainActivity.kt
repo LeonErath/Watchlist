@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -16,7 +17,6 @@ import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,12 +25,8 @@ import android.widget.SearchView
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle
 import com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout
 import com.example.leon.kotlinapplication.R
-import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
-import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
-import io.realm.Realm
-import io.realm.RealmResults
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -45,14 +41,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, this)
     lateinit var drawerToggle: BlurActionBarDrawerToggle
-    lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Realm.init(applicationContext)
-        realm = Realm.getDefaultInstance()
 
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.setCheckedItem(R.id.home)
@@ -94,8 +87,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
 
-            R.id.recommendation -> {
+            R.id.watched -> {
 
+            }
+            R.id.personalRecom -> {
+                val intent = Intent(this, Test::class.java)
+                startActivity(intent)
+                finish()
             }
         }
 
@@ -141,58 +139,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerToggle.syncState()
     }
 
-    fun addToFavorite(movie: Movie, adapter: MovieAdapter, position: Int) {
-        val snackbar = Snackbar
-                .make(rootLayout, movie.title + " added to Watchlist", Snackbar.LENGTH_LONG)
-                .setAction("UNDO") {
-                    realm.executeTransaction {
-                        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-                        if (results.size > 0) {
-                            Log.d("MovieFlatBinder", "MyList is not empty -> updates List")
-                            val List = results[0]
-                            List.results.remove(movie)
-                            List.total_results--
-                            movie.evolution--
-                        }
-                    }
-                    val snackbar1 = Snackbar.make(rootLayout, movie.title + " remove from Watchlist!", Snackbar.LENGTH_SHORT)
-                    snackbar1.show()
-                    adapter.notifyItemChanged(position)
-
-                }
+    fun addToFavorite(movie: Movie) {
+        val snackbar = Snackbar.make(rootLayout, movie.title + " added to Watchlist", Snackbar.LENGTH_LONG)
         snackbar.show()
     }
 
     fun removeFromFavorite(movie: Movie) {
-        val snackbar = Snackbar
-                .make(rootLayout, movie.title + " removed from Watchlist", Snackbar.LENGTH_LONG)
-                .setAction("UNDO") {
-                    realm.executeTransaction {
-                        movie.evolution++
-                        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-                        if (results.size > 0) {
-                            Log.i(TAG, "MyList is not empty -> updates List")
-                            val List = results[0]
-                            val check = List.results.any { movie!!.id == it.id }
-
-                            if (!check) {
-                                List.results.add(movie)
-                                List.total_results++
-                            }
-
-                        } else {
-                            Log.i(TAG, "MyList is empty -> creates new List")
-                            val List = List()
-                            List.id = 2
-                            List.name = "MyList"
-                            List.results.add(movie)
-                            List.total_results++
-                            realm.copyToRealmOrUpdate(List)
-                        }
-                    }
-                    val snackbar1 = Snackbar.make(rootLayout, movie.title + " added to Watchlist!", Snackbar.LENGTH_SHORT)
-                    snackbar1.show()
-                }
+        val snackbar = Snackbar.make(rootLayout, movie.title + " removed from Watchlist", Snackbar.LENGTH_LONG)
         snackbar.show()
     }
 

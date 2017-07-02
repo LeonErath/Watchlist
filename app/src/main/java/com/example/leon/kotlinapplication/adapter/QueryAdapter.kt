@@ -32,6 +32,15 @@ class QueryAdapter(c: Context) {
         this.c = c
     }
 
+    fun movieClick(movie: Movie): Boolean {
+        if (checkWatchlist(movie)) {
+            removeFromWatchlist(movie)
+        } else {
+            addToWatchlist(movie)
+        }
+        return checkWatchlist(movie)
+    }
+
     fun getDetail(id: Int): Movie {
         val url = c.getString(R.string.base_url) +
                 "movie/$id?api_key=" +
@@ -58,7 +67,6 @@ class QueryAdapter(c: Context) {
         httpRequestDetail(url, urlCast, urlTrailer, urlRecom, id)
         return findMovie(id)
     }
-
 
     fun getCinema(page: Int, loadData: LoadData) {
         val queue = Volley.newRequestQueue(c)
@@ -101,21 +109,33 @@ class QueryAdapter(c: Context) {
     }
 
 
-    fun deleteFromMyList(adapter: MovieFlatAdapter, movie: Movie) {
+    private fun checkWatchlist(movie: Movie): Boolean {
+        var check = false
         realm.executeTransaction {
+            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+            if (results.size > 0) {
+                check = results[0].results.contains(movie)
+            }
+        }
+        return check
+    }
+
+    private fun removeFromWatchlist(movie: Movie) {
+        realm.executeTransaction {
+            movie.evolution--
             val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
             if (results.size > 0) {
                 Log.d(TAG, "MyList is not empty -> updates List")
                 val List = results[0]
                 List.results.remove(movie)
                 List.total_results--
-                adapter.removeMovie(movie)
             }
         }
     }
 
-    fun putInMyList(movie: Movie) {
+    private fun addToWatchlist(movie: Movie) {
         realm.executeTransaction {
+            movie.evolution++
             val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
             if (results.size > 0) {
                 Log.d(TAG, "MyList is not empty -> updates List")

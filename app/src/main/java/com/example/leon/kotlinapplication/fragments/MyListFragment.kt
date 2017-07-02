@@ -33,14 +33,25 @@ class MyListFragment(var a: MainActivity) : Fragment() {
     var adapter = MovieFlatAdapter(a)
     var refreshLayout = SwipeRefreshLayout(a)
 
+
     override fun onResume() {
         super.onResume()
         updateUIfromRealm()
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            updateUIfromRealm()
+        } else {
+
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        userVisibleHint = false
         val rootView = inflater!!.inflate(R.layout.fragment_my_list, container, false)
         val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
@@ -75,7 +86,7 @@ class MyListFragment(var a: MainActivity) : Fragment() {
 
         results.addChangeListener(RealmChangeListener {
             Log.i(TAG, "Change in List")
-            adapter.addData(results[0].results)
+            adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
 
         })
         if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
