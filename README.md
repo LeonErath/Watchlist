@@ -6,16 +6,16 @@ I've programmed an App, where I can see all upcoming Movies. I can store Movies 
 
 ## NEW Design
 
-[<img src="videos/Home.gif"/>]()
+[<img src="videos/Home.gif" width="260"/>]()
 
 
-[<img src="videos/MyList.gif"  />]()
+[<img src="videos/MyList.gif"  width="260"/>]()
 
 
-[<img src="videos/Drawer.gif"  />]()
+[<img src="videos/Drawer.gif" width="260" />]()
 
 
-[<img src="videos/Detail.gif"/>]()
+[<img src="videos/Detail.gif"width="260"/>]()
 
 # Design Link
 https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
