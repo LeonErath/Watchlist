@@ -50,12 +50,33 @@
             </android.support.design.widget.AppBarLayout>
 
 
+            <android.support.design.widget.CoordinatorLayout
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
                 <android.support.v4.view.ViewPager
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
+                <RelativeLayout
+                    android:background="#c3000000"
+                    android:id="@+id/rootBlur"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <fragment
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/youtubeFragment"
+                        android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"></fragment>
+
+
+                </RelativeLayout>
+            </android.support.design.widget.CoordinatorLayout>
 
         </android.support.design.widget.CoordinatorLayout>
 

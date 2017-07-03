@@ -20,7 +20,7 @@ import io.realm.RealmConfiguration;
 public class MovieAdapter extends SelectableAdapter {
 
 
-    private DataListManager<Movie> dataManager;
+    public DataListManager<Movie> dataManager;
 
     public MovieAdapter(MainActivity activity) {
         this.dataManager = new DataListManager<>(this);

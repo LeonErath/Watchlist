@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.leon.kotlinapplication.Bus
+import com.example.leon.kotlinapplication.MovieEvent
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.EndlessRecylcerViewScrollListener
@@ -18,10 +20,12 @@ import com.example.leon.kotlinapplication.adapter.LoadData
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.List
+import com.example.leon.kotlinapplication.registerInBus
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
 import kotlin.properties.Delegates
+
 
 
 /**
@@ -29,13 +33,13 @@ import kotlin.properties.Delegates
  * Use the [CinemaFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CinemaFragment(val a: MainActivity) : Fragment() {
+class CinemaFragment : Fragment() {
 
 
     val TAG: String = CinemaFragment::class.simpleName!!
     var realm: Realm by Delegates.notNull()
-    var adapter = MovieAdapter(a)
-    var refreshLayout = SwipeRefreshLayout(a)
+    lateinit var adapter: MovieAdapter
+    lateinit var refreshLayout: SwipeRefreshLayout
     var pageCounter: Int = 1
 
 
@@ -48,6 +52,10 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val rootView = inflater!!.inflate(R.layout.fragment_cinema, container, false)
+
+        adapter = MovieAdapter(activity as MainActivity)
+        refreshLayout = SwipeRefreshLayout(activity)
+
         val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
         val query = QueryAdapter(context)
@@ -68,7 +76,7 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
 
 
         // Set up recycler view
-        adapter = MovieAdapter(a)
+        adapter = MovieAdapter(activity as MainActivity)
         recyclerView.adapter = adapter
         val itemAnimator = DefaultItemAnimator()
         itemAnimator.addDuration = 300
@@ -87,11 +95,20 @@ class CinemaFragment(val a: MainActivity) : Fragment() {
             query.getCinema(pageCounter, load)
         }
 
+        Bus.observe<MovieEvent>()
+                .subscribe {
+                    adapter.notifyItemChanged(adapter.dataManager.indexOf(it.movie))
+                }
+                .registerInBus(this)
         // load data from https://api.themoviedb.org/3
         query.getCinema(pageCounter, load)
         return rootView
     }
 
+    override fun onDestroy() {
+        Bus.unregister(this)
+        super.onDestroy()
+    }
 
 
     fun deleteRealm() {

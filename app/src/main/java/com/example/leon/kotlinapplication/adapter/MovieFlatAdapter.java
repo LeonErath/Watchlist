@@ -27,8 +27,20 @@ public class MovieFlatAdapter extends SelectableAdapter {
 
     public void addData(List<Movie> dataList) {
         for (Movie movie : dataList) {
-            if (!dataManager.contains(movie)) {
-                Log.i("Adapter", "trigger");
+            if (dataManager.getCount() > 0) {
+                Boolean check = false;
+                for (int i = 0; i < dataManager.getCount(); i++) {
+                    Movie movie2 = dataManager.get(i);
+                    if (movie.getId() == movie2.getId()) {
+                        check = true;
+                    }
+                }
+                if (!check) {
+                    dataManager.add(movie);
+                    notifyItemInserted(dataManager.indexOf(movie));
+                }
+
+            } else {
                 dataManager.add(movie);
                 notifyItemInserted(dataManager.indexOf(movie));
             }
@@ -36,8 +48,6 @@ public class MovieFlatAdapter extends SelectableAdapter {
     }
 
     public void removeMovie(Movie movie) {
-        int position = dataManager.indexOf(movie);
-        dataManager.remove(position);
-        notifyItemRemoved(position);
+        dataManager.remove(movie);
     }
 }

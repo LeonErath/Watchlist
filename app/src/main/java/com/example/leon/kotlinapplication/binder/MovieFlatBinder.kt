@@ -2,24 +2,23 @@ package com.example.leon.kotlinapplication.binder
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
+import com.example.leon.kotlinapplication.Bus
+import com.example.leon.kotlinapplication.MovieEvent
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
-import com.example.leon.kotlinapplication.dateParser
 import com.example.leon.kotlinapplication.model.Movie
-import com.example.leon.kotlinapplication.moneyParser
-import com.squareup.picasso.Picasso
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) : SelectableBinder<Movie, MovieFlatBinder.ViewHolder>() {
@@ -38,22 +37,11 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
             with(holder) {
                 with(movie) {
                     tvMovie.text = title
-                    tvOverview.text = overview
-                    tvRevenue.text = moneyParser(revenue).parse()
-                    tvScore.text = popularity.toString()
-                    tvDate.text = dateParser(release_date).parse().dateString
+                    tvTagline.text = tagline
+                    var time: Long = Calendar.getInstance().timeInMillis
+                    buttonTime.text = "${TimeUnit.MILLISECONDS.toDays(movie.timeAdded - time)} Days"
                 }
-
             }
-
-
-            val uri: Uri = Uri
-                    .parse(holder.context.getString(R.string.image_base_url)
-                            + "/w342"
-                            + movie.poster_path)
-            Picasso.with(holder.context)
-                    .load(uri)
-                    .into(holder.imageMovie)
         }
     }
 
@@ -77,28 +65,20 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
         val adapter: MovieFlatAdapter
 
         var tvMovie: TextView
-        var tvOverview: TextView
-        var tvRevenue: TextView
-        var tvScore: TextView
-        var tvDate: TextView
+        var tvTagline: TextView
+        var buttonTime: Button
+        var buttonWatched: Button
+        var buttonRemove: Button
 
-
-        var imageMovie: ImageView
-
-        override fun getSwipeDirections(): Int {
-            return ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        }
 
 
         init {
             this.adapter = adapter
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
-            tvOverview = itemView.findViewById(R.id.textViewOverview) as TextView
-            tvRevenue = itemView.findViewById(R.id.textViewRevenue) as TextView
-            tvScore = itemView.findViewById(R.id.textViewScore) as TextView
-            tvDate = itemView.findViewById(R.id.textViewDate) as TextView
-
-            imageMovie = itemView.findViewById(R.id.imageMovie) as ImageView
+            tvTagline = itemView.findViewById(R.id.textViewTagline) as TextView
+            buttonTime = itemView.findViewById(R.id.buttonTime) as Button
+            buttonRemove = itemView.findViewById(R.id.buttonRemove) as Button
+            buttonWatched = itemView.findViewById(R.id.buttonWatched) as Button
 
             val queryAdapter = QueryAdapter(context)
 
@@ -117,6 +97,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
                 }
                 adapter.removeMovie(item)
+                Bus.send(MovieEvent(item))
                 true
             }
         }

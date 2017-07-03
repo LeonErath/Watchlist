@@ -17,20 +17,31 @@ import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.SearchView
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle
 import com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout
+import com.example.leon.kotlinapplication.Bus
+import com.example.leon.kotlinapplication.DoubleTapEvent
 import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.adapter.OnLoadedListener
+import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
 import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.model.Trailers
+import com.example.leon.kotlinapplication.registerInBus
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubePlayer
+import com.google.android.youtube.player.YouTubePlayerFragment
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    val TAG: String = MainActivity::class.simpleName!!
+    val TAG = MainActivity::class.simpleName
 
     private val rootLayout: CoordinatorLayout by bind(R.id.rootLayout)
     private val toolbar: Toolbar by bind(R.id.toolbar)
@@ -38,15 +49,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val navigationView: NavigationView by bind(R.id.navView)
     private val tabLayout: TabLayout by bind(R.id.tab_layout)
     private val viewPager: ViewPager by bind(R.id.viewPager)
+    private val rootBlur: RelativeLayout by bind(R.id.rootBlur)
+    lateinit var youtubeFragment: YouTubePlayerFragment
 
-    private val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, this)
+
+    private val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
     lateinit var drawerToggle: BlurActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        rootBlur.visibility = View.INVISIBLE
 
-
+        youtubeFragment = fragmentManager.findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.setCheckedItem(R.id.home)
 
@@ -55,6 +70,56 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupTablayout()
         setUpViewPager()
 
+        Bus.observe<DoubleTapEvent>().subscribe {
+            with(it) {
+                var queryAdapter = QueryAdapter(applicationContext)
+                queryAdapter.setOnLoadedListener2(object : OnLoadedListener {
+                    override fun complete(movie: Movie) {
+                        if (movie.results.size > 0) {
+                            movie.results
+                                    .filter { it.name == "Official Trailer" }
+                                    .forEach {
+                                        rootBlur.visibility = View.VISIBLE
+                                        initializeYoutubeFragment(it)
+                                    }
+                        }
+                    }
+
+                })
+                queryAdapter.getDetail(it.movie.id)
+            }
+        }.registerInBus(this)
+
+
+    }
+
+
+    private fun initializeYoutubeFragment(trailer: Trailers) {
+        try {
+            youtubeFragment.initialize(getString(R.string.youtube_key), object : YouTubePlayer.OnInitializedListener {
+                override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
+                    // do any work here to cue video, play video, etc.
+                    youTubePlayer.cueVideo(trailer.key)
+                    rootBlur.setOnClickListener {
+                        youTubePlayer.release()
+                        rootBlur.visibility = View.INVISIBLE
+                    }
+                }
+
+                override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
+                    Log.i(TAG, "YoutubePlayer failed")
+                }
+
+            })
+
+        } catch (e: TypeCastException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onDestroy() {
+        Bus.unregister(this)
+        super.onDestroy()
     }
 
     fun <T : View> Activity.bind(@IdRes res: Int): Lazy<T> {

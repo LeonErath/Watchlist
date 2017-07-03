@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.leon.kotlinapplication.Bus
+import com.example.leon.kotlinapplication.MovieEvent
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.EndlessRecylcerViewScrollListener
@@ -18,6 +20,7 @@ import com.example.leon.kotlinapplication.adapter.LoadData
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.List
+import com.example.leon.kotlinapplication.registerInBus
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -29,12 +32,12 @@ import kotlin.properties.Delegates
  * Use the [PopularFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PopularFragment(val a: MainActivity) : Fragment() {
+class PopularFragment() : Fragment() {
 
     val TAG: String = PopularFragment::class.simpleName!!
     var realm: Realm by Delegates.notNull()
-    var adapter = MovieAdapter(a)
-    var refreshLayout = SwipeRefreshLayout(a)
+    lateinit var adapter: MovieAdapter
+    lateinit var refreshLayout: SwipeRefreshLayout
     var pageCounter: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +48,8 @@ class PopularFragment(val a: MainActivity) : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val rootView = inflater!!.inflate(R.layout.fragment_popular, container, false)
+        adapter = MovieAdapter(activity as MainActivity)
+        refreshLayout = SwipeRefreshLayout(activity)
         val recyclerView = rootView.findViewById(R.id.recyclerView2) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
         val query = QueryAdapter(context)
@@ -66,15 +71,12 @@ class PopularFragment(val a: MainActivity) : Fragment() {
         }
 
         // Set up recycler view
-        adapter = MovieAdapter(a)
+        adapter = MovieAdapter(activity as MainActivity)
         recyclerView.adapter = adapter
-        val itemAnimator = DefaultItemAnimator()
-        itemAnimator.addDuration = 300
-        itemAnimator.removeDuration = 300
-        recyclerView.itemAnimator = itemAnimator
+        recyclerView.itemAnimator = DefaultItemAnimator()
         val layout = GridLayoutManager(activity, 2)
         recyclerView.layoutManager = layout
-        recyclerView.setOnScrollListener(object : EndlessRecylcerViewScrollListener(layout) {
+        recyclerView.addOnScrollListener(object : EndlessRecylcerViewScrollListener(layout) {
             override fun onLoadMore(current_page: Int) {
                 recyclerView.post {
                     pageCounter++
@@ -90,13 +92,22 @@ class PopularFragment(val a: MainActivity) : Fragment() {
             query.getPopular(page = 1, loadData = load)
         }
 
+        Bus.observe<MovieEvent>()
+                .subscribe {
+                    adapter.notifyItemChanged(adapter.dataManager.indexOf(it.movie))
+                }
+                .registerInBus(this)
+
 
         // load data from https://api.themoviedb.org/3
         query.getPopular(page = 1, loadData = load)
         return rootView
     }
 
-
+    override fun onDestroy() {
+        Bus.unregister(this)
+        super.onDestroy()
+    }
 
     fun deleteRealm() {
         Realm.init(activity)
