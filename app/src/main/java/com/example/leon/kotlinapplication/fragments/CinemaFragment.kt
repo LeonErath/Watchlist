@@ -11,16 +11,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.leon.kotlinapplication.Bus
-import com.example.leon.kotlinapplication.MovieEvent
-import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.EndlessRecylcerViewScrollListener
 import com.example.leon.kotlinapplication.adapter.LoadData
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.List
-import com.example.leon.kotlinapplication.registerInBus
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -95,7 +92,12 @@ class CinemaFragment : Fragment() {
             query.getCinema(pageCounter, load)
         }
 
-        Bus.observe<MovieEvent>()
+        Bus.observe<MovieEventAdd>()
+                .subscribe {
+                    adapter.notifyItemChanged(adapter.dataManager.indexOf(it.movie))
+                }
+                .registerInBus(this)
+        Bus.observe<MovieEventRemove>()
                 .subscribe {
                     adapter.notifyItemChanged(adapter.dataManager.indexOf(it.movie))
                 }

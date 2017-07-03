@@ -10,10 +10,7 @@ import android.view.*
 import android.widget.ImageView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
-import com.example.leon.kotlinapplication.Bus
-import com.example.leon.kotlinapplication.DoubleTapEvent
-import com.example.leon.kotlinapplication.MovieEvent
-import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
@@ -140,11 +137,13 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
                     val check: Boolean = queryAdapter.movieClick(item)
                     if (check) {
                         mainActivity.addToFavorite(item)
+                        Bus.send(MovieEventAdd(item))
                     } else {
                         mainActivity.removeFromFavorite(item)
+                        Bus.send(MovieEventRemove(item))
                     }
                     movieAdapter.notifyItemChanged(adapterPosition)
-                    Bus.send(MovieEvent(item))
+
                     super.onLongPress(e)
 
                 }

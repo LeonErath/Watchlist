@@ -36,14 +36,20 @@ public class MovieFlatAdapter extends SelectableAdapter {
                     }
                 }
                 if (!check) {
-                    dataManager.add(movie);
-                    notifyItemInserted(dataManager.indexOf(movie));
+                    add(movie);
                 }
 
             } else {
-                dataManager.add(movie);
-                notifyItemInserted(dataManager.indexOf(movie));
+                add(movie);
+
             }
+        }
+    }
+
+    public void add(Movie movie) {
+        if (movie.getTagline() != "" && !dataManager.contains(movie)) {
+            dataManager.add(movie);
+            notifyItemInserted(dataManager.indexOf(movie));
         }
     }
 

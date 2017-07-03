@@ -19,6 +19,7 @@ import java.io.FileNotFoundException
 import java.util.*
 import kotlin.properties.Delegates
 
+
 /**
  * Created by Leon on 15.06.17.
  */
@@ -50,7 +51,7 @@ class QueryAdapter(context: Context) {
     }
 
     fun getDetail(id: Int): Movie {
-        if (findMovie(id).detail == false) {
+        //if (findMovie(id).detail == false) {
             val url = c.getString(R.string.base_url) +
                     "movie/$id?api_key=" +
                     c.getString(R.string.key) +
@@ -74,15 +75,15 @@ class QueryAdapter(context: Context) {
                     "&language=en-US"
             Log.d(TAG, urlRecom)
             httpRequestDetail(url, urlCast, urlTrailer, urlRecom, id)
-        }
+        //}
 
 
         var movie = findMovie(id)
-        if (!realm.isInTransaction) {
-            realm.executeTransaction {
-                movie.detail = true
-            }
-        }
+        /* if (!realm.isInTransaction) {
+             realm.executeTransaction {
+                 movie.detail = true
+             }
+         }*/
         return movie
     }
 
@@ -103,7 +104,6 @@ class QueryAdapter(context: Context) {
         })
 
         queue.add(stringRequest)
-        queue.start()
     }
 
     fun getPopular(page: Int, loadData: LoadData) {
@@ -123,7 +123,6 @@ class QueryAdapter(context: Context) {
         })
 
         queue.add(stringRequest)
-        queue.start()
     }
 
 
@@ -208,7 +207,7 @@ class QueryAdapter(context: Context) {
     private fun fetchRequestPopular(response: String, loadData: LoadData) {
         try {
 
-            realm.executeTransactionAsync { bgRealm ->
+            realm.executeTransactionAsync({ bgRealm ->
                 val modedResponse: String = jsonParser(response)
                         .insertValueInt("id", 0)
                         .insertValueString("name", "popularMovies")
@@ -216,8 +215,15 @@ class QueryAdapter(context: Context) {
 
                 Log.i(TAG, "moded Response: " + modedResponse)
                 bgRealm.createOrUpdateAllFromJson(List::class.java, modedResponse)
+            }, {
+                // Transaction was a success.
+                loadData.update(0)
+            }) {
+                e ->
+                e.printStackTrace()
+                // Error
             }
-            loadData.update(0)
+
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -230,7 +236,7 @@ class QueryAdapter(context: Context) {
 
     private fun fetchRequestCinema(response: String, loadData: LoadData) {
         try {
-            realm.executeTransactionAsync { bgRealm ->
+            realm.executeTransactionAsync({ bgRealm ->
                 val modedResponse: String = jsonParser(response)
                         .insertValueInt("id", 1)
                         .insertValueString("name", "cinemaMovies")
@@ -238,8 +244,15 @@ class QueryAdapter(context: Context) {
 
                 Log.i(TAG, "moded Response: " + modedResponse)
                 bgRealm.createOrUpdateAllFromJson(List::class.java, modedResponse)
+            }, {
+                // Transaction was a success.
+                loadData.update(type = 1)
+            }) {
+                e ->
+                e.printStackTrace()
+                // Error
             }
-            loadData.update(1)
+
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {

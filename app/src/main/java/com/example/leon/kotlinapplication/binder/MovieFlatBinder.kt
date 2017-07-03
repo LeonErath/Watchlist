@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.example.leon.kotlinapplication.Bus
-import com.example.leon.kotlinapplication.MovieEvent
+import com.example.leon.kotlinapplication.MovieEventRemove
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
@@ -97,7 +97,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
                 }
                 adapter.removeMovie(item)
-                Bus.send(MovieEvent(item))
+                Bus.send(MovieEventRemove(item))
                 true
             }
         }
