@@ -29,7 +29,7 @@ import kotlin.properties.Delegates
  * Use the [PopularFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PopularFragment() : Fragment() {
+class PopularFragment : Fragment() {
 
     val TAG: String = PopularFragment::class.simpleName!!
     var realm: Realm by Delegates.notNull()

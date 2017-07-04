@@ -55,12 +55,11 @@ open class CastBinder(activity: DetailActivity) : SelectableBinder<Casting, Cast
     class ViewHolder(itemView: View, activity: DetailActivity) : SelectableViewHolder<Casting>(itemView) {
 
         val activity: DetailActivity = activity
-        var textViewName: TextView
+        var textViewName: TextView = itemView.findViewById(R.id.textViewName) as TextView
         var imageView: ImageView
         val context: Context = itemView.context
 
         init {
-            this.textViewName = itemView.findViewById(R.id.textViewName) as TextView
             this.imageView = itemView.findViewById(R.id.imageView) as ImageView
 
         }

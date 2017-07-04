@@ -62,8 +62,7 @@
                     android:layout_marginTop="8dp"
                     android:background="#FFF"
                     android:text="REMOVE"
-                    android:textColor="#4D4D4D"
-                    android:theme="@style/MyButton" />
+                    android:textColor="#4D4D4D" />
 
                 <Button
                     android:layout_centerVertical="true"
@@ -75,8 +74,7 @@
                     android:layout_toRightOf="@+id/buttonRemove"
                     android:background="#FFF"
                     android:text="WATCHED"
-                    android:textColor="#4D4D4D"
-                    android:theme="@style/MyButton" />
+                    android:textColor="#4D4D4D" />
 
                 <Button
                     android:layout_centerVertical="true"

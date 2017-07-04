@@ -85,12 +85,10 @@ open class MovieBinder2 : SelectableBinder<Movie, MovieBinder2.ViewHolder>() {
 
 
         var imageV: ImageView = itemView.findViewById(R.id.imageView) as ImageView
-        var cardView: CardView
+        var cardView: CardView = itemView.findViewById(R.id.cardView) as CardView
         var realm: Realm by Delegates.notNull()
 
         init {
-
-            cardView = itemView.findViewById(R.id.cardView) as CardView
 
             cardView.setOnClickListener({
                 Log.d("MovieBinder", "CardView ClickListener trigger")

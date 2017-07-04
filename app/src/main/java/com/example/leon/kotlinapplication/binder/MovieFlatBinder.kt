@@ -2,6 +2,7 @@ package com.example.leon.kotlinapplication.binder
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.example.leon.kotlinapplication.Bus
+import com.example.leon.kotlinapplication.MovieEventAdd
 import com.example.leon.kotlinapplication.MovieEventRemove
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
@@ -25,11 +27,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
     val TAG: String? = MovieFlatBinder::class.simpleName
 
     val adapater: MovieFlatAdapter = adapter2
-    val mainActivity: MainActivity
-
-    init {
-        this.mainActivity = activity
-    }
+    val mainActivity: MainActivity = activity
 
 
     override fun bind(holder: ViewHolder?, movie: Movie?, p2: Boolean) {
@@ -38,7 +36,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
                 with(movie) {
                     tvMovie.text = title
                     tvTagline.text = tagline
-                    var time: Long = Calendar.getInstance().timeInMillis
+                    val time: Long = Calendar.getInstance().timeInMillis
                     buttonTime.text = "${TimeUnit.MILLISECONDS.toDays(movie.timeAdded - time)} Days"
                 }
             }
@@ -62,7 +60,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
         val mainActivity: MainActivity = activity
         val context: Context = itemView.context
-        val adapter: MovieFlatAdapter
+        val adapter: MovieFlatAdapter = adapter
 
         var tvMovie: TextView
         var tvTagline: TextView
@@ -73,7 +71,6 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
 
         init {
-            this.adapter = adapter
             tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
             tvTagline = itemView.findViewById(R.id.textViewTagline) as TextView
             buttonTime = itemView.findViewById(R.id.buttonTime) as Button
@@ -89,12 +86,18 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
             }
 
             setItemLongClickListener { view, movie ->
-                val check: Boolean = queryAdapter.movieClick(item)
-                if (check) {
-                    mainActivity.addToFavorite(item)
-                } else {
-                    mainActivity.removeFromFavorite(item)
-
+                when (item.evolution) {
+                    0 -> {
+                        queryAdapter.movieClickDetail(movie = item)
+                        mainActivity.addToFavorite(item)
+                        Bus.send(MovieEventAdd(item))
+                        Log.e("MovieFlatBinder", "Technically should not be able")
+                    }
+                    1 -> {
+                        queryAdapter.removeClickDetail(movie = item)
+                        mainActivity.removeFromFavorite(item)
+                        Bus.send(MovieEventRemove(item))
+                    }
                 }
                 adapter.removeMovie(item)
                 Bus.send(MovieEventRemove(item))

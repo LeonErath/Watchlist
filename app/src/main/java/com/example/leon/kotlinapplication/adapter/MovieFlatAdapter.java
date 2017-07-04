@@ -10,13 +10,14 @@ import com.example.leon.kotlinapplication.binder.MovieFlatBinder;
 import com.example.leon.kotlinapplication.model.Movie;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Leon on 13.06.17.
  */
 
 public class MovieFlatAdapter extends SelectableAdapter {
-    private DataListManager<Movie> dataManager;
+    public DataListManager<Movie> dataManager;
 
     public MovieFlatAdapter(MainActivity activity) {
         this.dataManager = new DataListManager<>(this);
@@ -47,7 +48,7 @@ public class MovieFlatAdapter extends SelectableAdapter {
     }
 
     public void add(Movie movie) {
-        if (movie.getTagline() != "" && !dataManager.contains(movie)) {
+        if (!Objects.equals(movie.getTagline(), "") && !dataManager.contains(movie)) {
             dataManager.add(movie);
             notifyItemInserted(dataManager.indexOf(movie));
         }

@@ -38,7 +38,8 @@
                 android:layout_height="60dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignTop="@+id/imageView"
-                android:src="@drawable/ic_badge" />
+                android:src="@drawable/ic_badge"
+                android:contentDescription="Badge Indicator" />
 
         </RelativeLayout>
 

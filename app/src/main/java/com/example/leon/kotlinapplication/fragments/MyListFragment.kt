@@ -15,8 +15,10 @@ import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
 import com.example.leon.kotlinapplication.adapter.OnLoadedListener
 import com.example.leon.kotlinapplication.adapter.QueryAdapter
+import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
+import io.realm.RealmResults
 import kotlin.properties.Delegates
 
 
@@ -53,12 +55,11 @@ class MyListFragment : Fragment() {
         refreshLayout = SwipeRefreshLayout(activity)
         val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
-        var queryAdapter = QueryAdapter(activity)
+        val queryAdapter = QueryAdapter(activity)
         queryAdapter.setOnLoadedListener2(object : OnLoadedListener {
             override fun complete(movie: Movie) {
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemChanged(adapter.dataManager.indexOf(movie))
             }
-
         })
 
         // Initialize realm
@@ -79,15 +80,24 @@ class MyListFragment : Fragment() {
         }
 
         Bus.observe<MovieEventAdd>().subscribe {
-            queryAdapter.getDetail(it.movie.id)
-            adapter.add(it.movie)
+            if (it.movie.evolution == 1) {
+                queryAdapter.getDetail(it.movie.id)
+                adapter.add(it.movie)
+            } else if (it.movie.evolution == 2) {
+                adapter.removeMovie(it.movie)
+            }
         }.registerInBus(this)
         Bus.observe<MovieEventRemove>().subscribe {
-            adapter.removeMovie(it.movie)
+            if (it.movie.evolution == 0) {
+                adapter.removeMovie(it.movie)
+            } else if (it.movie.evolution == 1) {
+                adapter.add(it.movie)
+            }
+
         }.registerInBus(this)
 
         // load data from https://api.themoviedb.org/3
-        //updateUIfromRealm()
+        updateUIfromRealm()
         return rootView
     }
 
@@ -96,21 +106,14 @@ class MyListFragment : Fragment() {
         super.onDestroy()
     }
 
-    /*// updates the recycler view with the data from the realm
+    // updates the recycler view with the data from the realm
     private fun updateUIfromRealm() {
         val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-
-       results.addChangeListener(RealmChangeListener {
-            if (results.size > 0) {
-                adapter.addData(results[0].results)
-            }
-        })
-
         if (results.size > 0) {
             adapter.addData(results[0].results)
         }
         refreshLayout.isRefreshing = false
-    }*/
+    }
 
 
 }

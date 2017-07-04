@@ -21,7 +21,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        var toolbar = findViewById(R.id.toolbar) as Toolbar;
+        var toolbar = findViewById(R.id.toolbar) as Toolbar
 
         setSupportActionBar(toolbar)
         supportActionBar!!.title = "Search"
@@ -33,7 +33,7 @@ class SearchActivity : AppCompatActivity() {
 
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
-            Log.i(TAG, "Search for: " + query);
+            Log.i(TAG, "Search for: " + query)
 
 
         }

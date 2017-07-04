@@ -8,4 +8,6 @@
     <color name="logoBlue">#303F9F</color>
     <color name="logoDarkPink">#B20741</color>
     <color name="logoPink">#D70C51</color>
+
+    <color name="buttonColor">#333333</color>
 </resources>

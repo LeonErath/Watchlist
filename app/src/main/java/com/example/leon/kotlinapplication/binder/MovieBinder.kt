@@ -10,7 +10,9 @@ import android.view.*
 import android.widget.ImageView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
-import com.example.leon.kotlinapplication.*
+import com.example.leon.kotlinapplication.Bus
+import com.example.leon.kotlinapplication.DoubleTapEvent
+import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
@@ -31,11 +33,10 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
 
     val TAG: String = MovieBinder::class.simpleName!!
 
-    val mainActivity: MainActivity
+    val mainActivity: MainActivity = activity
     val movieAdapter: MovieAdapter
 
     init {
-        this.mainActivity = activity
         this.movieAdapter = movieAdapter
     }
 
@@ -112,7 +113,7 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
         val context: Context = itemView.context
 
         //var tvMovie: TextView
-        var imageV: ImageView
+        var imageV: ImageView = itemView.findViewById(R.id.imageView) as ImageView
         var imageBage: ImageView
         var cardView: CardView
         var realm: Realm by Delegates.notNull()
@@ -120,11 +121,10 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
 
         init {
             //tvMovie = itemView.findViewById(R.id.textViewMovie) as TextView
-            imageV = itemView.findViewById(R.id.imageView) as ImageView
             cardView = itemView.findViewById(R.id.cardView) as CardView
             imageBage = itemView.findViewById(R.id.imageBadge) as ImageView
 
-            var queryAdapter = QueryAdapter(mainActivity)
+            val queryAdapter = QueryAdapter(mainActivity)
 
             val gd = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
 
@@ -134,13 +134,15 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
                 }
 
                 override fun onLongPress(e: MotionEvent) {
-                    val check: Boolean = queryAdapter.movieClick(item)
-                    if (check) {
-                        mainActivity.addToFavorite(item)
-                        Bus.send(MovieEventAdd(item))
-                    } else {
-                        mainActivity.removeFromFavorite(item)
-                        Bus.send(MovieEventRemove(item))
+                    when (item.evolution) {
+                        0 -> {
+                            queryAdapter.movieClickDetail(movie = item)
+                            mainActivity.addToFavorite(item)
+                        }
+                        1 -> {
+                            queryAdapter.removeClickDetail(movie = item)
+                            mainActivity.removeFromFavorite(item)
+                        }
                     }
                     movieAdapter.notifyItemChanged(adapterPosition)
 

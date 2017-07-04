@@ -6,8 +6,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.leon.kotlinapplication.R
-import com.example.leon.kotlinapplication.jsonParser
+import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
@@ -41,13 +40,61 @@ class QueryAdapter(context: Context) {
     }
 
 
-    fun movieClick(movie: Movie): Boolean {
-        if (checkWatchlist(movie)) {
-            removeFromWatchlist(movie)
-        } else {
-            addToWatchlist(movie)
+    fun movieClickDetail(movie: Movie) {
+        when (movie.evolution) {
+            0 -> addToWatchlist(movie)
+            1 -> addToWatched(movie)
         }
-        return checkWatchlist(movie)
+        Bus.send(MovieEventAdd(movie))
+    }
+
+    fun removeClickDetail(movie: Movie) {
+        when (movie.evolution) {
+            1 -> removeFromWatchlist(movie)
+            2 -> removeWatched(movie)
+        }
+        Bus.send(MovieEventRemove(movie))
+    }
+
+    private fun addToWatched(movie: Movie) {
+        realm.executeTransaction {
+            if (movie.evolution == 1) {
+                movie.evolution++
+                val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 3).findAll()
+                if (results.size > 0) {
+                    Log.d(TAG, "WatchedList is not empty -> updates List")
+                    val List = results[0]
+                    val check = List.results.any { movie!!.id == it.id }
+
+                    if (!check) {
+                        List.results.add(movie)
+                        List.total_results++
+                    }
+
+                } else {
+                    Log.d(TAG, "WatchedList is empty -> creates new List")
+                    val List = List()
+                    List.id = 3
+                    List.name = "WatchedList"
+                    List.results.add(movie)
+                    List.total_results++
+                    realm.copyToRealmOrUpdate(List)
+                }
+            }
+        }
+    }
+
+    private fun removeWatched(movie: Movie) {
+        realm.executeTransaction {
+            movie.evolution--
+            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 3).findAll()
+            if (results.size > 0) {
+                Log.d(TAG, "WatchedList is not empty -> updates List")
+                val List = results[0]
+                List.results.remove(movie)
+                List.total_results--
+            }
+        }
     }
 
     fun getDetail(id: Int): Movie {
@@ -78,7 +125,7 @@ class QueryAdapter(context: Context) {
         //}
 
 
-        var movie = findMovie(id)
+        val movie = findMovie(id)
         /* if (!realm.isInTransaction) {
              realm.executeTransaction {
                  movie.detail = true
@@ -125,18 +172,6 @@ class QueryAdapter(context: Context) {
         queue.add(stringRequest)
     }
 
-
-    private fun checkWatchlist(movie: Movie): Boolean {
-        var check = false
-        realm.executeTransaction {
-            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
-            if (results.size > 0) {
-                check = results[0].results.contains(movie)
-            }
-        }
-        return check
-    }
-
     private fun removeFromWatchlist(movie: Movie) {
         realm.executeTransaction {
             movie.evolution--
@@ -152,7 +187,7 @@ class QueryAdapter(context: Context) {
 
     private fun addToWatchlist(movie: Movie) {
         realm.executeTransaction {
-            var time: Long = Calendar.getInstance().timeInMillis
+            val time: Long = Calendar.getInstance().timeInMillis
             movie.evolution++
             movie.timeAdded = time
             val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()

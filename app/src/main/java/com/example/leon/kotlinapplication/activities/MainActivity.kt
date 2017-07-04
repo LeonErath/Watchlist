@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Bus.observe<DoubleTapEvent>().subscribe {
             with(it) {
-                var queryAdapter = QueryAdapter(applicationContext)
+                val queryAdapter = QueryAdapter(applicationContext)
                 queryAdapter.setOnLoadedListener2(object : OnLoadedListener {
                     override fun complete(movie: Movie) {
                         if (movie.results.size > 0) {
@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val searchViewMenuItem = menu!!.findItem(R.id.search_btn)
-        var mSearchView = searchViewMenuItem.actionView as SearchView
+        val mSearchView = searchViewMenuItem.actionView as SearchView
         val searchImgId = resources.getIdentifier("android:id/search_button", null, null)
         val v = mSearchView.findViewById(searchImgId) as ImageView
         v.setImageResource(R.drawable.ic_search_white_24dp)

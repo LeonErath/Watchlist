@@ -20,10 +20,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.CastAdapter
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
@@ -48,15 +45,17 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
     var realm: Realm by Delegates.notNull()
     private val textViewTitle: TextView by bind(R.id.textViewMovieTitle)
     private val textViewOverview: TextView by bind(R.id.textViewMovieOverview)
-    private val imageView: ImageView by bind(R.id.imageView)
     private val textViewTagline: TextView by bind(R.id.textViewTagline)
+    private val imageView: ImageView by bind(R.id.imageView)
     private val recylcerViewCast: RecyclerView by bind(R.id.recyclerViewCast)
     private val recyclerViewRecom: RecyclerView by bind(R.id.recyclerViewRecommendation)
     private val buttonExpand: ImageButton by bind(R.id.button)
     private val expandLayout: ExpandableLayout by bind(R.id.layoutExpand)
-    private val mFab: FloatingActionButton by bind(R.id.flexible_example_fab)
+    private val mFab: FloatingActionButton by bind(R.id.fab)
     private val collapsingToolbarLayout: CollapsingToolbarLayout by bind(R.id.collapsingToolbarLayout)
-    //private val refreshLayout: SwipeRefreshLayout by bind(R.id.refreshContainer)
+    private val buttonAdd: Button by bind(R.id.buttonAdd)
+    private val buttonLike: Button by bind(R.id.buttonLike)
+
     private val toolbar: Toolbar by bind(R.id.toolbar)
 
     private val recomAdapter: MovieAdapter = MovieAdapter(this)
@@ -68,6 +67,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
     private val PERCENTAGE_TO_SHOW_IMAGE = 20
     private var mMaxScrollSize: Int = 0
     private var mIsImageHidden: Boolean = false
+    private var liked: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,11 +87,13 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
 
         movie.addChangeListener(RealmChangeListener {
             updateUI(movie, castAdapter, recomAdapter)
+            setUpButtons()
         })
 
         supportActionBar!!.title = movie.title
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
+        setUpButtons()
         setupCast()
         setupRecom()
 
@@ -103,24 +105,59 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         loadImage()
 
 
-        var appbar: AppBarLayout = findViewById(R.id.app_bar_layout) as AppBarLayout
+        val appbar: AppBarLayout = findViewById(R.id.app_bar_layout) as AppBarLayout
         appbar.addOnOffsetChangedListener(this)
 
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), "transition")
-        collapsingToolbarLayout.setTitle(movie.title);
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        collapsingToolbarLayout.title = movie.title
+        collapsingToolbarLayout.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
     }
+
+    private fun setUpButtons() {
+        when (movie.evolution) {
+            0 -> {
+                mFab.setImageDrawable(resources.getDrawable(R.drawable.ic_add_white_24dp))
+                buttonAdd.text = "ADD"
+            }
+            1 -> {
+                mFab.setImageDrawable(resources.getDrawable(R.drawable.ic_done_white_24dp))
+                buttonAdd.text = "WATCHED"
+            }
+            2 -> {
+                mFab.setImageDrawable(resources.getDrawable(R.drawable.ic_eye_white_24dp))
+
+            }
+        }
+        buttonLike.setOnClickListener {
+            if (liked) {
+                buttonLike.setTextColor(ContextCompat.getColor(applicationContext, R.color.logoPink))
+            } else {
+                buttonLike.setTextColor(ContextCompat.getColor(applicationContext, R.color.buttonColor))
+            }
+        }
+
+        mFab.setOnClickListener {
+            queryAdapter.movieClickDetail(movie)
+        }
+        mFab.setOnLongClickListener {
+            queryAdapter.removeClickDetail(movie)
+            true
+        }
+    }
+
+
+
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
         try {
             if (mMaxScrollSize == 0)
-                mMaxScrollSize = appBarLayout!!.getTotalScrollRange();
+                mMaxScrollSize = appBarLayout!!.totalScrollRange
 
-            var currentScrollPercentage: Int = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
+            val currentScrollPercentage: Int = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize
 
             if (currentScrollPercentage >= PERCENTAGE_TO_SHOW_IMAGE) {
                 if (!mIsImageHidden) {
-                    mIsImageHidden = true;
+                    mIsImageHidden = true
                     mFab.animate().scaleY(0f).scaleX(0f).start()
                     toolbar.animate().alpha(1.0f).start()
                 }
@@ -128,9 +165,9 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
 
             if (currentScrollPercentage < PERCENTAGE_TO_SHOW_IMAGE) {
                 if (mIsImageHidden) {
-                    mIsImageHidden = false;
+                    mIsImageHidden = false
 
-                    mFab.animate().scaleY(1.0f).scaleX(1.0f).start();
+                    mFab.animate().scaleY(1.0f).scaleX(1.0f).start()
                 }
             }
         } catch (e: ArithmeticException) {
@@ -236,17 +273,17 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
     }
 
     fun applyPalette(palette: Palette) {
-        var primaryDark: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
-        var primary: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimary)
-        collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
-        collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
+        val primaryDark: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
+        val primary: Int = ContextCompat.getColor(applicationContext, R.color.colorPrimary)
+        collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary))
+        collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark))
 
         supportStartPostponedEnterTransition()
 
     }
 
     fun updateBackground(fab: FloatingActionButton, palette: Palette) {
-        var lightVibrantColor: Int = palette.getLightVibrantColor(resources.getColor(android.R.color.white))
+        val lightVibrantColor: Int = palette.getLightVibrantColor(resources.getColor(android.R.color.white))
         var vibrantColor: Int = palette.getVibrantColor(resources.getColor(R.color.colorAccent))
 
         if (vibrantColor == resources.getColor(R.color.colorAccent)) {
