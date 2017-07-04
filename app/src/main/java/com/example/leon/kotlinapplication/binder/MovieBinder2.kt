@@ -50,7 +50,7 @@ open class MovieBinder2 : SelectableBinder<Movie, MovieBinder2.ViewHolder>() {
                             //Try again online if cache failed
                             Picasso.with(holder.context)
                                     .load(uri)
-                                    .error(R.drawable.cover)
+                                    .error(R.drawable.image_default)
                                     .into(holder.imageV, object : Callback {
                                         override fun onSuccess() {
 

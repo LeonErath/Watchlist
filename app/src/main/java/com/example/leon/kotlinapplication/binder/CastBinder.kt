@@ -35,6 +35,7 @@ open class CastBinder(activity: DetailActivity) : SelectableBinder<Casting, Cast
                                 + cast.profile_path)
                 Picasso.with(holder.context)
                         .load(uri)
+                        .error(R.drawable.image_default)
                         .into(holder.imageView)
             }
         }

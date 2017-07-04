@@ -46,6 +46,9 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
     private val textViewTitle: TextView by bind(R.id.textViewMovieTitle)
     private val textViewOverview: TextView by bind(R.id.textViewMovieOverview)
     private val textViewTagline: TextView by bind(R.id.textViewTagline)
+    private val textViewGenre1: TextView by bind(R.id.textViewGenre1)
+    private val textViewGenre2: TextView by bind(R.id.textViewGenre2)
+    private val textViewGenre3: TextView by bind(R.id.textViewGenre3)
     private val imageView: ImageView by bind(R.id.imageView)
     private val recylcerViewCast: RecyclerView by bind(R.id.recyclerViewCast)
     private val recyclerViewRecom: RecyclerView by bind(R.id.recyclerViewRecommendation)
@@ -55,6 +58,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
     private val collapsingToolbarLayout: CollapsingToolbarLayout by bind(R.id.collapsingToolbarLayout)
     private val buttonAdd: Button by bind(R.id.buttonAdd)
     private val buttonLike: Button by bind(R.id.buttonLike)
+    private val temp: LinearLayout by bind(R.id.temp)
 
     private val toolbar: Toolbar by bind(R.id.toolbar)
 
@@ -88,6 +92,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         movie.addChangeListener(RealmChangeListener {
             updateUI(movie, castAdapter, recomAdapter)
             setUpButtons()
+            setupGenre()
         })
 
         supportActionBar!!.title = movie.title
@@ -96,6 +101,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         setUpButtons()
         setupCast()
         setupRecom()
+        setupGenre()
 
         updateUI(movie, castAdapter, recomAdapter)
 
@@ -111,6 +117,33 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), "transition")
         collapsingToolbarLayout.title = movie.title
         collapsingToolbarLayout.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
+
+        temp.requestFocus()
+
+    }
+
+    private fun setupGenre() {
+        when (movie.genres.size) {
+            1 -> {
+                textViewGenre1.visibility = View.VISIBLE
+                textViewGenre1.text = movie.genres.get(0).name
+            }
+            2 -> {
+                textViewGenre1.visibility = View.VISIBLE
+                textViewGenre1.text = movie.genres.get(0).name
+                textViewGenre2.visibility = View.VISIBLE
+                textViewGenre2.text = movie.genres.get(1).name
+            }
+            in 3..10 -> {
+                textViewGenre1.visibility = View.VISIBLE
+                textViewGenre1.text = movie.genres.get(0).name
+                textViewGenre2.visibility = View.VISIBLE
+                textViewGenre2.text = movie.genres.get(1).name
+                textViewGenre3.visibility = View.VISIBLE
+                textViewGenre3.text = movie.genres.get(2).name
+
+            }
+        }
     }
 
     private fun setUpButtons() {
@@ -193,8 +226,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
             }
 
             override fun onError() {
-                //TODO search for right picture
-                Picasso.with(this@DetailActivity).load(R.drawable.cover).into(imageView)
+                Picasso.with(this@DetailActivity).load(R.drawable.ic_poster_detail).into(imageView)
             }
 
         })
@@ -256,6 +288,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
     private fun initializeYoutubeFragment(trailer: Trailers) {
         try {
             val youtubeFragment = fragmentManager.findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
+
             youtubeFragment.initialize(getString(R.string.youtube_key), object : YouTubePlayer.OnInitializedListener {
                 override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
                     // do any work here to cue video, play video, etc.
