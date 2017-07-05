@@ -1,5 +1,6 @@
 package com.example.leon.kotlinapplication.binder
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -16,7 +17,7 @@ import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
-import com.example.leon.kotlinapplication.adapter.QueryAdapter
+import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
@@ -29,11 +30,11 @@ import kotlin.properties.Delegates
  * Created by Leon on 07.06.17.
  */
 
-open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
+open class MovieBinder(activity: Activity, movieAdapter: MovieAdapter) : SelectableBinder<Movie, MovieBinder.ViewHolder>() {
 
     val TAG: String = MovieBinder::class.simpleName!!
 
-    val mainActivity: MainActivity = activity
+    val mainActivity: Activity = activity
     val movieAdapter: MovieAdapter
 
     init {
@@ -106,10 +107,10 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
         return 2
     }
 
-    class ViewHolder(itemView: View, activity: MainActivity, movieAdapter: MovieAdapter) : SelectableViewHolder<Movie>(itemView) {
+    class ViewHolder(itemView: View, activity: Activity, movieAdapter: MovieAdapter) : SelectableViewHolder<Movie>(itemView) {
 
         val TAG: String = ViewHolder::javaClass.name
-        val mainActivity: MainActivity = activity
+        val mainActivity: Activity = activity
         val context: Context = itemView.context
 
         //var tvMovie: TextView
@@ -137,11 +138,15 @@ open class MovieBinder(activity: MainActivity, movieAdapter: MovieAdapter) : Sel
                     when (item.evolution) {
                         0 -> {
                             queryAdapter.movieClickDetail(movie = item)
-                            mainActivity.addToFavorite(item)
+                            if (mainActivity is MainActivity) {
+                                mainActivity.addToFavorite(item)
+                            }
                         }
                         1 -> {
                             queryAdapter.removeClickDetail(movie = item)
-                            mainActivity.removeFromFavorite(item)
+                            if (mainActivity is MainActivity) {
+                                mainActivity.removeFromFavorite(item)
+                            }
                         }
                     }
                     movieAdapter.notifyItemChanged(adapterPosition)

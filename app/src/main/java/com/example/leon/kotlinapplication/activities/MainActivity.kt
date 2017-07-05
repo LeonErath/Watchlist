@@ -27,15 +27,10 @@ import android.widget.RelativeLayout
 import android.widget.SearchView
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle
 import com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout
-import com.example.leon.kotlinapplication.Bus
-import com.example.leon.kotlinapplication.DoubleTapEvent
-import com.example.leon.kotlinapplication.R
-import com.example.leon.kotlinapplication.adapter.OnLoadedListener
-import com.example.leon.kotlinapplication.adapter.QueryAdapter
+import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.adapter.ViewPagerAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import com.example.leon.kotlinapplication.model.Trailers
-import com.example.leon.kotlinapplication.registerInBus
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
@@ -75,7 +70,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Bus.observe<DoubleTapEvent>().subscribe {
             with(it) {
                 val queryAdapter = QueryAdapter(applicationContext)
-                queryAdapter.setOnLoadedListener2(object : OnLoadedListener {
+                queryAdapter.setOnLoadedListener2(object : DetailLoadedListener {
                     override fun complete(movie: Movie) {
                         if (movie.results.size > 0) {
                             movie.results

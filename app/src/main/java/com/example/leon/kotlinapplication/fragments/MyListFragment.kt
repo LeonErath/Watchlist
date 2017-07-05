@@ -10,12 +10,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
-import com.example.leon.kotlinapplication.adapter.OnLoadedListener
-import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
@@ -58,7 +55,7 @@ class MyListFragment : Fragment() {
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
 
         val queryAdapter = QueryAdapter(activity)
-        queryAdapter.setOnLoadedListener2(object : OnLoadedListener {
+        queryAdapter.setOnLoadedListener2(object : DetailLoadedListener {
             override fun complete(movie: Movie) {
                 adapter.notifyItemChanged(adapter.dataManager.indexOf(movie))
             }

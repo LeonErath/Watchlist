@@ -1,6 +1,8 @@
 package com.example.leon.kotlinapplication.binder
 
+
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.GenreActivity
+import com.example.leon.kotlinapplication.activities.GenreDetailActivity
 import com.example.leon.kotlinapplication.model.Genre
 
 /**
@@ -51,7 +54,9 @@ open class GenreBinder(activity: GenreActivity) : SelectableBinder<Genre, GenreB
             cardView = itemView.findViewById(R.id.cardView) as CardView
 
             cardView.setOnClickListener {
-
+                val intent = Intent(context, GenreDetailActivity::class.java)
+                intent.putExtra("id", item.id)
+                activity.startActivity(intent)
             }
 
         }

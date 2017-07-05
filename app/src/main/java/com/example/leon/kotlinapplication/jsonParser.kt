@@ -43,7 +43,14 @@ class jsonParser(jsonString: String) {
         val jsonObject = JSONObject(json)
         val array = jsonObject.getJSONArray("results")
 
-        return "{id=$id,recommendations=$array }"
+        return "{id:$id,recommendations=$array }"
+    }
+
+    fun parseGenreMovies(): jsonParser {
+        val jsonObject = JSONObject(json)
+        jsonObject.put("id", 6)
+        json = "$jsonObject"
+        return this
     }
 
     fun insertValueInt(key: String, value: Int): jsonParser {

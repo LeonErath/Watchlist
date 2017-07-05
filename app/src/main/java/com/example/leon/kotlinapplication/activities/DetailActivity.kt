@@ -24,7 +24,7 @@ import android.widget.*
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.CastAdapter
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
-import com.example.leon.kotlinapplication.adapter.QueryAdapter
+import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import com.example.leon.kotlinapplication.model.Trailers
 import com.github.chuross.library.ExpandableLayout
@@ -106,11 +106,11 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         updateUI(movie, castAdapter, recomAdapter)
 
         buttonExpand.setOnClickListener(this)
-        //refreshLayout.setOnRefreshListener(this)
 
         loadImage()
 
 
+        // smooth animation for toolbar
         val appbar: AppBarLayout = findViewById(R.id.app_bar_layout) as AppBarLayout
         appbar.addOnOffsetChangedListener(this)
 
@@ -118,8 +118,9 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         collapsingToolbarLayout.title = movie.title
         collapsingToolbarLayout.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
 
-        temp.requestFocus()
 
+        // to ensure that scrollview is scrolled to the top
+        temp.requestFocus()
     }
 
     private fun setupGenre() {

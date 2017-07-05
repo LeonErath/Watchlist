@@ -1,5 +1,7 @@
 package com.example.leon.kotlinapplication.adapter;
 
+import android.app.Activity;
+
 import com.ahamed.multiviewadapter.DataListManager;
 import com.ahamed.multiviewadapter.SelectableAdapter;
 import com.example.leon.kotlinapplication.activities.DetailActivity;
@@ -22,7 +24,7 @@ public class MovieAdapter extends SelectableAdapter {
 
     public DataListManager<Movie> dataManager;
 
-    public MovieAdapter(MainActivity activity) {
+    public MovieAdapter(Activity activity) {
         this.dataManager = new DataListManager<>(this);
         addDataManager(dataManager);
 

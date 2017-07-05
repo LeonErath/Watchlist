@@ -11,11 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import com.example.leon.kotlinapplication.LoadData
+import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.GenreActivity
 import com.example.leon.kotlinapplication.adapter.GenreAdapter
-import com.example.leon.kotlinapplication.adapter.LoadData
-import com.example.leon.kotlinapplication.adapter.QueryAdapter
 import com.example.leon.kotlinapplication.model.Genre
 import io.realm.Realm
 import io.realm.RealmResults
@@ -50,7 +50,7 @@ class GenreFragment : Fragment() {
             override fun update(type: Int) {
                 var results: RealmResults<Genre> = realm.where(Genre::class.java).findAll()
                 if (results.size > 0) {
-                    //adapter.addData(results)
+                    adapter.addData(results)
                 }
             }
 

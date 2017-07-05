@@ -62,9 +62,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.GenreActivity"
-            android:theme="@style/AppTheme2">
+            android:theme="@style/AppTheme2"></activity>
 
-        </activity>
+        <activity
+            android:name=".activities.GenreDetailActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme2"></activity>
     </application>
 
 </manifest>

@@ -17,7 +17,7 @@ import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
-import com.example.leon.kotlinapplication.adapter.QueryAdapter
+import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import java.util.*
 import java.util.concurrent.TimeUnit

@@ -14,9 +14,9 @@ import android.view.ViewGroup
 import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.EndlessRecylcerViewScrollListener
-import com.example.leon.kotlinapplication.adapter.LoadData
+import com.example.leon.kotlinapplication.LoadData
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
-import com.example.leon.kotlinapplication.adapter.QueryAdapter
+import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.model.List
 import io.realm.Realm
 import io.realm.RealmResults

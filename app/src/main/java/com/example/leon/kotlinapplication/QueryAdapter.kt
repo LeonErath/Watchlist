@@ -1,4 +1,4 @@
-package com.example.leon.kotlinapplication.adapter
+package com.example.leon.kotlinapplication
 
 import android.content.Context
 import android.util.Log
@@ -6,27 +6,22 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.leon.kotlinapplication.*
-import com.example.leon.kotlinapplication.model.Genre
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
 import io.realm.RealmQuery
 import io.realm.RealmResults
-import io.realm.exceptions.RealmPrimaryKeyConstraintException
-import io.realm.internal.IOException
-import java.io.FileNotFoundException
 import java.util.*
-import kotlin.properties.Delegates
 
 
 /**
  * Created by Leon on 15.06.17.
  */
-class QueryAdapter(context: Context) {
-    var realm: Realm by Delegates.notNull()
+class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetcher() {
+    var realm: Realm
     val TAG = QueryAdapter::class.java.simpleName!!
-    var onLoadedListener: OnLoadedListener? = null
+    var detailLoaded: DetailLoadedListener? = null
+    var loadData: LoadData? = null
 
     var c: Context
 
@@ -36,8 +31,8 @@ class QueryAdapter(context: Context) {
         this.c = context
     }
 
-    fun setOnLoadedListener2(onLoadedListener: OnLoadedListener) {
-        this.onLoadedListener = onLoadedListener
+    fun setOnLoadedListener2(detailLoadedListener: DetailLoadedListener) {
+        this.detailLoaded = detailLoaded
     }
 
     fun movieClickDetail(movie: Movie) {
@@ -98,54 +93,46 @@ class QueryAdapter(context: Context) {
     }
 
     fun getDetail(id: Int): Movie {
-        //if (findMovie(id).detail == false) {
-            val url = c.getString(R.string.base_url) +
-                    "movie/$id?api_key=" +
-                    c.getString(R.string.key) +
-                    "&language=en-US"
-            Log.d(TAG, url)
+        Log.i(TAG, "Trying to get movie details..")
+        val url = c.getString(R.string.base_url) +
+                "movie/$id?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
 
+        val urlCast = c.getString(R.string.base_url) +
+                "movie/$id/credits?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
 
-            val urlCast = c.getString(R.string.base_url) +
-                    "movie/$id/credits?api_key=" +
-                    c.getString(R.string.key) +
-                    "&language=en-US"
-            Log.d(TAG, urlCast)
-            val urlTrailer = c.getString(R.string.base_url) +
-                    "movie/$id/videos?api_key=" +
-                    c.getString(R.string.key) +
-                    "&language=en-US"
-            Log.d(TAG, urlTrailer)
-            val urlRecom = c.getString(R.string.base_url) +
-                    "movie/$id/recommendations?api_key=" +
-                    c.getString(R.string.key) +
-                    "&language=en-US"
-            Log.d(TAG, urlRecom)
-            httpRequestDetail(url, urlCast, urlTrailer, urlRecom, id)
-        //}
+        val urlTrailer = c.getString(R.string.base_url) +
+                "movie/$id/videos?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
 
+        val urlRecom = c.getString(R.string.base_url) +
+                "movie/$id/recommendations?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
 
-        val movie = findMovie(id)
-        /* if (!realm.isInTransaction) {
-             realm.executeTransaction {
-                 movie.detail = true
-             }
-         }*/
-        return movie
+        httpRequestDetail(url, urlCast, urlTrailer, urlRecom, id)
+
+        return findMovie(id)
     }
 
     fun getCinema(page: Int, loadData: LoadData) {
+        this.loadData = loadData
         val queue = Volley.newRequestQueue(c)
         val url = c.getString(R.string.base_url) +
                 "movie/now_playing?api_key=" +
                 c.getString(R.string.key) +
                 "&language=en-US&page=$page"
 
-        // Request a string response from the provided URL.
+        // Fetcher a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             // Display the first 500 characters of the response string.
             Log.i(TAG, "Response:" + response)
-            fetchRequestCinema(response, loadData)
+            fetch(realm, 1, response)
+            //fetchRequestCinema(response, loadData)
         }, Response.ErrorListener { error ->
             error.printStackTrace()
         })
@@ -154,17 +141,19 @@ class QueryAdapter(context: Context) {
     }
 
     fun getPopular(page: Int, loadData: LoadData) {
+        this.loadData = loadData
         val queue = Volley.newRequestQueue(c)
         val url = c.getString(R.string.base_url) +
                 "movie/popular?api_key=" +
                 c.getString(R.string.key) +
                 "&language=en-US&page=$page"
 
-        // Request a string response from the provided URL.
+        // Fetcher a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             // Display the first 500 characters of the response string.
             Log.i(TAG, "Response:" + response)
-            fetchRequestPopular(response, loadData)
+            fetch(realm, 0, response)
+
         }, Response.ErrorListener { error ->
             error.printStackTrace()
         })
@@ -173,6 +162,7 @@ class QueryAdapter(context: Context) {
     }
 
     fun getGenre(loadData: LoadData) {
+        this.loadData = loadData
         // https://api.themoviedb.org/3/genre/movie/list?api_key=df38fba2447615a58400c89be4c98032&language=en-US
         val queue = Volley.newRequestQueue(c)
         val url = c.getString(R.string.base_url) +
@@ -180,11 +170,11 @@ class QueryAdapter(context: Context) {
                 c.getString(R.string.key) +
                 "&language=en-US"
 
-        // Request a string response from the provided URL.
+        // Fetcher a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             // Display the first 500 characters of the response string.
             Log.i(TAG, "Response:" + response)
-            fetchRequestGenre(response, loadData)
+            fetch(realm, 5, response)
         }, Response.ErrorListener { error ->
             error.printStackTrace()
         })
@@ -192,7 +182,26 @@ class QueryAdapter(context: Context) {
         queue.add(stringRequest)
     }
 
+    fun getGenreMovie(genreid: Int, loadData: LoadData) {
+        this.loadData = loadData
+        // https://api.themoviedb.org/3/genre/movie/list?api_key=df38fba2447615a58400c89be4c98032&language=en-US
+        val queue = Volley.newRequestQueue(c)
+        val url = c.getString(R.string.base_url) +
+                "genre/$genreid/movies?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
 
+        // Fetcher a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.i(TAG, "Response:" + response)
+            fetch(realm, 6, response)
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+        })
+
+        queue.add(stringRequest)
+    }
 
     private fun removeFromWatchlist(movie: Movie) {
         realm.executeTransaction {
@@ -208,13 +217,14 @@ class QueryAdapter(context: Context) {
     }
 
     private fun addToWatchlist(movie: Movie) {
+        Log.i(TAG, "${movie.title} added to Watchlist")
         realm.executeTransaction {
             val time: Long = Calendar.getInstance().timeInMillis
             movie.evolution++
             movie.timeAdded = time
             val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
             if (results.size > 0) {
-                Log.d(TAG, "MyList is not empty -> updates List")
+
                 val List = results[0]
                 val check = List.results.any { movie!!.id == it.id }
 
@@ -224,7 +234,7 @@ class QueryAdapter(context: Context) {
                 }
 
             } else {
-                Log.d(TAG, "MyList is empty -> creates new List")
+
                 val List = List()
                 List.id = 2
                 List.name = "MyList"
@@ -244,7 +254,8 @@ class QueryAdapter(context: Context) {
 
         val stringRequestRecom = StringRequest(Request.Method.GET, urlRecom, Response.Listener<String> { response ->
             Log.d(TAG, response)
-            fetchRequest(jsonParser(response).parseRecommendation(id))
+
+            fetchRequest(realm, recommendation(response, id))
         }, Response.ErrorListener { error -> error.printStackTrace() })
 
 
@@ -253,120 +264,34 @@ class QueryAdapter(context: Context) {
         queue.add(makeRequest(urlTrailer))
         queue.add(stringRequestRecom)
         queue.addRequestFinishedListener<Movie> {
-            if (onLoadedListener != null) {
-                onLoadedListener!!.complete(findMovie(id))
+            if (detailLoaded != null) {
+                detailLoaded!!.complete(findMovie(id))
             }
         }
     }
 
-    // fetches the json string response to the realm database
-    // calls updateUIfromRealm afterwards to notify the user about the new data
-    private fun fetchRequestPopular(response: String, loadData: LoadData) {
-        try {
-
-            realm.executeTransactionAsync({ bgRealm ->
-                val modedResponse: String = jsonParser(response)
-                        .insertValueInt("id", 0)
-                        .insertValueString("name", "popularMovies")
-                        .makeArray().json
-
-                Log.i(TAG, "moded Response: " + modedResponse)
-                bgRealm.createOrUpdateAllFromJson(List::class.java, modedResponse)
-            }, {
-                // Transaction was a success.
-                loadData.update(0)
-            }) {
-                e ->
-                e.printStackTrace()
-                // Error
-            }
-
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        } catch (e: RealmPrimaryKeyConstraintException) {
-            e.printStackTrace()
-        }
-
-    }
-
-    private fun fetchRequestCinema(response: String, loadData: LoadData) {
-        try {
-            realm.executeTransactionAsync({ bgRealm ->
-                val modedResponse: String = jsonParser(response)
-                        .insertValueInt("id", 1)
-                        .insertValueString("name", "cinemaMovies")
-                        .makeArray().json
-
-                Log.i(TAG, "moded Response: " + modedResponse)
-                bgRealm.createOrUpdateAllFromJson(List::class.java, modedResponse)
-            }, {
-                // Transaction was a success.
-                loadData.update(type = 1)
-            }) {
-                e ->
-                e.printStackTrace()
-                // Error
-            }
-
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        } catch (e: RealmPrimaryKeyConstraintException) {
-            e.printStackTrace()
-        }
-
-    }
-
-    private fun fetchRequestGenre(response: String, loadData: LoadData) {
-        try {
-            realm.executeTransactionAsync({ bgRealm ->
-                Log.i(TAG, "Genres:" + response)
-                val modedResponse = jsonParser(response).makeGenreArray().json
-                bgRealm.createOrUpdateAllFromJson(Genre::class.java, modedResponse)
-            }, {
-                // Transaction was a success.
-                loadData.update(type = 5)
-            }) {
-                e ->
-                e.printStackTrace()
-                // Error
-            }
-
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        } catch (e: RealmPrimaryKeyConstraintException) {
-            e.printStackTrace()
-        }
-
-    }
 
     private fun makeRequest(url: String): StringRequest {
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             Log.d(TAG, response)
-            fetchRequest(response)
+
+            fetchRequest(realm, response)
         }, Response.ErrorListener { error -> error.printStackTrace() })
         return stringRequest
     }
 
-    private fun fetchRequest(response: String) {
-        realm.executeTransactionAsync { bgRealm ->
-            bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
-        }
-    }
 
     private fun findMovie(movieid: Int): Movie {
         val query: RealmQuery<Movie> = realm.where(Movie::class.java)
         val results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
-        Log.d(TAG, " " + results.size)
         return results.first()
-
     }
 
+    override fun complete(type: Int) {
+        if (loadData != null) {
+            loadData?.update(type)
+        }
+    }
 
 }
 
@@ -374,6 +299,6 @@ interface LoadData {
     fun update(type: Int)
 }
 
-interface OnLoadedListener {
+interface DetailLoadedListener {
     fun complete(movie: Movie)
 }
