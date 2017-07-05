@@ -31,6 +31,7 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         this.c = context
     }
 
+
     fun setOnLoadedListener2(detailLoadedListener: DetailLoadedListener) {
         this.detailLoaded = detailLoaded
     }
@@ -255,7 +256,7 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         val stringRequestRecom = StringRequest(Request.Method.GET, urlRecom, Response.Listener<String> { response ->
             Log.d(TAG, response)
 
-            fetchRequest(realm, recommendation(response, id))
+            fetchRequest(realm, response.toRecommendation(id))
         }, Response.ErrorListener { error -> error.printStackTrace() })
 
 
@@ -270,7 +271,6 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         }
     }
 
-
     private fun makeRequest(url: String): StringRequest {
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             Log.d(TAG, response)
@@ -279,7 +279,6 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         }, Response.ErrorListener { error -> error.printStackTrace() })
         return stringRequest
     }
-
 
     private fun findMovie(movieid: Int): Movie {
         val query: RealmQuery<Movie> = realm.where(Movie::class.java)

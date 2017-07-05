@@ -7,59 +7,47 @@ import org.json.JSONObject
  * Created by Leon on 13.06.17.
  */
 
-class jsonParser(jsonString: String) {
-    var json: String = ""
+abstract class jsonParser {
 
-    init {
-        json = jsonString
-        Log.d("jsonParser", jsonString)
+    fun String.makeArray(): String {
+        return "[$this]"
     }
 
-
-    fun makeArray(): jsonParser {
-        json = "[$json]"
-        return this
+    fun String.makeGenreArray(): String {
+        val positionStart: Int = this.indexOf("[")
+        val positionEnd: Int = this.indexOf("]") + 1
+        val substring: String = this.substring(positionStart, positionEnd)
+        Log.i("jsonParser", this)
+        return substring
     }
 
-    fun makeGenreArray(): jsonParser {
-        val positionStart: Int = json.indexOf("[")
-        val positionEnd: Int = json.indexOf("]") + 1
-        val substring: String = json.substring(positionStart, positionEnd)
-        json = substring
-        Log.i("jsonParser", json)
-        return this
+    fun String.insertValueString(key: String, value: String): String {
+        val position: Int = this.indexOf("{") + 1
+        val substringBefore: String = this.substring(0, position)
+        val substringEnd: String = this.substring(position)
+        return "$substringBefore\"$key\":\"$value\",$substringEnd"
     }
 
-    fun insertValueString(key: String, value: String): jsonParser {
-        val position: Int = json.indexOf("{") + 1
-        val substringBefore: String = json.substring(0, position)
-        val substringEnd: String = json.substring(position)
-
-        json = "$substringBefore\"$key\":\"$value\",$substringEnd"
-        return this
-    }
-
-    fun parseRecommendation(id: Int): String {
-        val jsonObject = JSONObject(json)
+    fun String.parseRecommendation(id: Int): String {
+        val jsonObject = JSONObject(this)
         val array = jsonObject.getJSONArray("results")
 
         return "{id:$id,recommendations=$array }"
     }
 
-    fun parseGenreMovies(): jsonParser {
-        val jsonObject = JSONObject(json)
+    fun String.parseGenreMovies(): String {
+        val jsonObject = JSONObject(this)
         jsonObject.put("id", 6)
-        json = "$jsonObject"
-        return this
+        return "$jsonObject"
     }
 
-    fun insertValueInt(key: String, value: Int): jsonParser {
-        val position: Int = json.indexOf("{") + 1
-        val substringBefore: String = json.substring(0, position)
-        val substringEnd: String = json.substring(position)
+    fun String.insertValueInt(key: String, value: Int): String {
+        val position: Int = this.indexOf("{") + 1
+        val substringBefore: String = this.substring(0, position)
+        val substringEnd: String = this.substring(position)
 
-        json = "$substringBefore\"$key\":$value,$substringEnd"
-        return this
+        return "$substringBefore\"$key\":$value,$substringEnd"
     }
+
 }
 

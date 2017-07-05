@@ -10,14 +10,10 @@ import android.widget.Button
 import android.widget.TextView
 import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
-import com.example.leon.kotlinapplication.Bus
-import com.example.leon.kotlinapplication.MovieEventAdd
-import com.example.leon.kotlinapplication.MovieEventRemove
-import com.example.leon.kotlinapplication.R
+import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.activities.DetailActivity
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
-import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -30,6 +26,14 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
     val mainActivity: MainActivity = activity
 
 
+    private fun Long.toDay(): String {
+        if (this > 1) {
+            return "$this Days"
+        } else {
+            return "$this Day"
+        }
+    }
+
     override fun bind(holder: ViewHolder?, movie: Movie?, p2: Boolean) {
         if (holder != null && movie != null) {
             with(holder) {
@@ -37,7 +41,7 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
                     tvMovie.text = title
                     tvTagline.text = tagline
                     val time: Long = Calendar.getInstance().timeInMillis
-                    buttonTime.text = "${TimeUnit.MILLISECONDS.toDays(movie.timeAdded - time)} Days"
+                    buttonTime.text = TimeUnit.MILLISECONDS.toDays(time - movie.timeAdded).toDay()
                 }
             }
         }

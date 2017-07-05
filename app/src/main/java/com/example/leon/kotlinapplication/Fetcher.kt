@@ -8,46 +8,45 @@ import io.realm.Realm
 /**
  * Created by Leon on 05.07.17.
  */
-abstract class Fetcher {
+abstract class Fetcher : jsonParser() {
 
-    private fun popular(response: String): String {
-        return jsonParser(response)
-                .insertValueInt("id", 0)
+    private fun String.toPopular(): String {
+        return this.insertValueInt("id", 0)
                 .insertValueString("name", "popularMovies")
-                .makeArray().json
+                .makeArray()
     }
 
-    private fun cinema(response: String): String {
-        return jsonParser(response)
+    private fun String.toCinema(): String {
+        return this
                 .insertValueInt("id", 1)
                 .insertValueString("name", "cinemaMovies")
-                .makeArray().json
+                .makeArray()
     }
 
-    private fun genre(response: String): String {
-        return jsonParser(response).makeGenreArray().json
+    private fun String.toGenre(): String {
+        return this.makeGenreArray()
     }
 
-    private fun genreMovies(response: String): String {
-        return jsonParser(response)
-                .makeArray().json
+    private fun String.toGenreMovies(): String {
+        return this.makeArray()
     }
 
-    fun recommendation(response: String, id: Int): String {
-        return jsonParser(response).parseRecommendation(id)
+    public fun String.toRecommendation(id: Int): String {
+        return this.parseRecommendation(id)
     }
 
-    fun fetch(realm: Realm, type: Int, reposonse: String) {
+
+    fun fetch(realm: Realm, type: Int, response: String) {
         realm.executeTransactionAsync({ bgRealm ->
             with(bgRealm) {
                 when (type) {
                 // Updates Popular Movie List
                     0 -> {
-                        createOrUpdateAllFromJson(List::class.java, popular(reposonse))
+                        createOrUpdateAllFromJson(List::class.java, response.toPopular())
                     }
                 // Updates Cinema Movie List
                     1 -> {
-                        createOrUpdateAllFromJson(List::class.java, cinema(reposonse))
+                        createOrUpdateAllFromJson(List::class.java, response.toCinema())
                     }
                     2 -> {
 
@@ -60,11 +59,11 @@ abstract class Fetcher {
                     }
                 // Updates Genre List
                     5 -> {
-                        createOrUpdateAllFromJson(Genre::class.java, genre(reposonse))
+                        createOrUpdateAllFromJson(Genre::class.java, response.toGenre())
                     }
                 // Updates Movies-from-Genre PList
                     6 -> {
-                        createOrUpdateAllFromJson(List::class.java, genreMovies(reposonse))
+                        createOrUpdateAllFromJson(List::class.java, response.toGenreMovies())
                     }
 
 
