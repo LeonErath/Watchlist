@@ -63,6 +63,7 @@ dependencies {
     compile 'com.github.chuross:expandable-layout:717c5c05a9'
     compile 'com.github.charbgr:BlurNavigationDrawer:18aa52fe63'
     compile 'io.reactivex:rxjava:1.1.5'
+    compile 'jp.wasabeef:blurry:2.1.1'
 
     // youtube
     compile('com.google.apis:google-api-services-youtube:v3-rev183-1.22.0') {
@@ -75,4 +76,7 @@ dependencies {
     }
 
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
+
+apply plugin: 'kotlin-android-extensions'

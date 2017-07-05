@@ -26,5 +26,6 @@
     <string name="credtis">Credtis</string>
     <string name="watched">Watched</string>
     <string name="title_activity_test">Test</string>
+    <string name="genres">Genres</string>
 
 </resources>

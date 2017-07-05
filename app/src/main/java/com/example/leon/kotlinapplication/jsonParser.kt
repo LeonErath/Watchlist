@@ -21,6 +21,15 @@ class jsonParser(jsonString: String) {
         return this
     }
 
+    fun makeGenreArray(): jsonParser {
+        val positionStart: Int = json.indexOf("[")
+        val positionEnd: Int = json.indexOf("]") + 1
+        val substring: String = json.substring(positionStart, positionEnd)
+        json = substring
+        Log.i("jsonParser", json)
+        return this
+    }
+
     fun insertValueString(key: String, value: String): jsonParser {
         val position: Int = json.indexOf("{") + 1
         val substringBefore: String = json.substring(0, position)

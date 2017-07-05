@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:blurRadius="19"
-    app:downScaleFactor="8.0"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
-    app:openDescription="@string/drawer_open"
-    app:closeDescription="@string/drawer_close"
-    app:toolbar="@+id/toolbarRef"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    app:blurRadius="19"
+    app:closeDescription="@string/drawer_close"
+    app:downScaleFactor="8.0"
+    app:openDescription="@string/drawer_open"
+    app:toolbar="@+id/toolbarRef">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,12 +30,12 @@
                 android:layout_height="wrap_content">
 
                 <android.support.v7.widget.Toolbar
-                    android:fitsSystemWindows="true"
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/colorPrimary"
                     android:elevation="6dp"
+                    android:fitsSystemWindows="true"
                     app:layout_scrollFlags="scroll|enterAlways" />
 
 
@@ -51,33 +51,35 @@
 
 
             <android.support.design.widget.CoordinatorLayout
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:id="@+id/coordBlur"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <RelativeLayout
-                    android:background="#c3000000"
-                    android:id="@+id/rootBlur"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
 
-                    <fragment
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:id="@+id/youtubeFragment"
-                        android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"></fragment>
-
-
-                </RelativeLayout>
             </android.support.design.widget.CoordinatorLayout>
 
+            <RelativeLayout
+                android:id="@+id/rootBlur"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#a6000000">
+
+                <fragment
+                    android:id="@+id/youtubeFragment"
+                    android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"></fragment>
+
+
+            </RelativeLayout>
         </android.support.design.widget.CoordinatorLayout>
 
         <FrameLayout
@@ -87,21 +89,21 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/drawerlayoutsingle"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/drawerlayoutsingle"
         android:layout_gravity="start">
 
         <android.support.design.widget.NavigationView
+            android:id="@+id/navView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/navView"
-            app:menu="@menu/navigation_view_menu"
+            android:background="#50868585"
+            app:headerLayout="@layout/header_layout"
+            app:itemBackground="@drawable/menu_background"
             app:itemIconTint="@color/itemtintcolor"
             app:itemTextColor="@color/itemtintcolor"
-            app:itemBackground="@drawable/menu_background"
-            android:background="#50868585"
-            app:headerLayout="@layout/header_layout" />
+            app:menu="@menu/navigation_view_menu" />
 
 
     </RelativeLayout>

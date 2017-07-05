@@ -7,6 +7,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.*
+import com.example.leon.kotlinapplication.model.Genre
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
@@ -38,7 +39,6 @@ class QueryAdapter(context: Context) {
     fun setOnLoadedListener2(onLoadedListener: OnLoadedListener) {
         this.onLoadedListener = onLoadedListener
     }
-
 
     fun movieClickDetail(movie: Movie) {
         when (movie.evolution) {
@@ -172,6 +172,28 @@ class QueryAdapter(context: Context) {
         queue.add(stringRequest)
     }
 
+    fun getGenre(loadData: LoadData) {
+        // https://api.themoviedb.org/3/genre/movie/list?api_key=df38fba2447615a58400c89be4c98032&language=en-US
+        val queue = Volley.newRequestQueue(c)
+        val url = c.getString(R.string.base_url) +
+                "genre/movie/list?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
+
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.i(TAG, "Response:" + response)
+            fetchRequestGenre(response, loadData)
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+        })
+
+        queue.add(stringRequest)
+    }
+
+
+
     private fun removeFromWatchlist(movie: Movie) {
         realm.executeTransaction {
             movie.evolution--
@@ -298,6 +320,31 @@ class QueryAdapter(context: Context) {
 
     }
 
+    private fun fetchRequestGenre(response: String, loadData: LoadData) {
+        try {
+            realm.executeTransactionAsync({ bgRealm ->
+                Log.i(TAG, "Genres:" + response)
+                val modedResponse = jsonParser(response).makeGenreArray().json
+                bgRealm.createOrUpdateAllFromJson(Genre::class.java, modedResponse)
+            }, {
+                // Transaction was a success.
+                loadData.update(type = 5)
+            }) {
+                e ->
+                e.printStackTrace()
+                // Error
+            }
+
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        } catch (e: RealmPrimaryKeyConstraintException) {
+            e.printStackTrace()
+        }
+
+    }
+
     private fun makeRequest(url: String): StringRequest {
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
             Log.d(TAG, response)
@@ -311,7 +358,6 @@ class QueryAdapter(context: Context) {
             bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
         }
     }
-
 
     private fun findMovie(movieid: Int): Movie {
         val query: RealmQuery<Movie> = realm.where(Movie::class.java)

@@ -25,6 +25,11 @@
                     android:title="@string/watched" />
                 <item
                     android:checkable="true"
+                    android:id="@+id/genres"
+                    android:icon="@drawable/ic_palette_white_24dp"
+                    android:title="@string/genres" />
+                <item
+                    android:checkable="true"
                     android:id="@+id/personalRecom"
                     android:icon="@drawable/ic_whatshot_white_24dp"
                     android:title="Personal Recommendation Test" />

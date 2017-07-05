@@ -14,6 +14,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
+import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val tabLayout: TabLayout by bind(R.id.tab_layout)
     private val viewPager: ViewPager by bind(R.id.viewPager)
     private val rootBlur: RelativeLayout by bind(R.id.rootBlur)
+    private val coordBlur: CoordinatorLayout by bind(R.id.coordBlur)
     lateinit var youtubeFragment: YouTubePlayerFragment
 
 
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     rootBlur.setOnClickListener {
                         youTubePlayer.release()
                         rootBlur.visibility = View.INVISIBLE
+
                     }
                 }
 
@@ -155,6 +158,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.watched -> {
 
             }
+            R.id.genres -> {
+                val intent = Intent(this, GenreActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
             R.id.personalRecom -> {
                 val intent = Intent(this, Test::class.java)
                 startActivity(intent)
@@ -162,7 +170,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        drawerLayoutgesamt.closeDrawers()
+        drawerLayoutgesamt.closeDrawer(GravityCompat.START)
         menuItem.isChecked = true
 
         return true

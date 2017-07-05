@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    app:blurRadius="19"
+    app:closeDescription="@string/drawer_close"
+    app:downScaleFactor="8.0"
+    app:openDescription="@string/drawer_open"
+    app:toolbar="@+id/toolbarRef">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <fragment
+                class="com.example.leon.kotlinapplication.fragments.GenreFragment"
+                android:id="@+id/genreFragment"
+                android:name="com.example.leon.kotlinapplication.fragments.GenreFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hallo" />
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <RelativeLayout
+        android:id="@+id/drawerlayoutsingle"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="start">
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#50868585"
+            app:headerLayout="@layout/header_layout"
+            app:itemBackground="@drawable/menu_background"
+            app:itemIconTint="@color/itemtintcolor"
+            app:itemTextColor="@color/itemtintcolor"
+            app:menu="@menu/navigation_view_menu" />
+
+
+    </RelativeLayout>
+</com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout>

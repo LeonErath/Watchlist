@@ -293,6 +293,28 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
                 override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
                     // do any work here to cue video, play video, etc.
                     youTubePlayer.cueVideo(trailer.key)
+                    youTubePlayer.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
+                        override fun onSeekTo(p0: Int) {
+
+                        }
+
+                        override fun onBuffering(p0: Boolean) {
+
+                        }
+
+                        override fun onStopped() {
+
+                        }
+
+                        override fun onPaused() {
+
+                        }
+
+                        override fun onPlaying() {
+
+                        }
+
+                    })
                 }
 
                 override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
