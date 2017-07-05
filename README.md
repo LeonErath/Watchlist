@@ -33,9 +33,9 @@ https://xd.adobe.com/view/8e954ec8-6c5e-4e91-a41e-2f1f51b308de/
 - [x] Actors in DetailActivity [16.06.2017]
 - [x] New Design included Logo and Animations [02.07.2017]
 - [ ] Personal Movie Recommendation **Important**
-- [ ] Add Functionallity to DetailActivity
+- [x] Add Functionallity to DetailActivity [04.07.2017]
 - [ ] Filter Lists via Menu 
-- [ ] Genre Overview 
+- [x] Genre Overview [05.07.2017]
 - [ ] Search Function  **Important**
 - [ ] Series Overview
 
