@@ -10,9 +10,9 @@ open class Casting : RealmObject() {
 
     var cast_id: Int = 0
     var character: String = ""
-    @PrimaryKey
     var credit_id: String = ""
     var gender: Int = 0
+    @PrimaryKey
     var id: Int = 0
     var name: String = ""
     var order: Int = 0

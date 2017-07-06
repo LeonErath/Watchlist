@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,6 @@ import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
 import com.example.leon.kotlinapplication.model.List
-import com.example.leon.kotlinapplication.model.Movie
 import io.realm.Realm
 import io.realm.RealmResults
 import kotlin.properties.Delegates
@@ -55,12 +55,6 @@ class MyListFragment : Fragment() {
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
 
         val queryAdapter = QueryAdapter(activity)
-        queryAdapter.setOnLoadedListener2(object : DetailLoadedListener {
-            override fun complete(movie: Movie) {
-                adapter.notifyItemChanged(adapter.dataManager.indexOf(movie))
-            }
-        })
-
         // Initialize realm
         Realm.init(context)
         realm = Realm.getDefaultInstance()
@@ -78,12 +72,18 @@ class MyListFragment : Fragment() {
             refreshLayout.isRefreshing = false
         }
 
+        Bus.observe<DetailsLoaded>().subscribe {
+            Log.i(TAG, "Movie Tagline loaded")
+            adapter.notifyItemChanged(adapter.dataManager.indexOf(it.movie))
+        }.registerInBus(this)
         Bus.observe<MovieEventAdd>().subscribe {
             if (it.movie.evolution == 1) {
                 queryAdapter.getDetail(it.movie.id)
                 adapter.add(it.movie)
             } else if (it.movie.evolution == 2) {
                 adapter.removeMovie(it.movie)
+            } else {
+
             }
         }.registerInBus(this)
         Bus.observe<MovieEventRemove>().subscribe {

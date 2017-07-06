@@ -8,3 +8,5 @@ import com.example.leon.kotlinapplication.model.Movie
 data class MovieEventAdd(val movie: Movie)
 
 data class MovieEventRemove(val movie: Movie)
+
+data class DetailsLoaded(val movie: Movie)

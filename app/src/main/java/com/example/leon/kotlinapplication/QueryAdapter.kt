@@ -18,6 +18,7 @@ import java.util.*
  * Created by Leon on 15.06.17.
  */
 class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetcher() {
+
     var realm: Realm
     val TAG = QueryAdapter::class.java.simpleName!!
     var detailLoaded: DetailLoadedListener? = null
@@ -254,9 +255,9 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         val queue = Volley.newRequestQueue(c)
 
         val stringRequestRecom = StringRequest(Request.Method.GET, urlRecom, Response.Listener<String> { response ->
-            Log.d(TAG, response)
+            Log.d(TAG, "Recommendation " + response)
 
-            fetchRequest(realm, response.toRecommendation(id))
+            fetchRequestRecom(realm, response.toRecommendation(id), id)
         }, Response.ErrorListener { error -> error.printStackTrace() })
 
 
@@ -264,16 +265,11 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         queue.add(makeRequest(urlCast))
         queue.add(makeRequest(urlTrailer))
         queue.add(stringRequestRecom)
-        queue.addRequestFinishedListener<Movie> {
-            if (detailLoaded != null) {
-                detailLoaded!!.complete(findMovie(id))
-            }
-        }
     }
 
     private fun makeRequest(url: String): StringRequest {
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            Log.d(TAG, response)
+            Log.d(TAG, "URL/URLCast/URLTrailer " + response)
 
             fetchRequest(realm, response)
         }, Response.ErrorListener { error -> error.printStackTrace() })
@@ -290,7 +286,13 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         if (loadData != null) {
             loadData?.update(type)
         }
+
     }
+
+    override fun completeDetail(id: Int) {
+        Bus.send(DetailsLoaded(findMovie(id)))
+    }
+
 
 }
 

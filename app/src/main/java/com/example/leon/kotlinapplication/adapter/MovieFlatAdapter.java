@@ -48,9 +48,12 @@ public class MovieFlatAdapter extends SelectableAdapter {
     }
 
     public void add(Movie movie) {
-        if (!Objects.equals(movie.getTagline(), "") && !dataManager.contains(movie)) {
+        if (!dataManager.contains(movie)) {
+            Log.i("MovieFlatAdapter", "Added");
             dataManager.add(movie);
             notifyItemInserted(dataManager.indexOf(movie));
+        } else {
+            Log.i("MovieFlatAdapter", "not added");
         }
     }
 

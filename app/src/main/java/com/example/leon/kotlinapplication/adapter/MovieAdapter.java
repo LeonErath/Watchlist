@@ -32,12 +32,12 @@ public class MovieAdapter extends SelectableAdapter {
         registerBinder(new MovieBinder(activity, this));
     }
 
-    public MovieAdapter(DetailActivity activity) {
+    /*public MovieAdapter(DetailActivity activity) {
         this.dataManager = new DataListManager<>(this);
         addDataManager(dataManager);
 
         registerBinder(new MovieBinder2());
-    }
+    }*/
 
     public void addData(List<Movie> dataList) {
         for (Movie movie : dataList) {

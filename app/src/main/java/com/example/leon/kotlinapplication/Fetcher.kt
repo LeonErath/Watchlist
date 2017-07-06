@@ -83,10 +83,29 @@ abstract class Fetcher : jsonParser() {
 
     abstract fun complete(type: Int)
 
+    abstract fun completeDetail(id: Int)
+
+    fun fetchRequestRecom(realm: Realm, response: String, id: Int) {
+        realm.executeTransactionAsync({ bgRealm ->
+            bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
+        }, {
+            // Transaction was a success.
+            completeDetail(id)
+        }) {
+            e ->
+            e.printStackTrace()
+        }
+    }
 
     fun fetchRequest(realm: Realm, response: String) {
-        realm.executeTransactionAsync { bgRealm ->
+        realm.executeTransactionAsync({ bgRealm ->
             bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
+        }, {
+            // Transaction was a success.
+
+        }) {
+            e ->
+            e.printStackTrace()
         }
     }
 

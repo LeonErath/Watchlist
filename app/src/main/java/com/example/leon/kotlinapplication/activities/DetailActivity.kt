@@ -14,6 +14,7 @@ import android.support.v4.view.ViewCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -21,10 +22,10 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.adapter.CastAdapter
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
-import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.model.Movie
 import com.example.leon.kotlinapplication.model.Trailers
 import com.github.chuross.library.ExpandableLayout
@@ -241,7 +242,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
 
     private fun setupRecom() {
         recyclerViewRecom.adapter = recomAdapter
-        val layout = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
+        val layout = GridLayoutManager(this, 2)
         recyclerViewRecom.layoutManager = layout
         recomAdapter.addData(movie.recommendations)
     }

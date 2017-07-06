@@ -2,10 +2,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:id="@+id/coordinatorLayout"
     tools:context="com.example.leon.kotlinapplication.activities.DetailActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -34,12 +34,12 @@
                 android:scaleType="centerCrop" />
 
             <android.support.v7.widget.Toolbar
-                app:layout_collapseMode="pin"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary">
+                app:contentScrim="?attr/colorPrimary"
+                app:layout_collapseMode="pin">
 
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -51,16 +51,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-
         app:behavior_overlapTop="78dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/temp"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:layout_height="match_parent"
             android:orientation="vertical"
             tools:ignore="ExtraText">
 
@@ -71,8 +70,6 @@
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:background="#fff"
                 app:cardCornerRadius="2dp">
 
@@ -124,8 +121,8 @@
                             android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
                             android:background="#FFF"
-                            android:textColor="@color/buttonColor"
-                            android:text="ADD" />
+                            android:text="ADD"
+                            android:textColor="@color/buttonColor" />
 
                         <Button
                             android:id="@+id/buttonLike"
@@ -136,8 +133,8 @@
                             android:layout_marginTop="8dp"
                             android:layout_toRightOf="@+id/buttonAdd"
                             android:background="#FFF"
-                            android:textColor="@color/buttonColor"
-                            android:text="LIKE" />
+                            android:text="LIKE"
+                            android:textColor="@color/buttonColor" />
 
                         <ImageButton
                             android:id="@+id/button"
@@ -179,8 +176,6 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:background="#fff"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="8dp">
@@ -202,50 +197,50 @@
                     </fragment>
 
                     <LinearLayout
-                        android:clipToPadding="false"
-                        android:clipChildren="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
                         android:gravity="center">
 
                         <TextView
-                            android:visibility="invisible"
                             android:id="@+id/textViewGenre1"
                             android:layout_width="wrap_content"
-                            android:minWidth="88dp"
                             android:layout_height="28dp"
                             android:layout_marginEnd="16dp"
-                            android:text="Genre1"
+                            android:background="@drawable/ic_tag"
                             android:gravity="center"
-                            android:textSize="14sp"
+                            android:minWidth="88dp"
+                            android:text="Genre1"
                             android:textColor="#FFF"
-                            android:background="@drawable/ic_tag" />
+                            android:textSize="14sp"
+                            android:visibility="invisible" />
 
                         <TextView
-                            android:visibility="invisible"
                             android:id="@+id/textViewGenre2"
                             android:layout_width="wrap_content"
-                            android:minWidth="88dp"
                             android:layout_height="28dp"
                             android:layout_marginEnd="16dp"
-                            android:text="Genre2"
+                            android:background="@drawable/ic_tag"
                             android:gravity="center"
-                            android:textSize="14sp"
+                            android:minWidth="88dp"
+                            android:text="Genre2"
                             android:textColor="#FFF"
-                            android:background="@drawable/ic_tag" />
+                            android:textSize="14sp"
+                            android:visibility="invisible" />
 
                         <TextView
-                            android:visibility="invisible"
                             android:id="@+id/textViewGenre3"
                             android:layout_width="wrap_content"
-                            android:minWidth="88dp"
                             android:layout_height="28dp"
-                            android:text="Genre3"
+                            android:background="@drawable/ic_tag"
                             android:gravity="center"
-                            android:textSize="14sp"
+                            android:minWidth="88dp"
+                            android:text="Genre3"
                             android:textColor="#FFF"
-                            android:background="@drawable/ic_tag" />
+                            android:textSize="14sp"
+                            android:visibility="invisible" />
 
                     </LinearLayout>
 
@@ -258,16 +253,14 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:background="#fff"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_marginBottom="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -290,8 +283,6 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:background="#fff"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="8dp">
@@ -316,7 +307,6 @@
                         android:id="@+id/recyclerViewCast"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
                         android:background="#FFF"
                         android:nestedScrollingEnabled="true"></android.support.v7.widget.RecyclerView>
                 </LinearLayout>
@@ -328,8 +318,6 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:background="#fff"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="8dp">
@@ -337,6 +325,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
                     android:orientation="vertical">
 
                     <TextView
@@ -352,10 +341,12 @@
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recyclerViewRecommendation"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="16dp"
                         android:background="#FFF"
-                        android:nestedScrollingEnabled="true"></android.support.v7.widget.RecyclerView>
+                        android:nestedScrollingEnabled="false">
+
+                    </android.support.v7.widget.RecyclerView>
                 </LinearLayout>
 
 
