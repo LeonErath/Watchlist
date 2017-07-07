@@ -42,6 +42,7 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
     private val textViewPlace: TextView by bind(R.id.textViewPlace)
     private val textViewBiography: TextView by bind(R.id.textViewBiography)
     private val imageView: ImageView by bind(R.id.imageView)
+    private val imagePerson: ImageView by bind(R.id.imagePerson)
     private val recyclerViewMovies: RecyclerView by bind(R.id.recyclerViewMovies)
     private val buttonExpand: ImageButton by bind(R.id.button)
     private val expandLayout: ExpandableLayout by bind(R.id.layoutExpand)
@@ -52,6 +53,7 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
     private val movieAdapter: MovieAdapter = MovieAdapter(this)
     private val queryAdapter: QueryAdapter = QueryAdapter(this)
     private val PERCENTAGE_TO_SHOW_IMAGE = 20
+    private val SHRINK_FACTOR = 2
     private var mMaxScrollSize: Int = 0
     private var mIsImageHidden: Boolean = false
     private var liked: Boolean = false
@@ -100,7 +102,7 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
 
     private fun loadImage() {
         val uri: Uri = Uri.parse(getString(R.string.image_base_url)
-                + "/original"
+                + "/w300"
                 + person.profile_path)
         Picasso.with(this).load(uri).into(imageView, object : Callback {
             override fun onSuccess() {
@@ -156,8 +158,16 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
                 if (!mIsImageHidden) {
                     mIsImageHidden = true
                     mFab.animate().scaleY(0f).scaleX(0f).start()
+
                     toolbar.animate().alpha(1.0f).start()
                 }
+            }
+
+
+            val floatScroll: Float = SHRINK_FACTOR * (currentScrollPercentage.toFloat() / 100)
+            if (1 - floatScroll >= 0) {
+                imagePerson.scaleY = 1 - floatScroll
+                imagePerson.scaleX = 1 - floatScroll
             }
 
             if (currentScrollPercentage < PERCENTAGE_TO_SHOW_IMAGE) {

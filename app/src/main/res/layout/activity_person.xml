@@ -17,7 +17,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="340dp"
             app:contentScrim="?colorPrimary"
             app:expandedTitleMarginBottom="94dp"
             app:expandedTitleTextAppearance="@style/CollapsingTextAppearance.Inverse"
@@ -27,12 +27,20 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="340dp"
                 android:layout_marginBottom="-8dp"
                 android:layout_marginTop="-8dp"
                 android:background="#000"
                 android:scaleType="centerCrop" />
 
+            <ImageView
+                android:background="#000"
+                android:layout_gravity="center"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="30dp"
+                android:id="@+id/imagePerson" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
