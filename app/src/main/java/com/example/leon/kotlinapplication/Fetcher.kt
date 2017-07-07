@@ -3,12 +3,13 @@ package com.example.leon.kotlinapplication
 import com.example.leon.kotlinapplication.model.Genre
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.model.Person
 import io.realm.Realm
 
 /**
  * Created by Leon on 05.07.17.
  */
-abstract class Fetcher : jsonParser() {
+abstract class Fetcher : MyJsonParser() {
 
     private fun String.toPopular(): String {
         return this.insertValueInt("id", 0)
@@ -27,16 +28,24 @@ abstract class Fetcher : jsonParser() {
         return this.makeGenreArray()
     }
 
+    private fun String.toPerson(): String {
+        return this.makeArray()
+    }
+
+    private fun String.toPersonMovies(id: Int): String {
+        return this.parsePersonMovies(id).makeArray()
+    }
+
     private fun String.toGenreMovies(): String {
         return this.makeArray()
     }
 
-    public fun String.toRecommendation(id: Int): String {
+    fun String.toRecommendation(id: Int): String {
         return this.parseRecommendation(id)
     }
 
 
-    fun fetch(realm: Realm, type: Int, response: String) {
+    fun fetch(realm: Realm, type: Int, response: String, id: Int = 0) {
         realm.executeTransactionAsync({ bgRealm ->
             with(bgRealm) {
                 when (type) {
@@ -51,11 +60,13 @@ abstract class Fetcher : jsonParser() {
                     2 -> {
 
                     }
+                // Updates Person
                     3 -> {
-
+                        createOrUpdateAllFromJson(Person::class.java, response.toPerson())
                     }
+                // Updates PersonMovies
                     4 -> {
-
+                        createOrUpdateAllFromJson(Person::class.java, response.toPersonMovies(id))
                     }
                 // Updates Genre List
                     5 -> {

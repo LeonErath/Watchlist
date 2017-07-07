@@ -8,6 +8,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
+import com.example.leon.kotlinapplication.model.Person
 import io.realm.Realm
 import io.realm.RealmQuery
 import io.realm.RealmResults
@@ -35,6 +36,43 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
 
     fun setOnLoadedListener2(detailLoadedListener: DetailLoadedListener) {
         this.detailLoaded = detailLoaded
+    }
+
+    fun getPerson(id: Int, loadData: LoadData) {
+        this.loadData = loadData
+        val queue = Volley.newRequestQueue(c)
+        val url = c.getString(R.string.base_url) +
+                "person/$id?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
+
+        // Fetcher a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.i(TAG, "Response:" + response)
+            fetch(realm, 3, response)
+
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+        })
+
+        val url2 = c.getString(R.string.base_url) +
+                "person/$id/movie_credits?api_key=" +
+                c.getString(R.string.key) +
+                "&language=en-US"
+
+        // Fetcher a string response from the provided URL.
+        val stringRequest2 = StringRequest(Request.Method.GET, url2, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.i(TAG, "Response:" + response)
+            fetch(realm, 4, response, id = id)
+
+        }, Response.ErrorListener { error ->
+            error.printStackTrace()
+        })
+
+        queue.add(stringRequest)
+        queue.add(stringRequest2)
     }
 
     fun movieClickDetail(movie: Movie) {
@@ -279,6 +317,12 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
     private fun findMovie(movieid: Int): Movie {
         val query: RealmQuery<Movie> = realm.where(Movie::class.java)
         val results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
+        return results.first()
+    }
+
+    public fun findPerson(personid: Int): Person {
+        val query: RealmQuery<(Person)> = realm.where(Person::class.java)
+        val results: RealmResults<Person> = query.equalTo("id", personid).findAll()
         return results.first()
     }
 

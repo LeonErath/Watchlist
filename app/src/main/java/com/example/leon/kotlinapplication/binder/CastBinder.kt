@@ -1,6 +1,7 @@
 package com.example.leon.kotlinapplication.binder
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.ahamed.multiviewadapter.SelectableBinder
 import com.ahamed.multiviewadapter.SelectableViewHolder
 import com.example.leon.kotlinapplication.R
 import com.example.leon.kotlinapplication.activities.DetailActivity
+import com.example.leon.kotlinapplication.activities.PersonActivity
 import com.example.leon.kotlinapplication.model.Casting
 import com.squareup.picasso.Picasso
 
@@ -62,7 +64,11 @@ open class CastBinder(activity: DetailActivity) : SelectableBinder<Casting, Cast
 
         init {
             this.imageView = itemView.findViewById(R.id.imageView) as ImageView
-
+            imageView.setOnClickListener {
+                val intent = Intent(context, PersonActivity::class.java)
+                intent.putExtra("personid", item.id)
+                context.startActivity(intent)
+            }
         }
 
 

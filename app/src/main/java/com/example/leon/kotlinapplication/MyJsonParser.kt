@@ -7,7 +7,7 @@ import org.json.JSONObject
  * Created by Leon on 13.06.17.
  */
 
-abstract class jsonParser {
+abstract class MyJsonParser {
 
     fun String.makeArray(): String {
         return "[$this]"
@@ -17,7 +17,7 @@ abstract class jsonParser {
         val positionStart: Int = this.indexOf("[")
         val positionEnd: Int = this.indexOf("]") + 1
         val substring: String = this.substring(positionStart, positionEnd)
-        Log.i("jsonParser", this)
+        Log.i("MyJsonParser", this)
         return substring
     }
 
@@ -32,8 +32,17 @@ abstract class jsonParser {
         val jsonObject = JSONObject(this)
         val array = jsonObject.getJSONArray("results")
 
-        return "{id:$id,recommendations=$array }"
+        return "{id:$id,recommendations:$array }"
     }
+
+    fun String.parsePersonMovies(id: Int): String {
+        val jsonObject = JSONObject(this)
+        val array = jsonObject.getJSONArray("cast")
+
+        return "{id:$id,movies:$array }"
+    }
+
+
 
     fun String.parseGenreMovies(): String {
         val jsonObject = JSONObject(this)
