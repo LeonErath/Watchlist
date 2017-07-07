@@ -5,18 +5,19 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import android.support.annotation.IdRes
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.support.v8.renderscript.Allocation
+import android.support.v8.renderscript.Element
+import android.support.v8.renderscript.RenderScript
+import android.support.v8.renderscript.ScriptIntrinsicBlur
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -64,7 +65,7 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         setContentView(R.layout.activity_person)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
+        setUpToolbar()
         // Initialize realm
         Realm.init(this)
         realm = Realm.getDefaultInstance()
@@ -89,7 +90,6 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         textViewPlace.text = person.place_of_birth
         textViewBiography.text = person.biography
         loadImage()
-        setUpToolbar()
 
         buttonExpand.setOnClickListener(this)
 
@@ -100,12 +100,15 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
 
     private fun loadImage() {
         val uri: Uri = Uri.parse(getString(R.string.image_base_url)
-                + "/w1280"
+                + "/original"
                 + person.profile_path)
         Picasso.with(this).load(uri).into(imageView, object : Callback {
             override fun onSuccess() {
                 val bitmap = (imageView.drawable as BitmapDrawable).bitmap
-                //blurBitmap(bitmap)
+                var bitmap2 = bitmap.copy(bitmap.getConfig(), true);
+                imageView.setImageBitmap(blurBitmap(bitmap))
+                imageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.colorTransparent))
+
             }
 
             override fun onError() {
@@ -176,7 +179,7 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         val outBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
 
         //Instantiate a new Renderscript
-        val rs = RenderScript.create(applicationContext)
+        val rs = RenderScript.create(getApplicationContext())
 
         //Create an Intrinsic Blur Script using the Renderscript
         val blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
@@ -196,7 +199,7 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         allOut.copyTo(outBitmap)
 
         //recycle the original bitmap
-        bitmap.recycle()
+        //bitmap.recycle()
 
         //After finishing everything, we destroy the Renderscript.
         rs.destroy()
@@ -205,6 +208,7 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
 
 
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {

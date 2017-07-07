@@ -23,6 +23,7 @@
             app:expandedTitleTextAppearance="@style/CollapsingTextAppearance.Inverse"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
@@ -31,6 +32,7 @@
                 android:layout_marginTop="-8dp"
                 android:background="#000"
                 android:scaleType="centerCrop" />
+
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
