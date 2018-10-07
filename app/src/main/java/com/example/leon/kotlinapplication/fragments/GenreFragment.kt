@@ -32,8 +32,7 @@ class GenreFragment : Fragment() {
     lateinit var recyclerView: RecyclerView
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         var root = inflater!!.inflate(R.layout.fragment_genre, container, false)
 
@@ -44,7 +43,7 @@ class GenreFragment : Fragment() {
         recyclerView = root.findViewById(R.id.recyclerView) as RecyclerView
         val progressbar: ProgressBar = root.findViewById(R.id.progressBar) as ProgressBar
 
-        val queryAdapter = QueryAdapter(activity)
+        val queryAdapter = QueryAdapter(activity as GenreActivity)
 
         queryAdapter.getGenre(object : LoadData {
             override fun update(type: Int) {

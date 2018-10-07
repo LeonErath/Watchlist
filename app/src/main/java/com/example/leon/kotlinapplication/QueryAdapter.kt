@@ -6,10 +6,12 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.model.List
 import com.example.leon.kotlinapplication.model.Movie
 import com.example.leon.kotlinapplication.model.Person
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import io.realm.RealmQuery
 import io.realm.RealmResults
 import java.util.*
@@ -29,7 +31,10 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
 
     init {
         Realm.init(context)
-        realm = Realm.getDefaultInstance()
+        val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        realm = Realm.getInstance(config)
         this.c = context
     }
 
@@ -95,16 +100,21 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
         realm.executeTransaction {
             if (movie.evolution == 1) {
                 movie.evolution++
-                val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 3).findAll()
+                val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 3 as Int).findAll()
+
+
                 if (results.size > 0) {
                     Log.d(TAG, "WatchedList is not empty -> updates List")
                     val List = results[0]
-                    val check = List.results.any { movie!!.id == it.id }
+                    if (List != null){
+                        val check = List.results.any { movie!!.id == it.id }
 
-                    if (!check) {
-                        List.results.add(movie)
-                        List.total_results++
+                        if (!check) {
+                            List.results.add(movie)
+                            List.total_results++
+                        }
                     }
+
 
                 } else {
                     Log.d(TAG, "WatchedList is empty -> creates new List")
@@ -122,12 +132,15 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
     private fun removeWatched(movie: Movie) {
         realm.executeTransaction {
             movie.evolution--
-            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 3).findAll()
+            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 3 as Int).findAll()
             if (results.size > 0) {
                 Log.d(TAG, "WatchedList is not empty -> updates List")
                 val List = results[0]
-                List.results.remove(movie)
-                List.total_results--
+                if(List != null){
+                    List.results.remove(movie)
+                    List.total_results--
+                }
+
             }
         }
     }
@@ -246,12 +259,12 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
     private fun removeFromWatchlist(movie: Movie) {
         realm.executeTransaction {
             movie.evolution--
-            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2 as Int).findAll()
             if (results.size > 0) {
                 Log.d(TAG, "MyList is not empty -> updates List")
                 val List = results[0]
-                List.results.remove(movie)
-                List.total_results--
+                List!!.results.remove(movie)
+                List!!.total_results--
             }
         }
     }
@@ -262,11 +275,11 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
             val time: Long = Calendar.getInstance().timeInMillis
             movie.evolution++
             movie.timeAdded = time
-            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+            val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2 as Int).findAll()
             if (results.size > 0) {
 
                 val List = results[0]
-                val check = List.results.any { movie!!.id == it.id }
+                val check = List!!.results.any { movie!!.id == it.id }
 
                 if (!check) {
                     List.results.add(movie)
@@ -317,13 +330,13 @@ class QueryAdapter(context: Context) : com.example.leon.kotlinapplication.Fetche
     private fun findMovie(movieid: Int): Movie {
         val query: RealmQuery<Movie> = realm.where(Movie::class.java)
         val results: RealmResults<Movie> = query.equalTo("id", movieid).findAll()
-        return results.first()
+        return results.first()!!
     }
 
-    public fun findPerson(personid: Int): Person {
+    fun findPerson(personid: Int): Person {
         val query: RealmQuery<(Person)> = realm.where(Person::class.java)
         val results: RealmResults<Person> = query.equalTo("id", personid).findAll()
-        return results.first()
+        return results.first()!!
     }
 
     override fun complete(type: Int) {

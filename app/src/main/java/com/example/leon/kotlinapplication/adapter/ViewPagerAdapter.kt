@@ -32,7 +32,7 @@ class ViewPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
     }
 
     override fun getPageTitle(position: Int): CharSequence {
-        return super.getPageTitle(position)
+        return super.getPageTitle(position)!!
     }
 
 }

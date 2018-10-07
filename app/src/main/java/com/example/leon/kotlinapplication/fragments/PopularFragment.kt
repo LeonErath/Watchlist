@@ -19,6 +19,7 @@ import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.QueryAdapter
 import com.example.leon.kotlinapplication.model.List
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import io.realm.RealmResults
 import io.realm.Sort
 import kotlin.properties.Delegates
@@ -42,26 +43,28 @@ class PopularFragment : Fragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val rootView = inflater!!.inflate(R.layout.fragment_popular, container, false)
         adapter = MovieAdapter(activity as MainActivity)
-        refreshLayout = SwipeRefreshLayout(activity)
+        refreshLayout = SwipeRefreshLayout(activity as MainActivity)
         val recyclerView = rootView.findViewById(R.id.recyclerView2) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
-        val query = QueryAdapter(context)
+        val query = QueryAdapter(this!!.context!!)
 
         Realm.init(context)
-        // Initialize realm
-        realm = Realm.getDefaultInstance()
+        val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        realm = Realm.getInstance(config)
         realm.refresh()
 
 
         val load = object : LoadData {
             override fun update(type: Int) {
                 val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", type).findAll()
-                Log.i(TAG, " updateRealm(): Size of Popular Movie Lists:" + results[0].results.size)
-                if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
+                Log.i(TAG, " updateRealm(): Size of Popular Movie Lists:" + results[0]!!.results.size)
+                if (results.size > 0) adapter.addData(results[0]!!.results.sort("popularity", Sort.DESCENDING))
                 refreshLayout.isRefreshing = false
             }
 

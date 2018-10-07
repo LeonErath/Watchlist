@@ -36,6 +36,7 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import io.realm.RealmChangeListener
+import io.realm.RealmConfiguration
 import kotlin.properties.Delegates
 
 
@@ -80,9 +81,11 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
 
-        // Initialize realm
         Realm.init(this)
-        realm = Realm.getDefaultInstance()
+        val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        realm = Realm.getInstance(config)
 
 
         // Get movie from database
@@ -128,21 +131,21 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         when (movie.genres.size) {
             1 -> {
                 textViewGenre1.visibility = View.VISIBLE
-                textViewGenre1.text = movie.genres.get(0).name
+                textViewGenre1.text = movie.genres.get(0)!!.name
             }
             2 -> {
                 textViewGenre1.visibility = View.VISIBLE
-                textViewGenre1.text = movie.genres.get(0).name
+                textViewGenre1.text = movie.genres.get(0)!!.name
                 textViewGenre2.visibility = View.VISIBLE
-                textViewGenre2.text = movie.genres.get(1).name
+                textViewGenre2.text = movie.genres.get(1)!!.name
             }
             in 3..10 -> {
                 textViewGenre1.visibility = View.VISIBLE
-                textViewGenre1.text = movie.genres.get(0).name
+                textViewGenre1.text = movie.genres.get(0)!!.name
                 textViewGenre2.visibility = View.VISIBLE
-                textViewGenre2.text = movie.genres.get(1).name
+                textViewGenre2.text = movie.genres.get(1)!!.name
                 textViewGenre3.visibility = View.VISIBLE
-                textViewGenre3.text = movie.genres.get(2).name
+                textViewGenre3.text = movie.genres.get(2)!!.name
 
             }
         }

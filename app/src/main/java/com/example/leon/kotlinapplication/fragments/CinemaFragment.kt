@@ -17,6 +17,7 @@ import com.example.leon.kotlinapplication.adapter.EndlessRecylcerViewScrollListe
 import com.example.leon.kotlinapplication.adapter.MovieAdapter
 import com.example.leon.kotlinapplication.model.List
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import io.realm.RealmResults
 import io.realm.Sort
 import kotlin.properties.Delegates
@@ -43,30 +44,32 @@ class CinemaFragment : Fragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val rootView = inflater!!.inflate(R.layout.fragment_cinema, container, false)
 
         adapter = MovieAdapter(activity as MainActivity)
-        refreshLayout = SwipeRefreshLayout(activity)
+        refreshLayout = SwipeRefreshLayout(activity as MainActivity)
 
         val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
-        val query = QueryAdapter(context)
+        val query = QueryAdapter(this!!.context!!)
 
         val load = object : LoadData {
             override fun update(type: Int) {
                 val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", type).findAll()
                 Log.i(TAG, " updateRealm(): Size of Cinema Movie Lists:" + results.size)
-                if (results.size > 0) adapter.addData(results[0].results.sort("popularity", Sort.DESCENDING))
+                if (results.size > 0) adapter.addData(results[0]!!.results.sort("popularity", Sort.DESCENDING))
                 refreshLayout.isRefreshing = false
             }
         }
 
         // Initialize realm
         Realm.init(context)
-        realm = Realm.getDefaultInstance()
+        val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        realm = Realm.getInstance(config)
         realm.refresh()
 
 

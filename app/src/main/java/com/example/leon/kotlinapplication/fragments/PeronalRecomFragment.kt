@@ -16,8 +16,7 @@ import com.example.leon.kotlinapplication.R
 class PeronalRecomFragment : Fragment() {
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val rootView = inflater!!.inflate(R.layout.fragment_peronal_recom, container, false)
 

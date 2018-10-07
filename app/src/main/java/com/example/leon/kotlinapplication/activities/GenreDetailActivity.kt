@@ -44,7 +44,7 @@ class GenreDetailActivity : AppCompatActivity() {
         realm = Realm.getDefaultInstance()
         var results: RealmResults<Genre> = realm.where(Genre::class.java).equalTo("id", genreid).findAll()
         if (results.size > 0) {
-            genre = results.first()
+            genre = results.first()!!
 
             setSupportActionBar(toolbar)
             supportActionBar!!.title = genre.name
@@ -61,7 +61,7 @@ class GenreDetailActivity : AppCompatActivity() {
                 override fun update(type: Int) {
                     var results: RealmResults<List> = realm.where(List::class.java).equalTo("id", genreid).findAll()
                     if (results.size > 0) {
-                        adapter.addData(results.first().results)
+                        adapter.addData(results.first()!!.results)
                     }
                 }
 

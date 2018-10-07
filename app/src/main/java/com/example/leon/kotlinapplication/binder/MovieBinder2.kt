@@ -103,11 +103,11 @@ open class MovieBinder2 : SelectableBinder<Movie, MovieBinder2.ViewHolder>() {
                 Realm.init(context)
                 realm = Realm.getDefaultInstance()
                 realm.executeTransaction {
-                    val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+                    val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2 as Int).findAll()
                     if (results.size > 0) {
                         Log.d("MovieBinder", "MyList is not empty -> updates List")
                         val List = results[0]
-                        val check = List.results.any { item!!.id == it.id }
+                        val check = List!!.results.any { item!!.id == it.id }
 
                         if (!check) {
                             List.results.add(item)

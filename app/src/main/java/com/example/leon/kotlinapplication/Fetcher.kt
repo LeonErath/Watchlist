@@ -51,6 +51,7 @@ abstract class Fetcher : MyJsonParser() {
                 when (type) {
                 // Updates Popular Movie List
                     0 -> {
+
                         createOrUpdateAllFromJson(List::class.java, response.toPopular())
                     }
                 // Updates Cinema Movie List

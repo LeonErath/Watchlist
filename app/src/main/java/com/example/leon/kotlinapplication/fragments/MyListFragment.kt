@@ -14,10 +14,14 @@ import android.view.ViewGroup
 import com.example.leon.kotlinapplication.*
 import com.example.leon.kotlinapplication.activities.MainActivity
 import com.example.leon.kotlinapplication.adapter.MovieFlatAdapter
+import com.example.leon.kotlinapplication.model.Genre
 import com.example.leon.kotlinapplication.model.List
 import io.realm.Realm
 import io.realm.RealmResults
 import kotlin.properties.Delegates
+import io.realm.RealmConfiguration
+
+
 
 
 /**
@@ -44,20 +48,24 @@ class MyListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         userVisibleHint = false
         val rootView = inflater!!.inflate(R.layout.fragment_my_list, container, false)
         adapter = MovieFlatAdapter(activity as MainActivity)
-        refreshLayout = SwipeRefreshLayout(activity)
+        refreshLayout = SwipeRefreshLayout(activity as MainActivity)
         val recyclerView = rootView.findViewById(R.id.recyclerView) as RecyclerView
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
 
-        val queryAdapter = QueryAdapter(activity)
+        val queryAdapter = QueryAdapter(activity as MainActivity)
         // Initialize realm
+
+
         Realm.init(context)
-        realm = Realm.getDefaultInstance()
+        val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        realm = Realm.getInstance(config)
         realm.refresh()
 
         // Set up recycler view
@@ -107,9 +115,9 @@ class MyListFragment : Fragment() {
 
     // updates the recycler view with the data from the realm
     private fun updateUIfromRealm() {
-        val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2).findAll()
+       val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 2 as Int).findAll()
         if (results.size > 0) {
-            adapter.addData(results[0].results)
+           adapter.addData(results[0]!!.results)
         }
         refreshLayout.isRefreshing = false
     }
