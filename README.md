@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/LeonErath/Watchlist/tree/master.svg?style=svg)](https://circleci.com/gh/LeonErath/Watchlist/tree/master) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![codebeat badge](https://codebeat.co/badges/131dda19-83e8-4ecf-a9ed-c5b7c9631c51)](https://codebeat.co/projects/github-com-leonerath-watchlist-master)
+[![CircleCI](https://circleci.com/gh/LeonErath/Watchlist/tree/master.svg?style=svg)](https://circleci.com/gh/LeonErath/Watchlist/tree/master) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![codebeat badge](https://codebeat.co/badges/131dda19-83e8-4ecf-a9ed-c5b7c9631c51)](https://codebeat.co/projects/github-com-leonerath-watchlist-master) [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
 [<img src="screenshots/Banner.png" />]() 
 
