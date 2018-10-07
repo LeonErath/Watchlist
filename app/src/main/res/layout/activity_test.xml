@@ -17,7 +17,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.leon.kotlinapplication.activities.Test">
+        tools:context="com.leon.app.watchlist.activities.Test">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <fragment
-            android:name="com.example.leon.kotlinapplication.fragments.PeronalRecomFragment"
+            android:name="com.leon.app.watchlist.fragments.PeronalRecomFragment"
             android:id="@+id/fragment_recom"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

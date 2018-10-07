@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#14b9b9"
-    tools:context="com.example.leon.kotlinapplication.fragments.CinemaFragment">
+    tools:context="com.leon.app.watchlist.fragments.CinemaFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.leon.kotlinapplication">
+    package="com.leon.app.watchlist">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,7 +17,7 @@
         tools:replace="android:icon">
         // MainActivity center of the App. Displays Movie List etc.
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.leon.app.watchlist.activities.MainActivity"
             android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,19 +32,19 @@
         </activity>
         // DetailActivity displays the Details of a move
         <activity
-            android:name=".activities.DetailActivity"
+            android:name="com.leon.app.watchlist.activities.DetailActivity"
             android:theme="@style/AppTheme2" />
         // SearchActivity handles the search results performed in the MainAcitivity
         <activity
-            android:name=".activities.SearchActivity"
+            android:name="com.leon.app.watchlist.activities.SearchActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName="com.leon.app.watchlist.activities.MainActivity"
             android:theme="@style/AppTheme2">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.leon.kotlinapplication.activities.MainActivity" />
+                android:value="com.leon.app.watchlist.activities.MainActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -57,19 +57,19 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".activities.Test"
+            android:name="com.leon.app.watchlist.activities.Test"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.GenreActivity"
+            android:name="com.leon.app.watchlist.activities.GenreActivity"
             android:theme="@style/AppTheme2" />
         <activity
-            android:name=".activities.GenreDetailActivity"
+            android:name="com.leon.app.watchlist.activities.GenreDetailActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme2" />
 
         <activity
-            android:name=".activities.PersonActivity"
+            android:name="com.leon.app.watchlist.activities.PersonActivity"
             android:theme="@style/AppTheme2"></activity>
     </application>
 

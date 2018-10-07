@@ -39,9 +39,9 @@
             </android.support.design.widget.AppBarLayout>
 
             <fragment
-                class="com.example.leon.kotlinapplication.fragments.GenreFragment"
+                class="com.leon.app.watchlist.fragments.GenreFragment"
                 android:id="@+id/genreFragment"
-                android:name="com.example.leon.kotlinapplication.fragments.GenreFragment"
+                android:name="com.leon.app.watchlist.fragments.GenreFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
