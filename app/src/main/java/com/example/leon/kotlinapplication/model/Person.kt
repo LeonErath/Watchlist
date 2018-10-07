@@ -21,6 +21,6 @@ open class Person : RealmObject() {
     var name: String = ""
     var place_of_birth: String = ""
     var popularity: Int = 0
-    var profile_path: String = ""
+    var profile_path: String? = ""
     var movies: RealmList<Movie> = RealmList()
 }

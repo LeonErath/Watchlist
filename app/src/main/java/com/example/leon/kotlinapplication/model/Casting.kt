@@ -16,7 +16,7 @@ open class Casting : RealmObject() {
     var id: Int = 0
     var name: String = ""
     var order: Int = 0
-    var profile_path: String = ""
+    var profile_path: String? = ""
 
 
 }
