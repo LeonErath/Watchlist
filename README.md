@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/LeonErath/Watchlist/tree/master.svg?style=svg)](https://circleci.com/gh/LeonErath/Watchlist/tree/master)
 [<img src="screenshots/Banner.png" />]()
 
 ### A little App to Learn the Basics of the new Programming Language Kotlin
