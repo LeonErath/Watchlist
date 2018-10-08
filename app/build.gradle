@@ -73,7 +73,7 @@ dependencies {
     implementation 'jp.wasabeef:blurry:2.1.1'
 
     // youtube
-    implementation('com.google.apis:google-api-services-youtube:v3-rev183-1.22.0') {
+    implementation('com.google.apis:google-api-services-youtube:v3-rev205-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
