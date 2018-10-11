@@ -2,9 +2,8 @@
 
 [<img src="screenshots/Banner.png" />]() 
 
-# Watchlist
 <img src="https://github.com/LeonErath/Watchlist/blob/master/screenshots/Logo.png" align="left" width="200" hspace="10" vspace="10">
-I've programed an App, where I can see all upcoming Movies. I can store Movies that I like in a separate Watchlist. The reason for programming this App is to learn the new language Kotlin. I'm hoping to get a better understanding of its functions and why everybody loves kotlin. I will publish now and then new updates.<br/>
+Watchlist lets you organize current films and series. Save interesting movies in your watchlist so you do not forget them. Follow your favorite spectacle and get notified about their new films.<br/>
 
 <div style="display:flex;" >
 
@@ -16,7 +15,13 @@ I've programed an App, where I can see all upcoming Movies. I can store Movies t
 </div>
 </br></br>
 
-
+## Why Watchlist?
+* Free and Open-Source
+* Innovative design
+* No intrusive ads
+* Multilingual
+* My code does not spy on your behaviour!
+</br></br>
 ## Screenshots
 
 <div style="display:flex;" >
@@ -25,6 +30,22 @@ I've programed an App, where I can see all upcoming Movies. I can store Movies t
 <img style="margin-left:10px;" src="videos/Drawer.gif" width="19%" >
 <img style="margin-left:10px;" src="videos/Detail.gif" width="19%" >
 </div>
+
+## Contributing
+
+###### Testing
+Do you want to be a tester? We will release apks to test features or to check if bugs have been fixed.
+
+###### Code 
+If you are a developer and you wish to contribute to the app please fork the project
+and submit a pull request on the dev branch.
+
+###### Issues
+You can trace the status of known issues [here](https://github.com/LeonErath/Watchlist/issues),
+also feel free to file a new issue (helpful description, screenshots and logcat are appreciated), or send me an [email](mailto:leon-erath@hotmail.de) if you have any questions.
+
+###### Translations
+If you are able to contribute with a new translation of a missing language or if you want to improve an existing one, we greatly appreciate any suggestion!
 
 ## Licensing
 
