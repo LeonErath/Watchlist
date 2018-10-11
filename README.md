@@ -2,7 +2,7 @@
 
 [<img src="screenshots/Banner.png" />]() 
 
-<img src="https://github.com/LeonErath/Watchlist/blob/master/screenshots/Logo.png" align="left" width="200" hspace="10" vspace="10">
+<img src="http://leonerath.de/images/Watchlist/Logo.png" width="19%" align="left"  hspace="10" vspace="10">
 Watchlist lets you organize current films and series. Save interesting movies in your watchlist so you do not forget them. Follow your favorite spectacle and get notified about their new films.<br/>
 
 <div style="display:flex;" >
