@@ -77,11 +77,8 @@ abstract class Fetcher : MyJsonParser() {
                     6 -> {
                         createOrUpdateAllFromJson(List::class.java, response.toGenreMovies())
                     }
-
-
                 }
             }
-
         }, {
             // Transaction was a success.
             complete(type)
@@ -89,8 +86,6 @@ abstract class Fetcher : MyJsonParser() {
             e ->
             e.printStackTrace()
         }
-
-
     }
 
     abstract fun complete(type: Int)
@@ -114,7 +109,6 @@ abstract class Fetcher : MyJsonParser() {
             bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
         }, {
             // Transaction was a success.
-
         }) {
             e ->
             e.printStackTrace()

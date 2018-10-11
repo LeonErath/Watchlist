@@ -21,5 +21,4 @@ class moneyParser(money: Int) {
         }
         return "-"
     }
-
 }
