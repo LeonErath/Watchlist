@@ -78,7 +78,7 @@ dependencies {
     }
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'pub.devrel:easypermissions:2.0.0'
-    implementation('com.google.api-client:google-api-client-android:1.25.0') {
+    implementation('com.google.api-client:google-api-client-android:1.26.0') {
         exclude group: 'org.apache.httpcomponents'
     }
     kapt "io.realm:realm-annotations:5.7.0"
