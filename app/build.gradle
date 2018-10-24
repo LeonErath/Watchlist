@@ -83,4 +83,3 @@ dependencies {
     kapt "io.realm:realm-annotations-processor:5.7.1"
 
 }
-

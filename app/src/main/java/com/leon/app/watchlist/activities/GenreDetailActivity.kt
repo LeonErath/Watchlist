@@ -13,6 +13,7 @@ import android.view.View
 import com.leon.app.watchlist.LoadData
 import com.leon.app.watchlist.QueryAdapter
 import com.leon.app.watchlist.R
+import com.leon.app.watchlist.RealmController
 import com.leon.app.watchlist.adapter.MovieAdapter
 import com.leon.app.watchlist.model.Genre
 import com.leon.app.watchlist.model.List
@@ -41,11 +42,7 @@ class GenreDetailActivity : AppCompatActivity() {
         val extras: Bundle = intent.extras
         genreid = extras.getInt("id")
         // set up Relam
-        Realm.init(this)
-        val config = RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build()
-        realm = Realm.getInstance(config)
+        realm = RealmController(this).realm
         realm.refresh()
         var results: RealmResults<Genre> = realm.where(Genre::class.java).equalTo("id", genreid).findAll()
         if (results.size > 0) {

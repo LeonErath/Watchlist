@@ -151,7 +151,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.watched -> {
-
+                val intent = Intent(this, WatchedActivity::class.java)
+                startActivity(intent)
+                finish()
             }
             R.id.genres -> {
                 val intent = Intent(this, GenreActivity::class.java)
@@ -159,7 +161,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 finish()
             }
             R.id.personalRecom -> {
-                val intent = Intent(this, Test::class.java)
+                val intent = Intent(this, RecommendationActivity::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -228,7 +230,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if(item!!.itemId == R.id.settings){
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         if (drawerToggle.onOptionsItemSelected(item)) {
+
             return true
         }
         return super.onOptionsItemSelected(item)

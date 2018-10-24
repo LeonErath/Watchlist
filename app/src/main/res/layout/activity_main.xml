@@ -101,8 +101,8 @@
             android:background="#50868585"
             app:headerLayout="@layout/header_layout"
             app:itemBackground="@drawable/menu_background"
-            app:itemIconTint="@color/itemtintcolor"
-            app:itemTextColor="@color/itemtintcolor"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
             app:menu="@menu/navigation_view_menu" />
 
 

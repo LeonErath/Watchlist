@@ -52,11 +52,7 @@ class PopularFragment : Fragment() {
         refreshLayout = rootView.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
         val query = QueryAdapter(this!!.context!!)
 
-        Realm.init(context)
-        val config = RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build()
-        realm = Realm.getInstance(config)
+        realm = RealmController(activity as MainActivity).realm
         realm.refresh()
 
 
