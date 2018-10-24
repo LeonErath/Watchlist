@@ -32,7 +32,7 @@
                     android:checkable="true"
                     android:id="@+id/personalRecom"
                     android:icon="@drawable/ic_whatshot_white_24dp"
-                    android:title="Personal Recommendation Test" />
+                    android:title="Personal Recommendation" />
             </group>
         </menu>
     </item>

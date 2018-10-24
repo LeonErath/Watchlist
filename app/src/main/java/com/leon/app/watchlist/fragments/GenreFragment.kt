@@ -18,6 +18,7 @@ import com.leon.app.watchlist.activities.GenreActivity
 import com.leon.app.watchlist.adapter.GenreAdapter
 import com.leon.app.watchlist.model.Genre
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import io.realm.RealmResults
 
 
@@ -37,7 +38,12 @@ class GenreFragment : Fragment() {
         var root = inflater!!.inflate(R.layout.fragment_genre, container, false)
 
         Realm.init(context)
-        realm = Realm.getDefaultInstance()
+
+        val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        realm = Realm.getInstance(config)
+        realm.refresh()
         adapter = GenreAdapter(activity as GenreActivity)
         refreshLayout = root.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
         recyclerView = root.findViewById(R.id.recyclerView) as RecyclerView

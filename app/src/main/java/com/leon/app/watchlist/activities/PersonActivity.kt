@@ -33,6 +33,7 @@ import com.github.chuross.library.ExpandableLayout
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import io.realm.Realm
+import io.realm.RealmConfiguration
 
 
 class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, View.OnClickListener {
@@ -70,7 +71,12 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         setUpToolbar()
         // Initialize realm
         Realm.init(this)
-        realm = Realm.getDefaultInstance()
+
+        val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        realm = Realm.getInstance(config)
+        realm.refresh()
 
         // Get movie from database
         val extras: Bundle = intent.extras

@@ -285,7 +285,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         recomAdapter.addData(movie.recommendations)
         if (movie.results.size > 0) {
             movie.results
-                    .filter { it.name == "Official Trailer" }
+                    .filter { it.site == "YouTube" }
                     .forEach { initializeYoutubeFragment(it) }
         }
     }

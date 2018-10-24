@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="drawerArrowStyle">@style/drawerarrowstyle1</item>
+
     </style>
 
     <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
@@ -20,8 +22,9 @@
 
     </style>
 
-    <style name="drawerarrowstyle1" parent="Widget.AppCompat.DrawerArrowToggle">
 
+    <style name="drawerarrowstyle1" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
         <item name="spinBars">true</item>
 
 
