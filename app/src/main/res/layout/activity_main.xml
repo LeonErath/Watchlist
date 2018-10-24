@@ -10,7 +10,7 @@
     app:closeDescription="@string/drawer_close"
     app:downScaleFactor="8.0"
     app:openDescription="@string/drawer_open"
-    app:toolbar="@+id/toolbarRef">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
