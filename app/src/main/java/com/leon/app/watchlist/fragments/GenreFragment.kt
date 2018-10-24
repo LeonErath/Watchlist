@@ -14,10 +14,14 @@ import android.widget.ProgressBar
 import com.leon.app.watchlist.LoadData
 import com.leon.app.watchlist.QueryAdapter
 import com.leon.app.watchlist.R
+import com.leon.app.watchlist.RealmController
+import com.leon.app.watchlist.activities.DetailActivity
 import com.leon.app.watchlist.activities.GenreActivity
+import com.leon.app.watchlist.activities.MainActivity
 import com.leon.app.watchlist.adapter.GenreAdapter
 import com.leon.app.watchlist.model.Genre
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import io.realm.RealmResults
 
 
@@ -33,21 +37,24 @@ class GenreFragment : Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        var root = inflater!!.inflate(R.layout.fragment_genre, container, false)
 
-        Realm.init(context)
-        realm = Realm.getDefaultInstance()
+        val root = inflater!!.inflate(R.layout.fragment_genre, container, false)
+
+
+        realm = RealmController(activity as GenreActivity).realm
+        realm.refresh()
+
         adapter = GenreAdapter(activity as GenreActivity)
         refreshLayout = root.findViewById(R.id.refreshContainer) as SwipeRefreshLayout
         recyclerView = root.findViewById(R.id.recyclerView) as RecyclerView
-        val progressbar: ProgressBar = root.findViewById(R.id.progressBar) as ProgressBar
+        setUpRecyclerView();
+
 
         val queryAdapter = QueryAdapter(activity as GenreActivity)
 
         queryAdapter.getGenre(object : LoadData {
             override fun update(type: Int) {
-                var results: RealmResults<Genre> = realm.where(Genre::class.java).findAll()
+                val results: RealmResults<Genre> = realm.where(Genre::class.java).findAll()
                 if (results.size > 0) {
                     adapter.addData(results)
                 }
@@ -55,9 +62,6 @@ class GenreFragment : Fragment() {
 
         })
 
-        recyclerView.adapter = adapter
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        recyclerView.layoutManager = LinearLayoutManager(context)
 
         refreshLayout.setOnRefreshListener {
             adapter.notifyDataSetChanged()
@@ -69,4 +73,11 @@ class GenreFragment : Fragment() {
         return root
     }
 
-}// Required empty public constructor
+
+    fun setUpRecyclerView(){
+        recyclerView.adapter = adapter
+        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.layoutManager = LinearLayoutManager(activity as GenreActivity)
+    }
+
+}

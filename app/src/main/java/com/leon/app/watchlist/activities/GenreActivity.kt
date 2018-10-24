@@ -22,15 +22,12 @@ import io.realm.Realm
 
 class GenreActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private val rootLayout: CoordinatorLayout by bind(R.id.rootLayout)
     private val toolbar: Toolbar by bind(R.id.toolbar)
     private val drawerLayoutgesamt: BlurDrawerLayout by bind(R.id.drawer_layout)
     private val navigationView: NavigationView by bind(R.id.navView)
-    private val tabLayout: TabLayout by bind(R.id.tab_layout)
-    private val viewPager: ViewPager by bind(R.id.viewPager)
+
 
     lateinit var drawerToggle: BlurActionBarDrawerToggle
-    lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

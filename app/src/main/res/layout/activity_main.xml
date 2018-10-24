@@ -10,7 +10,7 @@
     app:closeDescription="@string/drawer_close"
     app:downScaleFactor="8.0"
     app:openDescription="@string/drawer_open"
-    app:toolbar="@+id/toolbarRef">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,8 +101,8 @@
             android:background="#50868585"
             app:headerLayout="@layout/header_layout"
             app:itemBackground="@drawable/menu_background"
-            app:itemIconTint="@color/itemtintcolor"
-            app:itemTextColor="@color/itemtintcolor"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
             app:menu="@menu/navigation_view_menu" />
 
 

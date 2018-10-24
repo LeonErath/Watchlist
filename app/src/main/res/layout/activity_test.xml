@@ -10,14 +10,14 @@
     app:closeDescription="@string/drawer_close"
     app:downScaleFactor="8.0"
     app:openDescription="@string/drawer_open"
-    app:toolbar="@+id/toolbarRef">
+    >
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.leon.app.watchlist.activities.Test">
+        tools:context="com.leon.app.watchlist.activities.RecommendationActivity">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"

@@ -60,11 +60,8 @@ class MyListFragment : Fragment() {
         // Initialize realm
 
 
-        Realm.init(context)
-        val config = RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build()
-        realm = Realm.getInstance(config)
+
+        realm = RealmController(activity as MainActivity).realm
         realm.refresh()
 
         // Set up recycler view

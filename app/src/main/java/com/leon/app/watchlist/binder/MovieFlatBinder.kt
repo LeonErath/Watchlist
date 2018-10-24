@@ -83,6 +83,12 @@ open class MovieFlatBinder(adapter2: MovieFlatAdapter, activity: MainActivity) :
 
             val queryAdapter = QueryAdapter(context)
 
+            buttonRemove.setOnClickListener {
+                queryAdapter.removeClickDetail(movie = item)
+                mainActivity.removeFromFavorite(item)
+                Bus.send(MovieEventRemove(item))
+            }
+
             setItemClickListener { view, item ->
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("movieid", item.id)

@@ -30,9 +30,11 @@ import com.leon.app.watchlist.R
 import com.leon.app.watchlist.adapter.MovieAdapter
 import com.leon.app.watchlist.model.Person
 import com.github.chuross.library.ExpandableLayout
+import com.leon.app.watchlist.RealmController
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import io.realm.Realm
+import io.realm.RealmConfiguration
 
 
 class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener, View.OnClickListener {
@@ -69,8 +71,8 @@ class PersonActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         setUpToolbar()
         // Initialize realm
-        Realm.init(this)
-        realm = Realm.getDefaultInstance()
+        realm = RealmController(this).realm
+        realm.refresh()
 
         // Get movie from database
         val extras: Bundle = intent.extras

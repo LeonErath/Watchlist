@@ -32,6 +32,7 @@ import com.github.chuross.library.ExpandableLayout
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
+import com.leon.app.watchlist.RealmController
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import io.realm.Realm
@@ -81,11 +82,8 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
 
-        Realm.init(this)
-        val config = RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build()
-        realm = Realm.getInstance(config)
+
+        realm = RealmController(this).realm
 
 
         // Get movie from database
@@ -285,7 +283,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener, SwipeRefreshLa
         recomAdapter.addData(movie.recommendations)
         if (movie.results.size > 0) {
             movie.results
-                    .filter { it.name == "Official Trailer" }
+                    .filter { it.site == "YouTube" }
                     .forEach { initializeYoutubeFragment(it) }
         }
     }

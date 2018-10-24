@@ -21,7 +21,7 @@ import java.util.*
  */
 class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
 
-    var realm: Realm
+    var realm:Realm;
     val TAG = QueryAdapter::class.java.simpleName!!
     var detailLoaded: DetailLoadedListener? = null
     var loadData: LoadData? = null
@@ -29,17 +29,13 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
     var c: Context
 
     init {
-        Realm.init(context)
-        val config = RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build()
-        realm = Realm.getInstance(config)
+        realm = RealmController(context).realm;
         this.c = context
     }
 
 
     fun setOnLoadedListener2(detailLoadedListener: DetailLoadedListener) {
-        this.detailLoaded = detailLoaded
+        this.detailLoaded = detailLoadedListener
     }
 
     fun getPerson(id: Int, loadData: LoadData) {
