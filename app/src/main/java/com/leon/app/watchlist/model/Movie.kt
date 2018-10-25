@@ -11,6 +11,12 @@ import io.realm.annotations.PrimaryKey
 open class Movie : RealmObject() {
     @PrimaryKey
     var id: Int = 0
+
+    /** @property evolution describes if a movie is "added" or "watched"
+     * evolution == 0 -> nothing
+     * evolution == 1 -> added to Watchlist
+     * evolution == 2 -> watched movie
+    */
     var evolution: Int = 0
     var video: Boolean = false
     var vote_average: Double = 0.0
