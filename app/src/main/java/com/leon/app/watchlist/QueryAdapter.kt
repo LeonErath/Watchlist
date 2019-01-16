@@ -21,7 +21,7 @@ import java.util.*
  */
 class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
 
-    var realm:Realm;
+    var realm: Realm;
     val TAG = QueryAdapter::class.java.simpleName!!
     var detailLoaded: DetailLoadedListener? = null
     var loadData: LoadData? = null
@@ -38,41 +38,36 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
         this.detailLoaded = detailLoadedListener
     }
 
+    fun getURL(path: String, page: String = ""): String {
+        val domain = c.getString(R.string.base_url)
+        val API_KEY = c.getString(R.string.key)
+        val language = "&language=en-US"
+        return domain + path + API_KEY + "&language=en-US" + page
+    }
+
+    fun makeRequest(url: String, type: Int,id: Int = 0): StringRequest {
+        return StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+            // Display the first 500 characters of the response string.
+            Log.i(TAG, "Response:" + response)
+            fetch(realm, type, response,id)
+
+        }, Response.ErrorListener { error ->
+            Log.e("QueryAdapter.kt",""+error.printStackTrace())
+        })
+    }
+
     fun getPerson(id: Int, loadData: LoadData) {
         this.loadData = loadData
         val queue = Volley.newRequestQueue(c)
-        val url = c.getString(R.string.base_url) +
-                "person/$id?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
 
-        // Fetcher a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            // Display the first 500 characters of the response string.
-            Log.i(TAG, "Response:" + response)
-            fetch(realm, 3, response)
+        val personDetail = getURL("person/$id?api_key=")
+        val moviesFromPerson = getURL("person/$id/movie_credits?api_key=")
 
-        }, Response.ErrorListener { error ->
-            error.printStackTrace()
-        })
+        val personDetailRequest = makeRequest(personDetail, 3)
+        val movieFromPersonRequest = makeRequest(moviesFromPerson, 4)
 
-        val url2 = c.getString(R.string.base_url) +
-                "person/$id/movie_credits?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
-
-        // Fetcher a string response from the provided URL.
-        val stringRequest2 = StringRequest(Request.Method.GET, url2, Response.Listener<String> { response ->
-            // Display the first 500 characters of the response string.
-            Log.i(TAG, "Response:" + response)
-            fetch(realm, 4, response, id = id)
-
-        }, Response.ErrorListener { error ->
-            error.printStackTrace()
-        })
-
-        queue.add(stringRequest)
-        queue.add(stringRequest2)
+        queue.add(personDetailRequest)
+        queue.add(movieFromPersonRequest)
     }
 
     fun movieClickDetail(movie: Movie) {
@@ -97,11 +92,10 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
                 movie.evolution++
                 val results: RealmResults<List> = realm.where(List::class.java).equalTo("id", 3 as Int).findAll()
 
-
                 if (results.size > 0) {
                     Log.d(TAG, "WatchedList is not empty -> updates List")
                     val List = results[0]
-                    if (List != null){
+                    if (List != null) {
                         val check = List.results.any { movie!!.id == it.id }
 
                         if (!check) {
@@ -109,8 +103,6 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
                             List.total_results++
                         }
                     }
-
-
                 } else {
                     Log.d(TAG, "WatchedList is empty -> creates new List")
                     val List = List()
@@ -131,7 +123,7 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
             if (results.size > 0) {
                 Log.d(TAG, "WatchedList is not empty -> updates List")
                 val List = results[0]
-                if(List != null){
+                if (List != null) {
                     List.results.remove(movie)
                     List.total_results--
                 }
@@ -142,25 +134,11 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
 
     fun getDetail(id: Int): Movie {
         Log.i(TAG, "Trying to get movie details..")
-        val url = c.getString(R.string.base_url) +
-                "movie/$id?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
 
-        val urlCast = c.getString(R.string.base_url) +
-                "movie/$id/credits?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
-
-        val urlTrailer = c.getString(R.string.base_url) +
-                "movie/$id/videos?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
-
-        val urlRecom = c.getString(R.string.base_url) +
-                "movie/$id/recommendations?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
+        val url = getURL("movie/$id?api_key=")
+        val urlCast = getURL("movie/$id/credits?api_key=")
+        val urlTrailer = getURL("movie/$id/videos?api_key=")
+        val urlRecom = getURL("movie/$id/recommendations?api_key=")
 
         httpRequestDetail(url, urlCast, urlTrailer, urlRecom, id)
 
@@ -170,20 +148,10 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
     fun getCinema(page: Int, loadData: LoadData) {
         this.loadData = loadData
         val queue = Volley.newRequestQueue(c)
-        val url = c.getString(R.string.base_url) +
-                "movie/now_playing?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US&page=$page"
 
-        // Fetcher a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            // Display the first 500 characters of the response string.
-            Log.i(TAG, "Response:" + response)
-            fetch(realm, 1, response)
-            //fetchRequestCinema(response, loadData)
-        }, Response.ErrorListener { error ->
-            error.printStackTrace()
-        })
+        val url = getURL("movie/now_playing?api_key=", "page=$page")
+
+        val stringRequest = makeRequest(url,1)
 
         queue.add(stringRequest)
     }
@@ -191,20 +159,9 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
     fun getPopular(page: Int, loadData: LoadData) {
         this.loadData = loadData
         val queue = Volley.newRequestQueue(c)
-        val url = c.getString(R.string.base_url) +
-                "movie/popular?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US&page=$page"
+        val url = getURL("movie/popular?api_key=", "page=$page")
 
-        // Fetcher a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            // Display the first 500 characters of the response string.
-            Log.i(TAG, "Response:" + response)
-            fetch(realm, 0, response)
-
-        }, Response.ErrorListener { error ->
-            error.printStackTrace()
-        })
+        val stringRequest = makeRequest(url, 0)
 
         queue.add(stringRequest)
     }
@@ -213,19 +170,10 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
         this.loadData = loadData
         // https://api.themoviedb.org/3/genre/movie/list?api_key=df38fba2447615a58400c89be4c98032&language=en-US
         val queue = Volley.newRequestQueue(c)
-        val url = c.getString(R.string.base_url) +
-                "genre/movie/list?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
+        val url = getURL("genre/movie/list?api_key=")
 
         // Fetcher a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            // Display the first 500 characters of the response string.
-            Log.i(TAG, "Response:" + response)
-            fetch(realm, 5, response)
-        }, Response.ErrorListener { error ->
-            error.printStackTrace()
-        })
+        val stringRequest = makeRequest(url, 5)
 
         queue.add(stringRequest)
     }
@@ -234,19 +182,10 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
         this.loadData = loadData
         // https://api.themoviedb.org/3/genre/movie/list?api_key=df38fba2447615a58400c89be4c98032&language=en-US
         val queue = Volley.newRequestQueue(c)
-        val url = c.getString(R.string.base_url) +
-                "genre/$genreid/movies?api_key=" +
-                c.getString(R.string.key) +
-                "&language=en-US"
+        val url = getURL("genre/$genreid/movies?api_key=")
 
         // Fetcher a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
-            // Display the first 500 characters of the response string.
-            Log.i(TAG, "Response:" + response)
-            fetch(realm, 6, response)
-        }, Response.ErrorListener { error ->
-            error.printStackTrace()
-        })
+        val stringRequest = makeRequest(url, 6)
 
         queue.add(stringRequest)
     }
@@ -297,20 +236,12 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
     }
 
     private fun httpRequestDetail(url: String, urlCast: String, urlTrailer: String, urlRecom: String, id: Int) {
-
         val queue = Volley.newRequestQueue(c)
-
-        val stringRequestRecom = StringRequest(Request.Method.GET, urlRecom, Response.Listener<String> { response ->
-            Log.d(TAG, "Recommendation " + response)
-
-            fetchRequestRecom(realm, response.toRecommendation(id), id)
-        }, Response.ErrorListener { error -> error.printStackTrace() })
-
 
         queue.add(makeRequest(url))
         queue.add(makeRequest(urlCast))
         queue.add(makeRequest(urlTrailer))
-        queue.add(stringRequestRecom)
+        queue.add(makeRequest(urlRecom,2,id))
     }
 
     private fun makeRequest(url: String): StringRequest {
@@ -338,14 +269,11 @@ class QueryAdapter(context: Context) : com.leon.app.watchlist.Fetcher() {
         if (loadData != null) {
             loadData?.update(type)
         }
-
     }
 
     override fun completeDetail(id: Int) {
         Bus.send(DetailsLoaded(findMovie(id)))
     }
-
-
 }
 
 interface LoadData {

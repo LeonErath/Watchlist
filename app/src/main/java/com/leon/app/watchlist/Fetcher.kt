@@ -1,5 +1,6 @@
 package com.leon.app.watchlist
 
+import android.util.Log
 import com.leon.app.watchlist.model.Genre
 import com.leon.app.watchlist.model.List
 import com.leon.app.watchlist.model.Movie
@@ -49,41 +50,34 @@ abstract class Fetcher : MyJsonParser() {
         realm.executeTransactionAsync({ bgRealm ->
             with(bgRealm) {
                 when (type) {
-                // Updates Popular Movie List
-                    0 -> {
+                    // Updates Popular Movie List
+                    0 -> createOrUpdateAllFromJson(List::class.java, response.toPopular())
+                    // Updates Cinema Movie List
+                    1 -> createOrUpdateAllFromJson(List::class.java, response.toCinema())
+                    // Updates Recommendations
+                    2 -> createOrUpdateObjectFromJson(Movie::class.java,response.toRecommendation(id))
+                    // Updates Person
+                    3 -> createOrUpdateAllFromJson(Person::class.java, response.toPerson())
+                    // Updates PersonMovies
+                    4 -> createOrUpdateAllFromJson(Person::class.java, response.toPersonMovies(id))
+                    // Updates Genre List
+                    5 -> createOrUpdateAllFromJson(Genre::class.java, response.toGenre())
+                    // Updates Movies-from-Genre PList
+                    6 -> createOrUpdateAllFromJson(List::class.java, response.toGenreMovies())
+                    else -> Log.e("Fetcher.kt fetch()", "Nothing applied")
 
-                        createOrUpdateAllFromJson(List::class.java, response.toPopular())
-                    }
-                // Updates Cinema Movie List
-                    1 -> {
-                        createOrUpdateAllFromJson(List::class.java, response.toCinema())
-                    }
-                    2 -> {
-
-                    }
-                // Updates Person
-                    3 -> {
-                        createOrUpdateAllFromJson(Person::class.java, response.toPerson())
-                    }
-                // Updates PersonMovies
-                    4 -> {
-                        createOrUpdateAllFromJson(Person::class.java, response.toPersonMovies(id))
-                    }
-                // Updates Genre List
-                    5 -> {
-                        createOrUpdateAllFromJson(Genre::class.java, response.toGenre())
-                    }
-                // Updates Movies-from-Genre PList
-                    6 -> {
-                        createOrUpdateAllFromJson(List::class.java, response.toGenreMovies())
-                    }
                 }
             }
         }, {
             // Transaction was a success.
-            complete(type)
-        }) {
-            e ->
+            Log.i("Fetcher.kt","fetch successfull")
+            if(type == 2){
+                completeDetail(id)
+            }else{
+                complete(type)
+            }
+
+        }) { e ->
             e.printStackTrace()
         }
     }
@@ -92,25 +86,15 @@ abstract class Fetcher : MyJsonParser() {
 
     abstract fun completeDetail(id: Int)
 
-    fun fetchRequestRecom(realm: Realm, response: String, id: Int) {
-        realm.executeTransactionAsync({ bgRealm ->
-            bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
-        }, {
-            // Transaction was a success.
-            completeDetail(id)
-        }) {
-            e ->
-            e.printStackTrace()
-        }
-    }
+
+
 
     fun fetchRequest(realm: Realm, response: String) {
         realm.executeTransactionAsync({ bgRealm ->
             bgRealm.createOrUpdateObjectFromJson(Movie::class.java, response)
         }, {
             // Transaction was a success.
-        }) {
-            e ->
+        }) { e ->
             e.printStackTrace()
         }
     }
